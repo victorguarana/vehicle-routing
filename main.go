@@ -9,7 +9,7 @@ import (
 
 func main() {
 	p := gps.Point{}
-	v1 := vehicles.NewVehicle("vehicle 1", &p)
+	v1 := vehicles.NewDrone("vehicle 1", &p)
 
 	fmt.Println(v1)
 }

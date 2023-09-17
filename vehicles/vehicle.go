@@ -12,47 +12,16 @@ var (
 
 	defaultStorage = 3000.0
 	defaultRange   = 1000.0
-	defaultSpeed   = 30
+	defaultSpeed   = 30.0
 )
 
-type IVehicle interface {
+type ivehicle interface {
 	Move(*gps.Point) error
+	Reachable(gps.Point) bool
 }
 
 type vehicle struct {
-	totalStorage    float64
-	remaningStorage float64
-	totalRange      float64
-	remaningRange   float64
-	speed           int
-	name            string
-	actualPosition  *gps.Point
-}
-
-func NewVehicle(name string, startingPoint *gps.Point) IVehicle {
-	return &vehicle{
-		totalStorage:    defaultStorage,
-		remaningStorage: defaultStorage,
-		totalRange:      defaultRange,
-		remaningRange:   defaultRange,
-		speed:           defaultSpeed,
-		name:            name,
-		actualPosition:  startingPoint,
-	}
-}
-
-func (v *vehicle) Move(destination *gps.Point) error {
-	if v.actualPosition == nil || destination == nil {
-		return ErrInvalidParams
-	}
-
-	distance := gps.DistanceBetweenPoints(*v.actualPosition, *destination)
-	if distance >= v.remaningRange {
-		return ErrSoFar
-	}
-
-	v.remaningRange -= distance
-	v.actualPosition = destination
-
-	return nil
+	speed          float64
+	name           string
+	actualPosition *gps.Point
 }
