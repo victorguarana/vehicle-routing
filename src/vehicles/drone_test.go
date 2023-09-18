@@ -4,7 +4,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/victorguarana/go-vehicle-route/gps"
+	"github.com/victorguarana/go-vehicle-route/src/gps"
 )
 
 var _ = Describe("Move", func() {

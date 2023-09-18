@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/victorguarana/go-vehicle-route/gps"
-	"github.com/victorguarana/go-vehicle-route/vehicles"
+	"github.com/victorguarana/go-vehicle-route/src/gps"
+	"github.com/victorguarana/go-vehicle-route/src/vehicles"
 )
 
 func main() {

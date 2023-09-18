@@ -1,6 +1,6 @@
 package vehicles
 
-import "github.com/victorguarana/go-vehicle-route/gps"
+import "github.com/victorguarana/go-vehicle-route/src/gps"
 
 var (
 	defaultStorage = 3000.0

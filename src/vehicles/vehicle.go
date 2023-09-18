@@ -3,7 +3,7 @@ package vehicles
 import (
 	"errors"
 
-	"github.com/victorguarana/go-vehicle-route/gps"
+	"github.com/victorguarana/go-vehicle-route/src/gps"
 )
 
 var (
