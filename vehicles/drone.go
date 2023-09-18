@@ -1,33 +1,28 @@
 package vehicles
 
-import "github.com/victorguarana/go-vehicle-route/gps"
+import (
+	"errors"
+
+	"github.com/victorguarana/go-vehicle-route/gps"
+)
+
+var (
+	ErrWithoutRange = errors.New("vehicle does not support to move so far")
+)
 
 type IDrone interface {
 	ivehicle
+	IsFlying() bool
 }
 
 type drone struct {
 	vehicle
+	car             *car
 	isFlying        bool
 	totalStorage    float64
 	remaningStorage float64
 	totalRange      float64
 	remaningRange   float64
-}
-
-func NewDrone(name string, startingPoint *gps.Point) IDrone {
-	d := drone{
-		totalStorage:    defaultStorage,
-		remaningStorage: defaultStorage,
-		totalRange:      defaultRange,
-		remaningRange:   defaultRange,
-		vehicle: vehicle{
-			speed:          defaultSpeed,
-			name:           name,
-			actualPosition: startingPoint,
-		},
-	}
-	return &d
 }
 
 func (d *drone) Move(destination *gps.Point) error {
@@ -37,7 +32,7 @@ func (d *drone) Move(destination *gps.Point) error {
 
 	distance := gps.DistanceBetweenPoints(*d.actualPosition, *destination)
 	if distance >= d.remaningRange {
-		return ErrSoFar
+		return ErrWithoutRange
 	}
 
 	d.remaningRange -= distance
@@ -48,5 +43,9 @@ func (d *drone) Move(destination *gps.Point) error {
 
 func (d *drone) Reachable(destination gps.Point) bool {
 	distance := gps.DistanceBetweenPoints(*d.actualPosition, destination)
-	return distance >= d.remaningRange
+	return distance <= d.remaningRange
+}
+
+func (d *drone) IsFlying() bool {
+	return d.isFlying
 }
