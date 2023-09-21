@@ -69,17 +69,38 @@ var _ = Describe("Move", func() {
 })
 
 var _ = Describe("Reachable", func() {
-	Context("when car can reach point with plenty", func() {
-		It("returns true", func() {
-			sut := car{
-				vehicle: vehicle{
-					actualPosition: &gps.Point{
-						Latitude:  0,
-						Longitude: 0,
+	Describe("single destination", func() {
+		Context("when car can reach point with plenty", func() {
+			It("returns true", func() {
+				destination := gps.Point{Latitude: 10}
+				sut := car{
+					vehicle: vehicle{
+						actualPosition: &gps.Point{
+							Latitude:  0,
+							Longitude: 0,
+						},
 					},
-				},
-			}
-			Expect(sut.Reachable(gps.Point{Latitude: 10})).To(BeTrue())
+				}
+				Expect(sut.Reachable(destination)).To(BeTrue())
+			})
+		})
+	})
+
+	Describe("multi destination", func() {
+		Context("when car can reach point with plenty", func() {
+			It("returns true", func() {
+				destination1 := gps.Point{Latitude: 10}
+				destination2 := gps.Point{Latitude: 20}
+				sut := car{
+					vehicle: vehicle{
+						actualPosition: &gps.Point{
+							Latitude:  0,
+							Longitude: 0,
+						},
+					},
+				}
+				Expect(sut.Reachable(destination1, destination2)).To(BeTrue())
+			})
 		})
 	})
 })

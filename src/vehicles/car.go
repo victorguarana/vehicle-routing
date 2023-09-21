@@ -57,6 +57,6 @@ func (c *car) Move(destination *gps.Point) error {
 	return nil
 }
 
-func (c *car) Reachable(destination gps.Point) bool {
+func (c *car) Reachable(destination ...gps.Point) bool {
 	return true
 }

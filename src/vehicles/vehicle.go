@@ -12,7 +12,7 @@ var (
 
 type ivehicle interface {
 	Move(*gps.Point) error
-	Reachable(gps.Point) bool
+	Reachable(...gps.Point) bool
 }
 
 type vehicle struct {

@@ -41,8 +41,15 @@ func (d *drone) Move(destination *gps.Point) error {
 	return nil
 }
 
-func (d *drone) Reachable(destination gps.Point) bool {
-	distance := gps.DistanceBetweenPoints(*d.actualPosition, destination)
+func (d *drone) Reachable(destinations ...gps.Point) bool {
+	distance := 0.0
+	position := *d.actualPosition
+
+	for _, destination := range destinations {
+		distance += gps.DistanceBetweenPoints(position, destination)
+		position = destination
+	}
+
 	return distance <= d.remaningRange
 }
 
