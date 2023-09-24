@@ -7,7 +7,8 @@ import (
 )
 
 var (
-	ErrWithoutRange = errors.New("vehicle does not support to move so far")
+	ErrWithoutRange   = errors.New("vehicle does not support to move so far")
+	ErrWithoutStorage = errors.New("vehicle does not have enough storage")
 )
 
 type IDrone interface {
@@ -30,6 +31,10 @@ func (d *drone) Move(destination *gps.Point) error {
 		return ErrInvalidParams
 	}
 
+	if destination.PackageSize > d.remaningStorage {
+		return ErrWithoutStorage
+	}
+
 	distance := gps.DistanceBetweenPoints(*d.actualPosition, *destination)
 	if distance >= d.remaningRange {
 		return ErrWithoutRange
@@ -41,16 +46,26 @@ func (d *drone) Move(destination *gps.Point) error {
 	return nil
 }
 
-func (d *drone) Reachable(destinations ...gps.Point) bool {
+func (d *drone) Support(destinations ...gps.Point) bool {
 	distance := 0.0
+	packagesSize := 0.0
 	position := *d.actualPosition
 
 	for _, destination := range destinations {
 		distance += gps.DistanceBetweenPoints(position, destination)
+		packagesSize += destination.PackageSize
 		position = destination
 	}
 
-	return distance <= d.remaningRange
+	if distance > d.remaningRange {
+		return false
+	}
+
+	if packagesSize > d.remaningStorage {
+		return false
+	}
+
+	return true
 }
 
 func (d *drone) IsFlying() bool {

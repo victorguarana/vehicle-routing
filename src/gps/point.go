@@ -3,9 +3,9 @@ package gps
 import "math"
 
 type Point struct {
-	Latitude  float64
-	Longitude float64
-	name      string
+	Latitude    float64
+	Longitude   float64
+	PackageSize float64
 }
 
 // Euclidean distance between two points
