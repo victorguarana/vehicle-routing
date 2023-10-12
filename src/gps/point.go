@@ -1,11 +1,26 @@
 package gps
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 type Point struct {
 	Latitude    float64
 	Longitude   float64
 	PackageSize float64
+}
+
+func (p Point) IsClient() bool {
+	return p.PackageSize != 0
+}
+
+func (p Point) IsDeposit() bool {
+	return p.PackageSize == 0
+}
+
+func (p Point) String() string {
+	return fmt.Sprintf("Lat: %f, Long: %f, PackageSize: %f\n", p.Latitude, p.Longitude, p.PackageSize)
 }
 
 // Euclidean distance between two points
