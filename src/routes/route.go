@@ -8,6 +8,7 @@ import (
 )
 
 type IRoute interface {
+	CompleteRoute() []*gps.Point
 	First() *gps.Point
 	Last() *gps.Point
 	Append(*gps.Point) error
@@ -26,6 +27,10 @@ func NewRoute(car vehicles.ICar) IRoute {
 		car:    car,
 		points: make([]*gps.Point, 0),
 	}
+}
+
+func (r *route) CompleteRoute() []*gps.Point {
+	return r.points
 }
 
 func (r *route) Car() vehicles.ICar {
