@@ -9,27 +9,43 @@ import (
 func ClosestNeighbor(car vehicles.ICar, m gps.Map) (routes.IRoute, error) {
 	route := routes.NewRoute(car)
 
+	// Add starting point to route
+	carActualPosition := car.ActualPosition()
+	route.Append(carActualPosition)
+
 	remaningClients := make([]*gps.Point, len(m.Clients))
 	copy(remaningClients, m.Clients)
 
+	var closestClient, closestDepositFromClosestClient *gps.Point
 	for len(remaningClients) > 0 {
-		closestClient := closestPoint(car.ActualPosition(), remaningClients)
-		closestDepositFromClosestClient := closestPoint(closestClient, m.Deposits)
+		closestClient = closestPoint(carActualPosition, remaningClients)
+		closestDepositFromClosestClient = closestPoint(closestClient, m.Deposits)
 
-		if car.Support(*closestClient, *closestDepositFromClosestClient) {
-			err := moveAndAppend(route, closestClient)
+		if !car.Support(*closestClient, *closestDepositFromClosestClient) {
+			// Move to closest deposit when car does not support closest client
+			closestDepositFromActualPosition := closestPoint(carActualPosition, m.Deposits)
+			err := moveAndAppend(route, closestDepositFromActualPosition)
 			if err != nil {
 				return nil, err
 			}
+			carActualPosition = car.ActualPosition()
+			continue
+		}
 
-		} else {
-			err := moveAndAppend(route, closestDepositFromClosestClient)
-			if err != nil {
-				return nil, err
-			}
+		// Move to closest client
+		err := moveAndAppend(route, closestClient)
+		if err != nil {
+			return nil, err
 		}
 
 		remaningClients = removePoint(remaningClients, closestClient)
+		carActualPosition = car.ActualPosition()
+	}
+
+	// Finish route in closest deposit
+	err := moveAndAppend(route, closestDepositFromClosestClient)
+	if err != nil {
+		return nil, err
 	}
 
 	return route, nil
