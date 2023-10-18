@@ -24,6 +24,10 @@ func (p Point) String() string {
 }
 
 // Euclidean distance between two points
-func DistanceBetweenPoints(p1, p2 Point) float64 {
-	return math.Abs(p1.Latitude-p2.Latitude) + math.Abs(p1.Longitude-p2.Longitude)
+func DistanceBetweenPoints(points ...Point) float64 {
+	var totalDistance float64
+	for i := 0; i < len(points)-1; i++ {
+		totalDistance += math.Abs(points[i].Latitude-points[i+1].Latitude) + math.Abs(points[i].Longitude-points[i+1].Longitude)
+	}
+	return totalDistance
 }
