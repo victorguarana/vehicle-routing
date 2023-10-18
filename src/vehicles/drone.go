@@ -47,7 +47,7 @@ func (d *drone) Move(destination *gps.Point) error {
 }
 
 func (d *drone) Support(destinations ...*gps.Point) bool {
-	distance := gps.DistanceBetweenPoints(append(destinations, d.actualPosition)...)
+	distance := gps.DistanceBetweenPoints(append([]*gps.Point{d.actualPosition}, destinations...)...)
 	packagesSize := 0.0
 
 	for _, destination := range destinations {

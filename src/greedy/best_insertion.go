@@ -7,12 +7,16 @@ import (
 )
 
 func BestInsertion(car vehicles.ICar, m gps.Map) (routes.IRoute, error) {
+	initialPosition := car.ActualPosition()
 	route := routes.NewRoute(car)
-	orderedClients := orderedClients(m.Clients)
+	orderedClients := orderedClients(initialPosition, m.Clients)
 
+	route.Append(initialPosition)
+
+	var closestDeposit *gps.Point
 	for i := range orderedClients {
 		client := orderedClients[i]
-		closestDeposit := closestPoint(client, m.Deposits)
+		closestDeposit = closestPoint(client, m.Deposits)
 		if car.Support(*client, *closestDeposit) {
 			err := moveAndAppend(route, client)
 			if err != nil {
@@ -27,31 +31,45 @@ func BestInsertion(car vehicles.ICar, m gps.Map) (routes.IRoute, error) {
 		}
 	}
 
+	err := moveAndAppend(route, closestDeposit)
+	if err != nil {
+		return nil, err
+	}
+
 	return route, nil
 }
 
-func orderedClients(clients []*gps.Point) []*gps.Point {
+func orderedClients(initialPoint *gps.Point, clients []*gps.Point) []*gps.Point {
 	orderedClients := []*gps.Point{}
 
 	for _, client := range clients {
-		index := findBestInsertionIndex(client, orderedClients)
+		index := findBestInsertionIndex(initialPoint, client, orderedClients)
 		orderedClients = insertAt(index, client, orderedClients)
 	}
 
 	return orderedClients
 }
 
-func findBestInsertionIndex(client *gps.Point, orderedClients []*gps.Point) int {
-	var bestIndex int
-	var bestDistance float64
+func findBestInsertionIndex(initialPoint *gps.Point, client *gps.Point, orderedClients []*gps.Point) int {
+	if len(orderedClients) == 0 {
+		return 0
+	}
 
-	for index, c := range orderedClients {
-		distance := gps.DistanceBetweenPoints(*client, *c)
+	bestIndex := 0
+	bestAdicionalDistance := gps.DistanceBetweenPoints(initialPoint, client, orderedClients[0]) - gps.DistanceBetweenPoints(initialPoint, orderedClients[0])
 
-		if bestDistance == 0 || distance < bestDistance {
-			bestIndex = index
-			bestDistance = distance
+	for i := 0; i < len(orderedClients)-1; i++ {
+		adicionalDistance := gps.DistanceBetweenPoints(orderedClients[i], client, orderedClients[i+1]) - gps.DistanceBetweenPoints(orderedClients[i], orderedClients[i+1])
+
+		if adicionalDistance < bestAdicionalDistance {
+			bestIndex = i + 1
+			bestAdicionalDistance = adicionalDistance
 		}
+	}
+
+	adicionalDistance := gps.DistanceBetweenPoints(orderedClients[len(orderedClients)-1], client)
+	if adicionalDistance < bestAdicionalDistance {
+		bestIndex = len(orderedClients)
 	}
 
 	return bestIndex
@@ -59,8 +77,15 @@ func findBestInsertionIndex(client *gps.Point, orderedClients []*gps.Point) int 
 
 func insertAt(index int, client *gps.Point, orderedClients []*gps.Point) []*gps.Point {
 	newClientsList := make([]*gps.Point, len(orderedClients)+1)
-	newClientsList = append(newClientsList, orderedClients[:index]...)
-	newClientsList = append(newClientsList, client)
-	newClientsList = append(newClientsList, orderedClients[index:]...)
+	for i := 0; i < len(newClientsList); i++ {
+		switch {
+		case i < index:
+			newClientsList[i] = orderedClients[i]
+		case i == index:
+			newClientsList[i] = client
+		case i > index:
+			newClientsList[i] = orderedClients[i-1]
+		}
+	}
 	return newClientsList
 }
