@@ -35,7 +35,7 @@ func (d *drone) Move(destination *gps.Point) error {
 		return ErrWithoutStorage
 	}
 
-	distance := gps.DistanceBetweenPoints(*d.actualPosition, *destination)
+	distance := gps.DistanceBetweenPoints(d.actualPosition, destination)
 	if distance >= d.remaningRange {
 		return ErrWithoutRange
 	}
@@ -46,15 +46,12 @@ func (d *drone) Move(destination *gps.Point) error {
 	return nil
 }
 
-func (d *drone) Support(destinations ...gps.Point) bool {
-	distance := 0.0
+func (d *drone) Support(destinations ...*gps.Point) bool {
+	distance := gps.DistanceBetweenPoints(append(destinations, d.actualPosition)...)
 	packagesSize := 0.0
-	position := *d.actualPosition
 
 	for _, destination := range destinations {
-		distance += gps.DistanceBetweenPoints(position, destination)
 		packagesSize += destination.PackageSize
-		position = destination
 	}
 
 	if distance > d.remaningRange {

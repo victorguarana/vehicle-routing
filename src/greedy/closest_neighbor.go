@@ -56,9 +56,9 @@ func closestPoint(originPoint *gps.Point, candidatePoints []*gps.Point) *gps.Poi
 	var closestDistance float64
 
 	for _, candidatePoint := range candidatePoints {
-		if closestPoint == nil || gps.DistanceBetweenPoints(*originPoint, *candidatePoint) < closestDistance {
+		if closestPoint == nil || gps.DistanceBetweenPoints(originPoint, candidatePoint) < closestDistance {
 			closestPoint = candidatePoint
-			closestDistance = gps.DistanceBetweenPoints(*originPoint, *candidatePoint)
+			closestDistance = gps.DistanceBetweenPoints(originPoint, candidatePoint)
 		}
 	}
 

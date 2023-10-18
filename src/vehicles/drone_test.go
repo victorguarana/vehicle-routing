@@ -24,7 +24,7 @@ var _ = Describe("Move", func() {
 					},
 				},
 			}
-			distance := gps.DistanceBetweenPoints(*p, *sut.actualPosition)
+			distance := gps.DistanceBetweenPoints(p, sut.actualPosition)
 
 			Expect(sut.Move(p)).To(Succeed())
 			Expect(sut.actualPosition).To(Equal(p))
@@ -76,7 +76,7 @@ var _ = Describe("Support", func() {
 	Describe("single destination cases", func() {
 		Context("when drone can support point with plenty of range and storage", func() {
 			It("returns true", func() {
-				destination := gps.Point{
+				destination := &gps.Point{
 					Latitude:    10,
 					PackageSize: 1,
 				}
@@ -97,7 +97,7 @@ var _ = Describe("Support", func() {
 
 		Context("when drone can support point without plenty of range and storage", func() {
 			It("returns true", func() {
-				destination := gps.Point{
+				destination := &gps.Point{
 					Latitude:    10,
 					PackageSize: 10,
 				}
@@ -118,7 +118,7 @@ var _ = Describe("Support", func() {
 
 		Context("when drone can not support point because of range", func() {
 			It("returns false", func() {
-				destination := gps.Point{
+				destination := &gps.Point{
 					Latitude:    1,
 					PackageSize: 1,
 				}
@@ -139,7 +139,7 @@ var _ = Describe("Support", func() {
 
 		Context("when drone can not support point because of storage", func() {
 			It("returns false", func() {
-				destination := gps.Point{
+				destination := &gps.Point{
 					Latitude:    1,
 					PackageSize: 1,
 				}
@@ -162,8 +162,8 @@ var _ = Describe("Support", func() {
 	Describe("multi destinations cases", func() {
 		Context("when drone can reach point with plenty", func() {
 			It("returns true", func() {
-				destination1 := gps.Point{Latitude: 10}
-				destination2 := gps.Point{Latitude: 15}
+				destination1 := &gps.Point{Latitude: 10}
+				destination2 := &gps.Point{Latitude: 15}
 				sut := drone{
 					remaningRange: 100,
 					vehicle: vehicle{
@@ -179,8 +179,8 @@ var _ = Describe("Support", func() {
 
 		Context("when drone can reach point without plenty", func() {
 			It("returns true", func() {
-				destination1 := gps.Point{Latitude: 5}
-				destination2 := gps.Point{Latitude: 10}
+				destination1 := &gps.Point{Latitude: 5}
+				destination2 := &gps.Point{Latitude: 10}
 				sut := drone{
 					remaningRange: 10,
 					vehicle: vehicle{
@@ -196,8 +196,8 @@ var _ = Describe("Support", func() {
 
 		Context("when drone can not reach first point", func() {
 			It("returns false", func() {
-				destination1 := gps.Point{Latitude: 5}
-				destination2 := gps.Point{Latitude: 10}
+				destination1 := &gps.Point{Latitude: 5}
+				destination2 := &gps.Point{Latitude: 10}
 				sut := drone{
 					remaningRange: 0,
 					vehicle: vehicle{
@@ -213,8 +213,8 @@ var _ = Describe("Support", func() {
 
 		Context("when drone can not reach second point", func() {
 			It("returns false", func() {
-				destination1 := gps.Point{Latitude: 5}
-				destination2 := gps.Point{Latitude: 10}
+				destination1 := &gps.Point{Latitude: 5}
+				destination2 := &gps.Point{Latitude: 10}
 				sut := drone{
 					remaningRange: 8,
 					vehicle: vehicle{
