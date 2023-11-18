@@ -3,14 +3,14 @@ package greedy
 import (
 	"errors"
 
-	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"go.uber.org/mock/gomock"
 
 	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/routes/mockroutes"
+	mockroutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
 	"github.com/victorguarana/go-vehicle-route/src/vehicles"
-	"github.com/victorguarana/go-vehicle-route/src/vehicles/mockvehicles"
+	mockvehicles "github.com/victorguarana/go-vehicle-route/src/vehicles/mocks"
 )
 
 var _ = Describe("ClosestNeighbor", func() {

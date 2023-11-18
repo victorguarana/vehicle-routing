@@ -13,7 +13,7 @@ var (
 type ivehicle interface {
 	ActualPosition() *gps.Point
 	Move(*gps.Point) error
-	Support(...gps.Point) bool
+	Support(...*gps.Point) bool
 }
 
 type vehicle struct {

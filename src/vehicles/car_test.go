@@ -22,7 +22,7 @@ var _ = Describe("NewCar", func() {
 					name:           "car1",
 					actualPosition: p,
 				},
-				drones: []drone{},
+				drones: []IDrone{},
 			}
 
 			Expect(sut).To(Equal(&expectedCar))
@@ -81,7 +81,7 @@ var _ = Describe("Support", func() {
 						},
 					},
 				}
-				Expect(sut.Support(destination)).To(BeTrue())
+				Expect(sut.Support(&destination)).To(BeTrue())
 			})
 		})
 	})
@@ -99,7 +99,7 @@ var _ = Describe("Support", func() {
 						},
 					},
 				}
-				Expect(sut.Support(destination1, destination2)).To(BeTrue())
+				Expect(sut.Support(&destination1, &destination2)).To(BeTrue())
 			})
 		})
 	})

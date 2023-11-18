@@ -11,11 +11,12 @@ var (
 type ICar interface {
 	ivehicle
 	NewDrone(string)
+	Drones() []IDrone
 }
 
 type car struct {
 	vehicle
-	drones []drone
+	drones []IDrone
 }
 
 func NewCar(name string, startingPoint *gps.Point) ICar {
@@ -25,7 +26,7 @@ func NewCar(name string, startingPoint *gps.Point) ICar {
 			name:           name,
 			speed:          defaultSpeed,
 		},
-		drones: []drone{},
+		drones: []IDrone{},
 	}
 
 	return &c
@@ -44,7 +45,7 @@ func (c *car) NewDrone(name string) {
 		},
 		car: c,
 	}
-	c.drones = append(c.drones, d)
+	c.drones = append(c.drones, &d)
 }
 
 func (c *car) Move(destination *gps.Point) error {
@@ -57,6 +58,10 @@ func (c *car) Move(destination *gps.Point) error {
 	return nil
 }
 
-func (c *car) Support(destination ...gps.Point) bool {
+func (c *car) Support(destination ...*gps.Point) bool {
 	return true
+}
+
+func (c *car) Drones() []IDrone {
+	return c.drones
 }

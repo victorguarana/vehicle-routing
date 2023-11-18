@@ -3,9 +3,9 @@ module github.com/victorguarana/go-vehicle-route
 go 1.20
 
 require (
-	github.com/golang/mock v1.6.0
 	github.com/onsi/ginkgo/v2 v2.12.0
 	github.com/onsi/gomega v1.27.10
+	go.uber.org/mock v0.3.0
 )
 
 require (
