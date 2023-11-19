@@ -22,7 +22,7 @@ var _ = Describe("NewCar", func() {
 					name:           "car1",
 					actualPosition: p,
 				},
-				drones: []IDrone{},
+				drones: []*drone{},
 			}
 
 			Expect(sut).To(Equal(&expectedCar))
@@ -117,7 +117,7 @@ var _ = Describe("NewDrone", func() {
 				},
 			}
 
-			expectedDrone := drone{
+			expectedDrone := &drone{
 				totalStorage:    defaultStorage,
 				remaningStorage: defaultStorage,
 				totalRange:      defaultRange,

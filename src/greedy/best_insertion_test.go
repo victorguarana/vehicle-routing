@@ -31,10 +31,10 @@ var _ = Describe("BestInsertion", func() {
 			}
 
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
-			mockedCar.EXPECT().Support(*client1, *deposit1).Return(true)
+			mockedCar.EXPECT().Support(client1, deposit1).Return(true)
 			mockedCar.EXPECT().Move(client1).Return(nil)
 
-			mockedCar.EXPECT().Support(*client2, *deposit2).Return(true)
+			mockedCar.EXPECT().Support(client2, deposit2).Return(true)
 			mockedCar.EXPECT().Move(client2).Return(nil)
 
 			mockedCar.EXPECT().Move(deposit2).Return(nil)

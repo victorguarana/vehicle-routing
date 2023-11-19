@@ -16,7 +16,7 @@ type ICar interface {
 
 type car struct {
 	vehicle
-	drones []IDrone
+	drones []*drone
 }
 
 func NewCar(name string, startingPoint *gps.Point) ICar {
@@ -26,7 +26,7 @@ func NewCar(name string, startingPoint *gps.Point) ICar {
 			name:           name,
 			speed:          defaultSpeed,
 		},
-		drones: []IDrone{},
+		drones: []*drone{},
 	}
 
 	return &c
@@ -63,5 +63,9 @@ func (c *car) Support(destination ...*gps.Point) bool {
 }
 
 func (c *car) Drones() []IDrone {
-	return c.drones
+	drones := []IDrone{}
+	for _, d := range c.drones {
+		drones = append(drones, d)
+	}
+	return drones
 }
