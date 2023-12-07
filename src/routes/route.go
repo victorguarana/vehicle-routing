@@ -5,8 +5,10 @@ import (
 	"github.com/victorguarana/go-vehicle-route/src/vehicles"
 )
 
+// var ErrIndexOutOfRange = errors.New("Index out of range")
+
 type IRoute interface {
-	CompleteRoute() []ICarStop
+	// CompleteRoute() []ICarStop
 	First() ICarStop
 	Last() ICarStop
 	Append(*gps.Point) error
@@ -27,9 +29,17 @@ func NewRoute(car vehicles.ICar) IRoute {
 	}
 }
 
-func (r *route) CompleteRoute() []ICarStop {
-	return r.stops
-}
+// func (r *route) CompleteRoute() []ICarStop {
+// 	return r.stops
+// }
+
+// func (r *route) GetAtIndex(index int) (ICarStop, error) {
+// 	if index < 0 || index >= len(r.stops) {
+// 		return nil, ErrIndexOutOfRange
+// 	}
+
+// 	return r.stops[index], nil
+// }
 
 func (r *route) Car() vehicles.ICar {
 	return r.car

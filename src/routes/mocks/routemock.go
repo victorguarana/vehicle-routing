@@ -68,20 +68,6 @@ func (mr *MockIRouteMockRecorder) Car() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Car", reflect.TypeOf((*MockIRoute)(nil).Car))
 }
 
-// CompleteRoute mocks base method.
-func (m *MockIRoute) CompleteRoute() []routes.ICarStop {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CompleteRoute")
-	ret0, _ := ret[0].([]routes.ICarStop)
-	return ret0
-}
-
-// CompleteRoute indicates an expected call of CompleteRoute.
-func (mr *MockIRouteMockRecorder) CompleteRoute() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CompleteRoute", reflect.TypeOf((*MockIRoute)(nil).CompleteRoute))
-}
-
 // First mocks base method.
 func (m *MockIRoute) First() routes.ICarStop {
 	m.ctrl.T.Helper()

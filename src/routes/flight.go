@@ -5,22 +5,23 @@ import (
 )
 
 type IFlight interface {
-	TakeoffPoint() *carStop
-	LandingPoint() *carStop
-	DroneStops() []*droneStop
+	TakeoffPoint() ICarStop
+	LandingPoint() ICarStop
+	// DroneStops() []*droneStop
 	Drone() vehicles.IDrone
-	AppendDroneStop(*droneStop)
+	AppendDroneStop(IDroneStop)
+	Land(ICarStop)
 }
 
 type flight struct {
-	takeoffPoint *carStop
-	landingPoint *carStop
+	takeoffPoint ICarStop
+	landingPoint ICarStop
 
-	droneStops []*droneStop
+	droneStops []IDroneStop
 	drone      vehicles.IDrone
 }
 
-func NewFlight(takeoffPoint, landingPoint *carStop, drone vehicles.IDrone) IFlight {
+func NewFlight(takeoffPoint, landingPoint ICarStop, drone vehicles.IDrone) IFlight {
 	return &flight{
 		takeoffPoint: takeoffPoint,
 		landingPoint: landingPoint,
@@ -28,27 +29,27 @@ func NewFlight(takeoffPoint, landingPoint *carStop, drone vehicles.IDrone) IFlig
 	}
 }
 
-func (f *flight) TakeoffPoint() *carStop {
+func (f *flight) TakeoffPoint() ICarStop {
 	return f.takeoffPoint
 }
 
-func (f *flight) LandingPoint() *carStop {
+func (f *flight) LandingPoint() ICarStop {
 	return f.landingPoint
 }
 
-func (f *flight) DroneStops() []*droneStop {
-	return f.droneStops
-}
+// func (f *flight) DroneStops() []*droneStop {
+// 	return f.droneStops
+// }
 
 func (f *flight) Drone() vehicles.IDrone {
 	return f.drone
 }
 
-func (f *flight) AppendDroneStop(ds *droneStop) {
+func (f *flight) AppendDroneStop(ds IDroneStop) {
 	f.droneStops = append(f.droneStops, ds)
 }
 
-func (f *flight) Land(cs *carStop) {
+func (f *flight) Land(cs ICarStop) {
 	f.landingPoint = cs
 	f.drone.Dock()
 }
