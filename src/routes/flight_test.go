@@ -14,46 +14,50 @@ var _ = Describe("NewFlight", Ordered, func() {
 		mockCtrl    *gomock.Controller
 		mockedDrone *mockVehicles.MockIDrone
 
-		validCarStop *carStop
+		validTakeoff, ValidLanding *carStop
 	)
 
 	BeforeAll(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockedDrone = mockVehicles.NewMockIDrone(mockCtrl)
 
-		validCarStop = &carStop{point: &gps.Point{}}
+		validTakeoff = &carStop{point: &gps.Point{}}
+		ValidLanding = &carStop{point: &gps.Point{}}
 	})
 
 	Describe("valid params", func() {
 		Context("when all params are valid", func() {
 			It("takes off drone and returns correct struct", func() {
 				expectedFlight := &flight{
-					takeoffPoint: validCarStop,
-					landingPoint: validCarStop,
+					takeoffPoint: validTakeoff,
+					landingPoint: ValidLanding,
 					drone:        mockedDrone,
 					stops:        []*droneStop{},
 				}
 
-				receivedFlight, receivedErr := NewFlight(mockedDrone, validCarStop, validCarStop)
+				receivedFlight, receivedErr := NewFlight(mockedDrone, validTakeoff, ValidLanding)
 
 				Expect(receivedErr).NotTo(HaveOccurred())
 				Expect(receivedFlight).To(Equal(expectedFlight))
+				Expect(validTakeoff.flights).To(ContainElement(receivedFlight))
+				Expect(ValidLanding.flights).To(ContainElement(receivedFlight))
 			})
 		})
 
 		Context("when only landing point is nil", func() {
 			It("takes off drone and returns correct struct", func() {
 				expectedFlight := &flight{
-					takeoffPoint: validCarStop,
+					takeoffPoint: validTakeoff,
 					landingPoint: nil,
 					drone:        mockedDrone,
 					stops:        []*droneStop{},
 				}
 
-				receivedFlight, receivedErr := NewFlight(mockedDrone, validCarStop, nil)
+				receivedFlight, receivedErr := NewFlight(mockedDrone, validTakeoff, nil)
 
 				Expect(receivedErr).NotTo(HaveOccurred())
 				Expect(receivedFlight).To(Equal(expectedFlight))
+				Expect(validTakeoff.flights).To(ContainElement(receivedFlight))
 			})
 		})
 	})
@@ -61,7 +65,7 @@ var _ = Describe("NewFlight", Ordered, func() {
 	Describe("invalid params", func() {
 		Context("when drone is nil", func() {
 			It("returns nil and error", func() {
-				receivedFlight, receivedErr := NewFlight(nil, validCarStop, nil)
+				receivedFlight, receivedErr := NewFlight(nil, validTakeoff, nil)
 
 				Expect(receivedErr).To(MatchError(ErrNilDrone))
 				Expect(receivedFlight).To(BeNil())

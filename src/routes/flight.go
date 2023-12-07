@@ -30,24 +30,31 @@ type flight struct {
 	drone vehicles.IDrone
 }
 
-func NewFlight(drone vehicles.IDrone, takeoffPoint, landingPoint ICarStop) (IFlight, error) {
+func NewFlight(drone vehicles.IDrone, iTakeoffPoint, iLandingPoint ICarStop) (IFlight, error) {
 	if drone == nil {
 		return nil, ErrNilDrone
 	}
 
-	takeoffPointStruct, ok := takeoffPoint.(*carStop)
+	takeoffPoint, ok := iTakeoffPoint.(*carStop)
 	if !ok {
 		return nil, ErrInvalidTakeoffPoint
 	}
 
-	landingPointStruct, _ := landingPoint.(*carStop)
+	landingPoint, _ := iLandingPoint.(*carStop)
 
-	return &flight{
-		takeoffPoint: takeoffPointStruct,
-		landingPoint: landingPointStruct,
+	f := &flight{
+		takeoffPoint: takeoffPoint,
+		landingPoint: landingPoint,
 		drone:        drone,
 		stops:        []*droneStop{},
-	}, nil
+	}
+
+	takeoffPoint.flights = append(takeoffPoint.flights, f)
+	if landingPoint != nil {
+		landingPoint.flights = append(landingPoint.flights, f)
+	}
+
+	return f, nil
 }
 
 func (f *flight) TakeoffPoint() ICarStop {
