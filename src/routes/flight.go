@@ -50,4 +50,5 @@ func (f *flight) AppendDroneStop(ds *droneStop) {
 
 func (f *flight) Land(cs *carStop) {
 	f.landingPoint = cs
+	f.drone.Dock()
 }
