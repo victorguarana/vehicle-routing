@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/victorguarana/go-vehicle-route/src/gps"
 	"github.com/victorguarana/go-vehicle-route/src/vehicles"
 )
 
@@ -8,7 +9,7 @@ type IRoute interface {
 	CompleteRoute() []ICarStop
 	First() ICarStop
 	Last() ICarStop
-	Append(ICarStop) error
+	Append(*gps.Point) error
 	// InsertAt(int, ICarStop) error
 	Car() vehicles.ICar
 	// String() string
@@ -42,8 +43,9 @@ func (r *route) Last() ICarStop {
 	return r.stops[len(r.stops)-1]
 }
 
-func (r *route) Append(point ICarStop) error {
-	r.stops = append(r.stops, point)
+func (r *route) Append(point *gps.Point) error {
+	carStop := NewCarStop(point, r.car)
+	r.stops = append(r.stops, carStop)
 	return nil
 }
 

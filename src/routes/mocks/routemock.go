@@ -11,6 +11,7 @@ package mockroutes
 import (
 	reflect "reflect"
 
+	gps "github.com/victorguarana/go-vehicle-route/src/gps"
 	routes "github.com/victorguarana/go-vehicle-route/src/routes"
 	vehicles "github.com/victorguarana/go-vehicle-route/src/vehicles"
 	gomock "go.uber.org/mock/gomock"
@@ -40,7 +41,7 @@ func (m *MockIRoute) EXPECT() *MockIRouteMockRecorder {
 }
 
 // Append mocks base method.
-func (m *MockIRoute) Append(arg0 routes.ICarStop) error {
+func (m *MockIRoute) Append(arg0 *gps.Point) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Append", arg0)
 	ret0, _ := ret[0].(error)

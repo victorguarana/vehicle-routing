@@ -16,10 +16,12 @@ import (
 var _ = Describe("ClosestNeighbor", func() {
 	var mockCtrl *gomock.Controller
 	var mockedCar *mockvehicles.MockICar
+	var mockedRoute *mockroutes.MockIRoute
 
 	BeforeEach(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockedCar = mockvehicles.NewMockICar(mockCtrl)
+		mockedRoute = mockroutes.NewMockIRoute(mockCtrl)
 	})
 
 	AfterEach(func() {
@@ -39,27 +41,24 @@ var _ = Describe("ClosestNeighbor", func() {
 				Deposits: []*gps.Point{deposit1, deposit2},
 			}
 
+			mockedRoute.EXPECT().Car().Return(mockedCar).AnyTimes()
+			mockedRoute.EXPECT().Append(initialPoint)
+
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar.EXPECT().Support(client1, deposit1).Return(true)
 			mockedCar.EXPECT().Move(client1).Return(nil)
+			mockedRoute.EXPECT().Append(client1)
 
 			mockedCar.EXPECT().ActualPosition().Return(client1)
 			mockedCar.EXPECT().Support(client2, deposit2).Return(true)
 			mockedCar.EXPECT().Move(client2).Return(nil)
+			mockedRoute.EXPECT().Append(client2)
+
 			mockedCar.EXPECT().Move(deposit2).Return(nil)
+			mockedRoute.EXPECT().Append(deposit2)
 
-			receivedRoute, receivedErr := ClosestNeighbor(mockedCar, m)
-
-			expectedRoute := []*gps.Point{
-				initialPoint,
-				client1,
-				client2,
-				deposit2,
-			}
-
-			Expect(receivedErr).NotTo(HaveOccurred())
-			Expect(receivedRoute.CompleteRoute()).To(Equal(expectedRoute))
+			Expect(ClosestNeighbor(mockedRoute, m)).To(Succeed())
 		})
 	})
 
@@ -76,32 +75,29 @@ var _ = Describe("ClosestNeighbor", func() {
 				Deposits: []*gps.Point{deposit1, deposit2},
 			}
 
+			mockedRoute.EXPECT().Car().Return(mockedCar).AnyTimes()
+			mockedRoute.EXPECT().Append(initialPoint)
+
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar.EXPECT().Support(client1, deposit1).Return(true)
 			mockedCar.EXPECT().Move(client1).Return(nil)
+			mockedRoute.EXPECT().Append(client1)
 
 			mockedCar.EXPECT().ActualPosition().Return(client1)
 			mockedCar.EXPECT().Support(client2, deposit2).Return(false)
 			mockedCar.EXPECT().Move(deposit1).Return(nil)
+			mockedRoute.EXPECT().Append(deposit1)
 
 			mockedCar.EXPECT().ActualPosition().Return(deposit1)
 			mockedCar.EXPECT().Support(client2, deposit2).Return(true)
 			mockedCar.EXPECT().Move(client2).Return(nil)
+			mockedRoute.EXPECT().Append(client2)
+
 			mockedCar.EXPECT().Move(deposit2).Return(nil)
+			mockedRoute.EXPECT().Append(deposit2)
 
-			receivedRoute, receivedErr := ClosestNeighbor(mockedCar, m)
-
-			expectedRoute := []*gps.Point{
-				initialPoint,
-				client1,
-				deposit1,
-				client2,
-				deposit2,
-			}
-
-			Expect(receivedErr).NotTo(HaveOccurred())
-			Expect(receivedRoute.CompleteRoute()).To(Equal(expectedRoute))
+			Expect(ClosestNeighbor(mockedRoute, m)).To(Succeed())
 		})
 	})
 })

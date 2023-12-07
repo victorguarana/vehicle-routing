@@ -3,15 +3,14 @@ package greedy
 import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 	"github.com/victorguarana/go-vehicle-route/src/routes"
-	"github.com/victorguarana/go-vehicle-route/src/vehicles"
 )
 
-func ClosestNeighbor(car vehicles.ICar, m gps.Map) (routes.IRoute, error) {
-	route := routes.NewRoute(car)
+func ClosestNeighbor(route routes.IRoute, m gps.Map) error {
+	car := route.Car()
 
 	// Add starting point to route
 	carActualPosition := car.ActualPosition()
-	route.Append(routes.NewCarStop(carActualPosition, car))
+	route.Append(carActualPosition)
 
 	remaningClients := make([]*gps.Point, len(m.Clients))
 	copy(remaningClients, m.Clients)
@@ -26,7 +25,7 @@ func ClosestNeighbor(car vehicles.ICar, m gps.Map) (routes.IRoute, error) {
 			closestDepositFromActualPosition := closestPoint(carActualPosition, m.Deposits)
 			err := moveAndAppend(route, closestDepositFromActualPosition)
 			if err != nil {
-				return nil, err
+				return err
 			}
 			carActualPosition = car.ActualPosition()
 			continue
@@ -35,7 +34,7 @@ func ClosestNeighbor(car vehicles.ICar, m gps.Map) (routes.IRoute, error) {
 		// Move to closest client
 		err := moveAndAppend(route, closestClient)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		remaningClients = removePoint(remaningClients, closestClient)
@@ -45,10 +44,10 @@ func ClosestNeighbor(car vehicles.ICar, m gps.Map) (routes.IRoute, error) {
 	// Finish route in closest deposit
 	err := moveAndAppend(route, closestDepositFromClosestClient)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return route, nil
+	return nil
 }
 
 func closestPoint(originPoint *gps.Point, candidatePoints []*gps.Point) *gps.Point {
@@ -66,13 +65,12 @@ func closestPoint(originPoint *gps.Point, candidatePoints []*gps.Point) *gps.Poi
 }
 
 func moveAndAppend(route routes.IRoute, point *gps.Point) error {
-	car := route.Car()
-	err := car.Move(point)
+	err := route.Car().Move(point)
 	if err != nil {
 		return err
 	}
 
-	err = route.Append(routes.NewCarStop(point, car))
+	err = route.Append(point)
 	if err != nil {
 		return err
 	}

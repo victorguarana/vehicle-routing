@@ -3,17 +3,14 @@ package greedy
 import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 	"github.com/victorguarana/go-vehicle-route/src/routes"
-	"github.com/victorguarana/go-vehicle-route/src/vehicles"
 )
 
-func BestInsertion(car vehicles.ICar, m gps.Map) (routes.IRoute, error) {
+func BestInsertion(route routes.IRoute, m gps.Map) error {
+	car := route.Car()
 	initialPosition := car.ActualPosition()
-	route := routes.NewRoute(car)
 	orderedClients := orderedClients(initialPosition, m.Clients)
 
-	initialCarStop := routes.NewCarStop(initialPosition, car)
-
-	route.Append(initialCarStop)
+	route.Append(initialPosition)
 
 	var closestDeposit *gps.Point
 	for i := range orderedClients {
@@ -22,12 +19,12 @@ func BestInsertion(car vehicles.ICar, m gps.Map) (routes.IRoute, error) {
 		if car.Support(client, closestDeposit) {
 			err := moveAndAppend(route, client)
 			if err != nil {
-				return nil, err
+				return err
 			}
 		} else {
 			err := moveAndAppend(route, closestDeposit)
 			if err != nil {
-				return nil, err
+				return err
 			}
 			i--
 		}
@@ -35,10 +32,10 @@ func BestInsertion(car vehicles.ICar, m gps.Map) (routes.IRoute, error) {
 
 	err := moveAndAppend(route, closestDeposit)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return route, nil
+	return nil
 }
 
 func orderedClients(initialPoint *gps.Point, clients []*gps.Point) []*gps.Point {
