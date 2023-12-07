@@ -11,7 +11,7 @@ func ClosestNeighbor(car vehicles.ICar, m gps.Map) (routes.IRoute, error) {
 
 	// Add starting point to route
 	carActualPosition := car.ActualPosition()
-	route.Append(carActualPosition)
+	route.Append(routes.NewCarStop(carActualPosition, car))
 
 	remaningClients := make([]*gps.Point, len(m.Clients))
 	copy(remaningClients, m.Clients)
@@ -66,12 +66,13 @@ func closestPoint(originPoint *gps.Point, candidatePoints []*gps.Point) *gps.Poi
 }
 
 func moveAndAppend(route routes.IRoute, point *gps.Point) error {
-	err := route.Car().Move(point)
+	car := route.Car()
+	err := car.Move(point)
 	if err != nil {
 		return err
 	}
 
-	err = route.Append(point)
+	err = route.Append(routes.NewCarStop(point, car))
 	if err != nil {
 		return err
 	}

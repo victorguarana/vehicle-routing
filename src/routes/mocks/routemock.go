@@ -11,7 +11,7 @@ package mockroutes
 import (
 	reflect "reflect"
 
-	gps "github.com/victorguarana/go-vehicle-route/src/gps"
+	routes "github.com/victorguarana/go-vehicle-route/src/routes"
 	vehicles "github.com/victorguarana/go-vehicle-route/src/vehicles"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -40,7 +40,7 @@ func (m *MockIRoute) EXPECT() *MockIRouteMockRecorder {
 }
 
 // Append mocks base method.
-func (m *MockIRoute) Append(arg0 *gps.Point) error {
+func (m *MockIRoute) Append(arg0 routes.ICarStop) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Append", arg0)
 	ret0, _ := ret[0].(error)
@@ -68,10 +68,10 @@ func (mr *MockIRouteMockRecorder) Car() *gomock.Call {
 }
 
 // CompleteRoute mocks base method.
-func (m *MockIRoute) CompleteRoute() []*gps.Point {
+func (m *MockIRoute) CompleteRoute() []routes.ICarStop {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CompleteRoute")
-	ret0, _ := ret[0].([]*gps.Point)
+	ret0, _ := ret[0].([]routes.ICarStop)
 	return ret0
 }
 
@@ -82,10 +82,10 @@ func (mr *MockIRouteMockRecorder) CompleteRoute() *gomock.Call {
 }
 
 // First mocks base method.
-func (m *MockIRoute) First() *gps.Point {
+func (m *MockIRoute) First() routes.ICarStop {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "First")
-	ret0, _ := ret[0].(*gps.Point)
+	ret0, _ := ret[0].(routes.ICarStop)
 	return ret0
 }
 
@@ -96,10 +96,10 @@ func (mr *MockIRouteMockRecorder) First() *gomock.Call {
 }
 
 // Last mocks base method.
-func (m *MockIRoute) Last() *gps.Point {
+func (m *MockIRoute) Last() routes.ICarStop {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Last")
-	ret0, _ := ret[0].(*gps.Point)
+	ret0, _ := ret[0].(routes.ICarStop)
 	return ret0
 }
 
@@ -107,18 +107,4 @@ func (m *MockIRoute) Last() *gps.Point {
 func (mr *MockIRouteMockRecorder) Last() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Last", reflect.TypeOf((*MockIRoute)(nil).Last))
-}
-
-// String mocks base method.
-func (m *MockIRoute) String() string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "String")
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// String indicates an expected call of String.
-func (mr *MockIRouteMockRecorder) String() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "String", reflect.TypeOf((*MockIRoute)(nil).String))
 }

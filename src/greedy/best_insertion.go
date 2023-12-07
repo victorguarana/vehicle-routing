@@ -11,7 +11,9 @@ func BestInsertion(car vehicles.ICar, m gps.Map) (routes.IRoute, error) {
 	route := routes.NewRoute(car)
 	orderedClients := orderedClients(initialPosition, m.Clients)
 
-	route.Append(initialPosition)
+	initialCarStop := routes.NewCarStop(initialPosition, car)
+
+	route.Append(initialCarStop)
 
 	var closestDeposit *gps.Point
 	for i := range orderedClients {
