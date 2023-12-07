@@ -11,14 +11,6 @@ type Point struct {
 	PackageSize float64
 }
 
-func (p Point) IsClient() bool {
-	return p.PackageSize != 0
-}
-
-func (p Point) IsDeposit() bool {
-	return p.PackageSize == 0
-}
-
 func (p Point) String() string {
 	return fmt.Sprintf("Lat: %f, Long: %f, PackageSize: %f\n", p.Latitude, p.Longitude, p.PackageSize)
 }

@@ -1,60 +1,57 @@
 package routes
 
 import (
-	"fmt"
-
-	"github.com/victorguarana/go-vehicle-route/src/gps"
 	"github.com/victorguarana/go-vehicle-route/src/vehicles"
 )
 
 type IRoute interface {
-	CompleteRoute() []*gps.Point
-	First() *gps.Point
-	Last() *gps.Point
-	Append(*gps.Point) error
-	// InsertAt(int, *gps.Point) error
+	CompleteRoute() []ICarStop
+	First() ICarStop
+	Last() ICarStop
+	Append(ICarStop) error
+	// InsertAt(int, ICarStop) error
 	Car() vehicles.ICar
-	String() string
+	// String() string
 }
 
 type route struct {
-	car    vehicles.ICar
-	points []*gps.Point
+	car   vehicles.ICar
+	stops []ICarStop
 }
 
 func NewRoute(car vehicles.ICar) IRoute {
 	return &route{
-		car:    car,
-		points: make([]*gps.Point, 0),
+		car:   car,
+		stops: []ICarStop{},
 	}
 }
 
-func (r *route) CompleteRoute() []*gps.Point {
-	return r.points
+func (r *route) CompleteRoute() []ICarStop {
+	return r.stops
 }
 
 func (r *route) Car() vehicles.ICar {
 	return r.car
 }
 
-func (r *route) First() *gps.Point {
-	return r.points[0]
+func (r *route) First() ICarStop {
+	return r.stops[0]
 }
 
-func (r *route) Last() *gps.Point {
-	return r.points[0]
+func (r *route) Last() ICarStop {
+	return r.stops[len(r.stops)-1]
 }
 
-func (r *route) Append(point *gps.Point) error {
-	r.points = append(r.points, point)
+func (r *route) Append(point ICarStop) error {
+	r.stops = append(r.stops, point)
 	return nil
 }
 
-func (r *route) String() string {
-	str := "Route:\n"
-	for i, point := range r.points {
-		str += fmt.Sprintf("#%d - %s", i, point.String())
-	}
+// func (r *route) String() string {
+// 	str := "Route:\n"
+// 	for i, point := range r.stops {
+// 		str += fmt.Sprintf("#%d - %s", i, point.String())
+// 	}
 
-	return str
-}
+// 	return str
+// }
