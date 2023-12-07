@@ -229,20 +229,3 @@ var _ = Describe("Support", func() {
 		})
 	})
 })
-
-var _ = DescribeTable("IsFlying", func(sut drone, expectedResponse bool) {
-	Expect(sut.IsFlying()).To(Equal(expectedResponse))
-},
-	Entry("when drone is flying, returns true",
-		drone{
-			isFlying: true,
-		},
-		true,
-	),
-	Entry("when drone is not flying, returns false",
-		drone{
-			isFlying: false,
-		},
-		false,
-	),
-)

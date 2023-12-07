@@ -13,15 +13,12 @@ var (
 
 type IDrone interface {
 	ivehicle
-	IsFlying() bool
-	Dock()
-	TakeOff()
 }
 
 type drone struct {
 	vehicle
-	car             *car
-	isFlying        bool
+	car *car
+
 	totalStorage    float64
 	remaningStorage float64
 	totalRange      float64
@@ -65,16 +62,4 @@ func (d *drone) Support(destinations ...*gps.Point) bool {
 	}
 
 	return true
-}
-
-func (d *drone) IsFlying() bool {
-	return d.isFlying
-}
-
-func (d *drone) Dock() {
-	d.isFlying = false
-}
-
-func (d *drone) TakeOff() {
-	d.isFlying = true
 }
