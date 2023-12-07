@@ -54,6 +54,21 @@ func (mr *MockIRouteMockRecorder) Append(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Append", reflect.TypeOf((*MockIRoute)(nil).Append), arg0)
 }
 
+// AtIndex mocks base method.
+func (m *MockIRoute) AtIndex(arg0 int) (routes.ICarStop, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AtIndex", arg0)
+	ret0, _ := ret[0].(routes.ICarStop)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AtIndex indicates an expected call of AtIndex.
+func (mr *MockIRouteMockRecorder) AtIndex(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AtIndex", reflect.TypeOf((*MockIRoute)(nil).AtIndex), arg0)
+}
+
 // Car mocks base method.
 func (m *MockIRoute) Car() vehicles.ICar {
 	m.ctrl.T.Helper()
@@ -94,4 +109,32 @@ func (m *MockIRoute) Last() routes.ICarStop {
 func (mr *MockIRouteMockRecorder) Last() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Last", reflect.TypeOf((*MockIRoute)(nil).Last))
+}
+
+// Len mocks base method.
+func (m *MockIRoute) Len() int {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Len")
+	ret0, _ := ret[0].(int)
+	return ret0
+}
+
+// Len indicates an expected call of Len.
+func (mr *MockIRouteMockRecorder) Len() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Len", reflect.TypeOf((*MockIRoute)(nil).Len))
+}
+
+// RemoveCarStop mocks base method.
+func (m *MockIRoute) RemoveCarStop(arg0 int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RemoveCarStop", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RemoveCarStop indicates an expected call of RemoveCarStop.
+func (mr *MockIRouteMockRecorder) RemoveCarStop(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveCarStop", reflect.TypeOf((*MockIRoute)(nil).RemoveCarStop), arg0)
 }
