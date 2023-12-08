@@ -28,7 +28,7 @@ func loadMap() Map {
 			{Name: "Cli#8", Latitude: -10, Longitude: 47, PackageSize: 6},
 			{Name: "Cli#9", Latitude: -28, Longitude: 50, PackageSize: 1},
 			{Name: "Cli#10", Latitude: 49, Longitude: -48, PackageSize: 8},
-			{Name: "Cli#11", Latitude: -19, Longitude: -12, PackageSize: 0},
+			{Name: "Cli#11", Latitude: -19, Longitude: -12, PackageSize: 4},
 			{Name: "Cli#12", Latitude: -47, Longitude: 30, PackageSize: 6},
 			{Name: "Cli#13", Latitude: -23, Longitude: -37, PackageSize: 5},
 			{Name: "Cli#14", Latitude: -11, Longitude: -44, PackageSize: 4},

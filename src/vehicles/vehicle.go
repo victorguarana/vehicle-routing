@@ -13,6 +13,7 @@ var (
 type ivehicle interface {
 	ActualPosition() *gps.Point
 	Name() string
+	Speed() float64
 
 	Move(*gps.Point) error
 	Support(...*gps.Point) bool
@@ -30,4 +31,8 @@ func (v vehicle) ActualPosition() *gps.Point {
 
 func (v vehicle) Name() string {
 	return v.name
+}
+
+func (v vehicle) Speed() float64 {
+	return v.speed
 }

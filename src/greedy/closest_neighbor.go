@@ -7,10 +7,7 @@ import (
 
 func ClosestNeighbor(route routes.IRoute, m gps.Map) error {
 	car := route.Car()
-
-	// Add starting point to route
 	carActualPosition := car.ActualPosition()
-	route.Append(carActualPosition)
 
 	remaningClients := make([]*gps.Point, len(m.Clients))
 	copy(remaningClients, m.Clients)

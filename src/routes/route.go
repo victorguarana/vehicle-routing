@@ -37,9 +37,11 @@ func NewRoute(car vehicles.ICar) (IRoute, error) {
 		return nil, ErrNilCar
 	}
 
+	initialPosition := newCarStop(car, car.ActualPosition())
+
 	return &route{
 		car:   car,
-		stops: []*carStop{},
+		stops: []*carStop{initialPosition},
 	}, nil
 }
 

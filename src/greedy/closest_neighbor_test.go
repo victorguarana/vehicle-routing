@@ -42,7 +42,6 @@ var _ = Describe("ClosestNeighbor", func() {
 			}
 
 			mockedRoute.EXPECT().Car().Return(mockedCar).AnyTimes()
-			mockedRoute.EXPECT().Append(initialPoint)
 
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
@@ -76,7 +75,6 @@ var _ = Describe("ClosestNeighbor", func() {
 			}
 
 			mockedRoute.EXPECT().Car().Return(mockedCar).AnyTimes()
-			mockedRoute.EXPECT().Append(initialPoint)
 
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
@@ -195,12 +193,12 @@ var _ = Describe("moveAndAppend", func() {
 	Context("when car can not move to the point", func() {
 		It("return an error", func() {
 			point := &gps.Point{Latitude: 1, Longitude: 1}
-			mockedCar.EXPECT().Move(point).Return(vehicles.ErrWithoutRange)
+			mockedCar.EXPECT().Move(point).Return(vehicles.ErrDestinationNotSupported)
 			mockedRoute.EXPECT().Car().Return(mockedCar)
 
 			err := moveAndAppend(mockedRoute, point)
 
-			Expect(err).To(MatchError(vehicles.ErrWithoutRange))
+			Expect(err).To(MatchError(vehicles.ErrDestinationNotSupported))
 		})
 	})
 

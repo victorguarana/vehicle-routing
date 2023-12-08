@@ -10,8 +10,6 @@ func BestInsertion(route routes.IRoute, m gps.Map) error {
 	initialPosition := car.ActualPosition()
 	orderedClients := orderedClients(initialPosition, m.Clients)
 
-	route.Append(initialPosition)
-
 	var closestDeposit *gps.Point
 	for i := range orderedClients {
 		client := orderedClients[i]

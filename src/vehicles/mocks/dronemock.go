@@ -52,6 +52,20 @@ func (mr *MockIDroneMockRecorder) ActualPosition() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActualPosition", reflect.TypeOf((*MockIDrone)(nil).ActualPosition))
 }
 
+// Land mocks base method.
+func (m *MockIDrone) Land(arg0 *gps.Point) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Land", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Land indicates an expected call of Land.
+func (mr *MockIDroneMockRecorder) Land(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Land", reflect.TypeOf((*MockIDrone)(nil).Land), arg0)
+}
+
 // Move mocks base method.
 func (m *MockIDrone) Move(arg0 *gps.Point) error {
 	m.ctrl.T.Helper()
@@ -78,6 +92,20 @@ func (m *MockIDrone) Name() string {
 func (mr *MockIDroneMockRecorder) Name() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockIDrone)(nil).Name))
+}
+
+// Speed mocks base method.
+func (m *MockIDrone) Speed() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Speed")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Speed indicates an expected call of Speed.
+func (mr *MockIDroneMockRecorder) Speed() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Speed", reflect.TypeOf((*MockIDrone)(nil).Speed))
 }
 
 // Support mocks base method.
