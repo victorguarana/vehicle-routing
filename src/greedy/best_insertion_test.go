@@ -4,89 +4,157 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/victorguarana/go-vehicle-route/src/gps"
+	"github.com/victorguarana/go-vehicle-route/src/routes"
 	mockroutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
 	mockvehicles "github.com/victorguarana/go-vehicle-route/src/vehicles/mocks"
 	"go.uber.org/mock/gomock"
 )
 
 var _ = Describe("BestInsertion", func() {
-	var mockCtrl *gomock.Controller
-	var mockedCar *mockvehicles.MockICar
-	var mockedRoute *mockroutes.MockIRoute
+	var (
+		mockCtrl     *gomock.Controller
+		mockedCar1   *mockvehicles.MockICar
+		mockedCar2   *mockvehicles.MockICar
+		mockedRoute1 *mockroutes.MockIRoute
+		mockedRoute2 *mockroutes.MockIRoute
+
+		routesList []routes.IRoute
+	)
 
 	BeforeEach(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
-		mockedCar = mockvehicles.NewMockICar(mockCtrl)
-		mockedRoute = mockroutes.NewMockIRoute(mockCtrl)
+		mockedCar1 = mockvehicles.NewMockICar(mockCtrl)
+		mockedCar2 = mockvehicles.NewMockICar(mockCtrl)
+		mockedRoute1 = mockroutes.NewMockIRoute(mockCtrl)
+		mockedRoute2 = mockroutes.NewMockIRoute(mockCtrl)
+
+		routesList = []routes.IRoute{mockedRoute1, mockedRoute2}
 	})
 
 	Context("when car supports entire route", func() {
 		It("return a route without deposits between clients", func() {
 			initialPoint := &gps.Point{Latitude: 0, Longitude: 0}
 			client1 := &gps.Point{Latitude: 1, Longitude: 1, PackageSize: 1}
-			client2 := &gps.Point{Latitude: 5, Longitude: 5, PackageSize: 1}
-			deposit1 := &gps.Point{Latitude: 3, Longitude: 3}
-			deposit2 := &gps.Point{Latitude: 4, Longitude: 4}
+			client2 := &gps.Point{Latitude: 2, Longitude: 2, PackageSize: 1}
+			client3 := &gps.Point{Latitude: 3, Longitude: 3, PackageSize: 1}
+			client4 := &gps.Point{Latitude: 4, Longitude: 4, PackageSize: 1}
+			client5 := &gps.Point{Latitude: 5, Longitude: 5, PackageSize: 1}
+			client6 := &gps.Point{Latitude: 6, Longitude: 6, PackageSize: 1}
+			deposit1 := &gps.Point{Latitude: 0, Longitude: 0}
+			deposit2 := &gps.Point{Latitude: 7, Longitude: 7}
 
 			m := gps.Map{
-				Clients:  []*gps.Point{client1, client2},
+				Clients:  []*gps.Point{client4, client2, client5, client1, client3, client6},
 				Deposits: []*gps.Point{deposit1, deposit2},
 			}
 
-			mockedRoute.EXPECT().Car().Return(mockedCar).AnyTimes()
+			mockedRoute1.EXPECT().Car().Return(mockedCar1).AnyTimes()
+			mockedRoute2.EXPECT().Car().Return(mockedCar2).AnyTimes()
 
-			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
-			mockedCar.EXPECT().Support(client1, deposit1).Return(true)
-			mockedCar.EXPECT().Move(client1).Return(nil)
-			mockedRoute.EXPECT().Append(client1)
+			mockedCar1.EXPECT().ActualPosition().Return(initialPoint)
+			mockedCar1.EXPECT().Support(client3, deposit1).Return(true)
+			mockedCar1.EXPECT().Move(client3).Return(nil)
+			mockedRoute1.EXPECT().Append(client3)
 
-			mockedCar.EXPECT().Support(client2, deposit2).Return(true)
-			mockedCar.EXPECT().Move(client2).Return(nil)
-			mockedRoute.EXPECT().Append(client2)
+			mockedCar1.EXPECT().Support(client4, deposit2).Return(true)
+			mockedCar1.EXPECT().Move(client4).Return(nil)
+			mockedRoute1.EXPECT().Append(client4)
 
-			mockedCar.EXPECT().Move(deposit2).Return(nil)
-			mockedRoute.EXPECT().Append(deposit2)
+			mockedCar1.EXPECT().Support(client5, deposit2).Return(true)
+			mockedCar1.EXPECT().Move(client5).Return(nil)
+			mockedRoute1.EXPECT().Append(client5)
 
-			Expect(BestInsertion(mockedRoute, m)).To(Succeed())
+			mockedCar1.EXPECT().Move(deposit2).Return(nil)
+			mockedRoute1.EXPECT().Append(deposit2)
+
+			mockedCar2.EXPECT().ActualPosition().Return(initialPoint)
+			mockedCar2.EXPECT().Support(client1, deposit1).Return(true)
+			mockedCar2.EXPECT().Move(client1).Return(nil)
+			mockedRoute2.EXPECT().Append(client1)
+
+			mockedCar2.EXPECT().Support(client2, deposit1).Return(true)
+			mockedCar2.EXPECT().Move(client2).Return(nil)
+			mockedRoute2.EXPECT().Append(client2)
+
+			mockedCar2.EXPECT().Support(client6, deposit2).Return(true)
+			mockedCar2.EXPECT().Move(client6).Return(nil)
+			mockedRoute2.EXPECT().Append(client6)
+
+			mockedCar2.EXPECT().Move(deposit2).Return(nil)
+			mockedRoute2.EXPECT().Append(deposit2)
+
+			Expect(BestInsertion(routesList, m)).To(Succeed())
 		})
 	})
 })
 
 var _ = Describe("orderedClients", func() {
+	var (
+		mockCtrl     *gomock.Controller
+		mockedCar1   *mockvehicles.MockICar
+		mockedCar2   *mockvehicles.MockICar
+		mockedRoute1 *mockroutes.MockIRoute
+		mockedRoute2 *mockroutes.MockIRoute
+
+		routesList []routes.IRoute
+	)
+
+	BeforeEach(func() {
+		mockCtrl = gomock.NewController(GinkgoT())
+		mockedCar1 = mockvehicles.NewMockICar(mockCtrl)
+		mockedCar2 = mockvehicles.NewMockICar(mockCtrl)
+		mockedRoute1 = mockroutes.NewMockIRoute(mockCtrl)
+		mockedRoute2 = mockroutes.NewMockIRoute(mockCtrl)
+
+		routesList = []routes.IRoute{mockedRoute1, mockedRoute2}
+
+		mockedRoute1.EXPECT().Car().Return(mockedCar1)
+		mockedRoute2.EXPECT().Car().Return(mockedCar2)
+
+		mockedCar1.EXPECT().ActualPosition().Return(&gps.Point{Latitude: 0, Longitude: 0})
+		mockedCar2.EXPECT().ActualPosition().Return(&gps.Point{Latitude: 0, Longitude: 0})
+	})
+
 	Context("when clients is empty", func() {
 		It("return empty array", func() {
-			orderedClients := orderedClients(&gps.Point{}, []*gps.Point{})
+			orderedClients := orderedClientsByRoutes(routesList, []*gps.Point{})
 
-			Expect(orderedClients).To(BeEmpty())
+			Expect(orderedClients).To(Equal([][]*gps.Point{nil, nil}))
 		})
 	})
 
 	Context("when clients has more than one element", func() {
 		It("return ordered clients", func() {
-			initialPoint := &gps.Point{Latitude: 0, Longitude: 0}
 			client1 := &gps.Point{Latitude: 1, Longitude: 1}
 			client2 := &gps.Point{Latitude: 2, Longitude: 2}
 			client3 := &gps.Point{Latitude: 3, Longitude: 3}
 			client4 := &gps.Point{Latitude: 4, Longitude: 4}
 			client5 := &gps.Point{Latitude: 5, Longitude: 5}
+			client6 := &gps.Point{Latitude: 6, Longitude: 6}
 
 			clients := []*gps.Point{
 				client5,
 				client2,
 				client4,
+				client6,
 				client1,
 				client3,
 			}
 
-			expectedOrderedClients := []*gps.Point{
-				client1,
-				client2,
-				client3,
-				client4,
-				client5,
+			expectedOrderedClients := [][]*gps.Point{
+				{
+					client1,
+					client4,
+					client5,
+				},
+				{
+					client2,
+					client3,
+					client6,
+				},
 			}
 
-			orderedClients := orderedClients(initialPoint, clients)
+			orderedClients := orderedClientsByRoutes(routesList, clients)
 
 			Expect(orderedClients).To(Equal(expectedOrderedClients))
 		})
