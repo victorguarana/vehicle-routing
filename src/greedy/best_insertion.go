@@ -5,46 +5,55 @@ import (
 	"github.com/victorguarana/go-vehicle-route/src/routes"
 )
 
-func BestInsertion(route routes.IRoute, m gps.Map) error {
-	car := route.Car()
-	initialPosition := car.ActualPosition()
-	orderedClients := orderedClients(initialPosition, m.Clients)
+func BestInsertion(routesList []routes.IRoute, m gps.Map) error {
+	orderedClientsListsByRoute := orderedClientsByRoutes(routesList, m.Clients)
 
 	var closestDeposit *gps.Point
-	for i := range orderedClients {
-		client := orderedClients[i]
-		closestDeposit = closestPoint(client, m.Deposits)
-		if car.Support(client, closestDeposit) {
-			err := moveAndAppend(route, client)
-			if err != nil {
-				return err
-			}
-		} else {
-			err := moveAndAppend(route, closestDeposit)
-			if err != nil {
-				return err
-			}
-			i--
-		}
-	}
+	for i, orderedClients := range orderedClientsListsByRoute {
+		route := routesList[i]
+		car := route.Car()
 
-	err := moveAndAppend(route, closestDeposit)
-	if err != nil {
-		return err
+		for j := range orderedClients {
+			client := orderedClients[j]
+			closestDeposit = closestPoint(client, m.Deposits)
+
+			var destination *gps.Point
+			if car.Support(client, closestDeposit) {
+				destination = client
+			} else {
+				destination = closestDeposit
+				j--
+			}
+
+			if err := moveAndAppend(route, destination); err != nil {
+				return err
+			}
+		}
+
+		err := moveAndAppend(route, closestDeposit)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func orderedClients(initialPoint *gps.Point, clients []*gps.Point) []*gps.Point {
-	orderedClients := []*gps.Point{}
-
-	for _, client := range clients {
-		index := findBestInsertionIndex(initialPoint, client, orderedClients)
-		orderedClients = insertAt(index, client, orderedClients)
+func orderedClientsByRoutes(routes []routes.IRoute, clients []*gps.Point) [][]*gps.Point {
+	size := len(routes)
+	orderedClientsLists := make([][]*gps.Point, size)
+	initialPoints := make([]*gps.Point, size)
+	for i := range routes {
+		initialPoints[i] = routes[i].Car().ActualPosition()
 	}
 
-	return orderedClients
+	for i, client := range clients {
+		i = i % size
+		index := findBestInsertionIndex(initialPoints[i], client, orderedClientsLists[i])
+		orderedClientsLists[i] = insertAt(index, client, orderedClientsLists[i])
+	}
+
+	return orderedClientsLists
 }
 
 func findBestInsertionIndex(initialPoint *gps.Point, client *gps.Point, orderedClients []*gps.Point) int {

@@ -3,28 +3,32 @@ package greedy
 import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 	"github.com/victorguarana/go-vehicle-route/src/routes"
+	"github.com/victorguarana/go-vehicle-route/src/vehicles"
 )
 
-func ClosestNeighbor(route routes.IRoute, m gps.Map) error {
-	car := route.Car()
-	carActualPosition := car.ActualPosition()
+func ClosestNeighbor(routeList []routes.IRoute, m gps.Map) error {
+	var route routes.IRoute
+	var car vehicles.ICar
+	var carActualPosition, closestClient, closestDepositFromClosestClient *gps.Point
 
 	remaningClients := make([]*gps.Point, len(m.Clients))
 	copy(remaningClients, m.Clients)
 
-	var closestClient, closestDepositFromClosestClient *gps.Point
-	for len(remaningClients) > 0 {
+	for i := 0; len(remaningClients) > 0; i++ {
+		route = swapBetween(routeList, i)
+		car = route.Car()
+		carActualPosition = car.ActualPosition()
+
 		closestClient = closestPoint(carActualPosition, remaningClients)
 		closestDepositFromClosestClient = closestPoint(closestClient, m.Deposits)
 
+		// Move to closest deposit when car does not support closest client
 		if !car.Support(closestClient, closestDepositFromClosestClient) {
-			// Move to closest deposit when car does not support closest client
 			closestDepositFromActualPosition := closestPoint(carActualPosition, m.Deposits)
 			err := moveAndAppend(route, closestDepositFromActualPosition)
 			if err != nil {
 				return err
 			}
-			carActualPosition = car.ActualPosition()
 			continue
 		}
 
@@ -35,42 +39,10 @@ func ClosestNeighbor(route routes.IRoute, m gps.Map) error {
 		}
 
 		remaningClients = removePoint(remaningClients, closestClient)
-		carActualPosition = car.ActualPosition()
 	}
 
-	// Finish route in closest deposit
-	err := moveAndAppend(route, closestDepositFromClosestClient)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func closestPoint(originPoint *gps.Point, candidatePoints []*gps.Point) *gps.Point {
-	var closestPoint *gps.Point
-	var closestDistance float64
-
-	for _, candidatePoint := range candidatePoints {
-		if closestPoint == nil || gps.DistanceBetweenPoints(originPoint, candidatePoint) < closestDistance {
-			closestPoint = candidatePoint
-			closestDistance = gps.DistanceBetweenPoints(originPoint, candidatePoint)
-		}
-	}
-
-	return closestPoint
-}
-
-func moveAndAppend(route routes.IRoute, point *gps.Point) error {
-	err := route.Car().Move(point)
-	if err != nil {
-		return err
-	}
-
-	err = route.Append(point)
-	if err != nil {
-		return err
-	}
+	// Finish routes in closest deposit
+	finishRoutes(routeList, m)
 
 	return nil
 }
