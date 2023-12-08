@@ -19,7 +19,7 @@ var (
 type IDrone interface {
 	ivehicle
 
-	Land(*gps.Point)
+	Land(*gps.Point) error
 }
 
 type drone struct {
@@ -50,12 +50,18 @@ func newDrone(name string, car *car) *drone {
 	return &d
 }
 
-func (d *drone) Land(destination *gps.Point) {
+func (d *drone) Land(destination *gps.Point) error {
+	if gps.DistanceBetweenPoints(d.actualPosition, destination) > d.totalRange {
+		return ErrDestinationNotSupported
+	}
+
 	d.actualPosition = destination
 	d.isFlying = false
 
 	d.remaningRange = d.totalRange
 	d.remaningStorage = d.totalStorage
+
+	return nil
 }
 
 func (d *drone) Move(destination *gps.Point) error {

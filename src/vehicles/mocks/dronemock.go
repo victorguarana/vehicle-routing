@@ -53,9 +53,11 @@ func (mr *MockIDroneMockRecorder) ActualPosition() *gomock.Call {
 }
 
 // Land mocks base method.
-func (m *MockIDrone) Land(arg0 *gps.Point) {
+func (m *MockIDrone) Land(arg0 *gps.Point) error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Land", arg0)
+	ret := m.ctrl.Call(m, "Land", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Land indicates an expected call of Land.
