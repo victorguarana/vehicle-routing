@@ -107,6 +107,20 @@ func (mr *MockICarMockRecorder) NewDrone(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewDrone", reflect.TypeOf((*MockICar)(nil).NewDrone), arg0)
 }
 
+// Speed mocks base method.
+func (m *MockICar) Speed() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Speed")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Speed indicates an expected call of Speed.
+func (mr *MockICarMockRecorder) Speed() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Speed", reflect.TypeOf((*MockICar)(nil).Speed))
+}
+
 // Support mocks base method.
 func (m *MockICar) Support(arg0 ...*gps.Point) bool {
 	m.ctrl.T.Helper()

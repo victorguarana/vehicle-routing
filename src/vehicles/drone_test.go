@@ -7,6 +7,32 @@ import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 )
 
+var _ = Describe("Land", func() {
+	It("land drone", func() {
+		sut := drone{
+			isFlying:     true,
+			totalStorage: 10,
+			totalRange:   100,
+			vehicle: vehicle{
+				actualPosition: &gps.Point{},
+			},
+		}
+
+		landingPoint := &gps.Point{
+			Latitude:    10,
+			Longitude:   10,
+			PackageSize: 1,
+		}
+
+		sut.Land(landingPoint)
+
+		Expect(sut.isFlying).To(BeFalse())
+		Expect(sut.actualPosition).To(Equal(landingPoint))
+		Expect(sut.remaningRange).To(Equal(sut.totalRange))
+		Expect(sut.remaningStorage).To(Equal(defaultDroneStorage))
+	})
+})
+
 var _ = Describe("Move", func() {
 	Context("when drone can move to next position", func() {
 		It("move drone", func() {
@@ -49,7 +75,7 @@ var _ = Describe("Move", func() {
 				},
 			}
 
-			Expect(sut.Move(p)).To(MatchError(ErrWithoutRange))
+			Expect(sut.Move(p)).To(MatchError(ErrDestinationNotSupported))
 			Expect(sut.actualPosition).NotTo(Equal(p))
 			Expect(sut.remaningRange).To(Equal(initialRange))
 		})

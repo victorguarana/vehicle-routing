@@ -7,8 +7,7 @@ import (
 )
 
 var (
-	ErrWithoutRange   = errors.New("vehicle does not support to move so far")
-	ErrWithoutStorage = errors.New("vehicle does not have enough storage")
+	ErrDestinationNotSupported = errors.New("destination not supported")
 )
 
 var (
@@ -19,12 +18,15 @@ var (
 
 type IDrone interface {
 	ivehicle
+
+	Land(*gps.Point)
 }
 
 type drone struct {
 	vehicle
 	car *car
 
+	isFlying        bool
 	totalStorage    float64
 	remaningStorage float64
 	totalRange      float64
@@ -48,21 +50,25 @@ func newDrone(name string, car *car) *drone {
 	return &d
 }
 
+func (d *drone) Land(destination *gps.Point) {
+	d.actualPosition = destination
+	d.isFlying = false
+
+	d.remaningRange = d.totalRange
+	d.remaningStorage = d.totalStorage
+}
+
 func (d *drone) Move(destination *gps.Point) error {
 	if d.actualPosition == nil || destination == nil {
 		return ErrInvalidParams
 	}
 
-	if destination.PackageSize > d.remaningStorage {
-		return ErrWithoutStorage
+	if !d.Support(destination) {
+		return ErrDestinationNotSupported
 	}
 
-	distance := gps.DistanceBetweenPoints(d.actualPosition, destination)
-	if distance >= d.remaningRange {
-		return ErrWithoutRange
-	}
-
-	d.remaningRange -= distance
+	d.isFlying = true
+	d.remaningRange -= gps.DistanceBetweenPoints(d.actualPosition, destination)
 	d.actualPosition = destination
 
 	return nil

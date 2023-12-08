@@ -44,6 +44,7 @@ func (c *car) Move(destination *gps.Point) error {
 	}
 
 	c.actualPosition = destination
+	c.moveDockedDrones()
 
 	return nil
 }
@@ -58,4 +59,12 @@ func (c *car) Drones() []IDrone {
 		drones = append(drones, d)
 	}
 	return drones
+}
+
+func (c *car) moveDockedDrones() {
+	for _, d := range c.drones {
+		if !d.isFlying {
+			d.actualPosition = c.actualPosition
+		}
+	}
 }

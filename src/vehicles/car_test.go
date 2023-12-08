@@ -32,12 +32,28 @@ var _ = Describe("NewCar", func() {
 
 var _ = Describe("Move", func() {
 	Context("when car can move to next position", func() {
-		It("move car", func() {
+		It("move car and docked drones", func() {
 			p := &gps.Point{
 				Latitude:  10,
 				Longitude: 10,
 			}
+
+			drone1 := drone{
+				isFlying: true,
+				vehicle: vehicle{
+					actualPosition: &gps.Point{},
+				},
+			}
+
+			drone2 := drone{
+				isFlying: false,
+				vehicle: vehicle{
+					actualPosition: &gps.Point{},
+				},
+			}
+
 			sut := car{
+				drones: []*drone{&drone1, &drone2},
 				vehicle: vehicle{
 					actualPosition: &gps.Point{
 						Latitude:  0,
@@ -48,6 +64,8 @@ var _ = Describe("Move", func() {
 
 			Expect(sut.Move(p)).To(Succeed())
 			Expect(sut.actualPosition).To(Equal(p))
+			Expect(drone1.actualPosition).To(Equal(&gps.Point{}))
+			Expect(drone2.actualPosition).To(Equal(sut.actualPosition))
 		})
 	})
 
