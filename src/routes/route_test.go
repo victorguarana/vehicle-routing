@@ -21,10 +21,13 @@ var _ = Describe("NewRoute", func() {
 
 	Context("when all params are valid", func() {
 		It("returns new route", func() {
+			intitialPosition := &gps.Point{}
 			expectedRoute := &route{
 				car:   mockedCar,
-				stops: []*carStop{},
+				stops: []*carStop{newCarStop(mockedCar, intitialPosition)},
 			}
+
+			mockedCar.EXPECT().ActualPosition().Return(intitialPosition)
 
 			receivedRoute, receivedErr := NewRoute(mockedCar)
 

@@ -42,7 +42,6 @@ var _ = Describe("ClosestNeighbor", func() {
 			}
 
 			mockedRoute.EXPECT().Car().Return(mockedCar).AnyTimes()
-			mockedRoute.EXPECT().Append(initialPoint)
 
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
@@ -76,7 +75,6 @@ var _ = Describe("ClosestNeighbor", func() {
 			}
 
 			mockedRoute.EXPECT().Car().Return(mockedCar).AnyTimes()
-			mockedRoute.EXPECT().Append(initialPoint)
 
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)

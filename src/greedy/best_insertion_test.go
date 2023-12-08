@@ -34,7 +34,6 @@ var _ = Describe("BestInsertion", func() {
 			}
 
 			mockedRoute.EXPECT().Car().Return(mockedCar).AnyTimes()
-			mockedRoute.EXPECT().Append(initialPoint)
 
 			mockedCar.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar.EXPECT().Support(client1, deposit1).Return(true)
