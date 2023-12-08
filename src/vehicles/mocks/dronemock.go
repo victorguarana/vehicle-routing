@@ -52,32 +52,6 @@ func (mr *MockIDroneMockRecorder) ActualPosition() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActualPosition", reflect.TypeOf((*MockIDrone)(nil).ActualPosition))
 }
 
-// Dock mocks base method.
-func (m *MockIDrone) Dock() {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Dock")
-}
-
-// Dock indicates an expected call of Dock.
-func (mr *MockIDroneMockRecorder) Dock() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Dock", reflect.TypeOf((*MockIDrone)(nil).Dock))
-}
-
-// IsFlying mocks base method.
-func (m *MockIDrone) IsFlying() bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IsFlying")
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// IsFlying indicates an expected call of IsFlying.
-func (mr *MockIDroneMockRecorder) IsFlying() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsFlying", reflect.TypeOf((*MockIDrone)(nil).IsFlying))
-}
-
 // Move mocks base method.
 func (m *MockIDrone) Move(arg0 *gps.Point) error {
 	m.ctrl.T.Helper()
@@ -90,6 +64,20 @@ func (m *MockIDrone) Move(arg0 *gps.Point) error {
 func (mr *MockIDroneMockRecorder) Move(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Move", reflect.TypeOf((*MockIDrone)(nil).Move), arg0)
+}
+
+// Name mocks base method.
+func (m *MockIDrone) Name() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Name")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// Name indicates an expected call of Name.
+func (mr *MockIDroneMockRecorder) Name() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockIDrone)(nil).Name))
 }
 
 // Support mocks base method.
@@ -108,16 +96,4 @@ func (m *MockIDrone) Support(arg0 ...*gps.Point) bool {
 func (mr *MockIDroneMockRecorder) Support(arg0 ...any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Support", reflect.TypeOf((*MockIDrone)(nil).Support), arg0...)
-}
-
-// TakeOff mocks base method.
-func (m *MockIDrone) TakeOff() {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "TakeOff")
-}
-
-// TakeOff indicates an expected call of TakeOff.
-func (mr *MockIDroneMockRecorder) TakeOff() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TakeOff", reflect.TypeOf((*MockIDrone)(nil).TakeOff))
 }

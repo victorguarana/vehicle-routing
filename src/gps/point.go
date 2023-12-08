@@ -9,10 +9,11 @@ type Point struct {
 	Latitude    float64
 	Longitude   float64
 	PackageSize float64
+	Name        string
 }
 
 func (p Point) String() string {
-	return fmt.Sprintf("Lat: %f, Long: %f, PackageSize: %f\n", p.Latitude, p.Longitude, p.PackageSize)
+	return fmt.Sprintf("Name: '%s', Lat: %f, Long: %f, PackageSize: %f", p.Name, p.Latitude, p.Longitude, p.PackageSize)
 }
 
 // Euclidean distance between two points

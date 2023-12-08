@@ -12,6 +12,7 @@ var (
 
 type ivehicle interface {
 	ActualPosition() *gps.Point
+	Name() string
 
 	Move(*gps.Point) error
 	Support(...*gps.Point) bool
@@ -25,4 +26,8 @@ type vehicle struct {
 
 func (v vehicle) ActualPosition() *gps.Point {
 	return v.actualPosition
+}
+
+func (v vehicle) Name() string {
+	return v.name
 }

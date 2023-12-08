@@ -81,6 +81,20 @@ func (mr *MockICarMockRecorder) Move(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Move", reflect.TypeOf((*MockICar)(nil).Move), arg0)
 }
 
+// Name mocks base method.
+func (m *MockICar) Name() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Name")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// Name indicates an expected call of Name.
+func (mr *MockICarMockRecorder) Name() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockICar)(nil).Name))
+}
+
 // NewDrone mocks base method.
 func (m *MockICar) NewDrone(arg0 string) {
 	m.ctrl.T.Helper()
