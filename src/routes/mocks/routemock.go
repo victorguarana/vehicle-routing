@@ -138,3 +138,17 @@ func (mr *MockIRouteMockRecorder) RemoveCarStop(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveCarStop", reflect.TypeOf((*MockIRoute)(nil).RemoveCarStop), arg0)
 }
+
+// String mocks base method.
+func (m *MockIRoute) String() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "String")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// String indicates an expected call of String.
+func (mr *MockIRouteMockRecorder) String() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "String", reflect.TypeOf((*MockIRoute)(nil).String))
+}

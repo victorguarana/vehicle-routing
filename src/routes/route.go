@@ -2,6 +2,8 @@ package routes
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 	"github.com/victorguarana/go-vehicle-route/src/vehicles"
@@ -17,6 +19,7 @@ type IRoute interface {
 	First() ICarStop
 	Last() ICarStop
 	Len() int
+	String() string
 
 	Append(*gps.Point) error
 	AtIndex(int) (ICarStop, error)
@@ -77,4 +80,30 @@ func (r *route) RemoveCarStop(index int) error {
 
 	r.stops = append(r.stops[:index], r.stops[index+1:]...)
 	return nil
+}
+
+func (r *route) String() string {
+	str := []string{"Route:"}
+
+	for i, carStop := range r.stops {
+		str = append(str, fmt.Sprintf("  CarStop #%d (%s)", i, carStop.point))
+
+		for j, flight := range carStop.flights {
+			if flight.takeoffPoint != carStop {
+				continue
+			}
+
+			str = append(str, fmt.Sprintf("    Flight #%d.%d (%s):", i, j, flight.drone.Name()))
+			str = append(str, fmt.Sprintf("     Takeoff #%d.%d (%s)", i, j, flight.takeoffPoint.point))
+
+			for k, droneStop := range flight.stops {
+				str = append(str, fmt.Sprintf("      DroneStop #%d.%d.%d (%s)", i, j, k, droneStop.point))
+			}
+
+			str = append(str, fmt.Sprintf("     Landing #%d.%d (%s)", i, j, flight.landingPoint.point))
+		}
+		str = append(str, "")
+	}
+
+	return strings.Join(str, "\n")
 }
