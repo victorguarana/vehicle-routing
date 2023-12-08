@@ -11,12 +11,23 @@ var (
 )
 
 type ivehicle interface {
+	ActualPosition() *gps.Point
+	Name() string
+
 	Move(*gps.Point) error
-	Reachable(...gps.Point) bool
+	Support(...*gps.Point) bool
 }
 
 type vehicle struct {
 	speed          float64
 	name           string
 	actualPosition *gps.Point
+}
+
+func (v vehicle) ActualPosition() *gps.Point {
+	return v.actualPosition
+}
+
+func (v vehicle) Name() string {
+	return v.name
 }

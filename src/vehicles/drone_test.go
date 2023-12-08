@@ -24,7 +24,7 @@ var _ = Describe("Move", func() {
 					},
 				},
 			}
-			distance := gps.DistanceBetweenPoints(*p, *sut.actualPosition)
+			distance := gps.DistanceBetweenPoints(p, sut.actualPosition)
 
 			Expect(sut.Move(p)).To(Succeed())
 			Expect(sut.actualPosition).To(Equal(p))
@@ -72,13 +72,18 @@ var _ = Describe("Move", func() {
 	})
 })
 
-var _ = Describe("Reachable", func() {
+var _ = Describe("Support", func() {
 	Describe("single destination cases", func() {
-		Context("when drone can reach point with plenty", func() {
+		Context("when drone can support point with plenty of range and storage", func() {
 			It("returns true", func() {
-				destination := gps.Point{Latitude: 10}
+				destination := &gps.Point{
+					Latitude:    10,
+					PackageSize: 1,
+				}
+
 				sut := drone{
-					remaningRange: 100,
+					remaningStorage: 10,
+					remaningRange:   100,
 					vehicle: vehicle{
 						actualPosition: &gps.Point{
 							Latitude:  0,
@@ -86,14 +91,20 @@ var _ = Describe("Reachable", func() {
 						},
 					},
 				}
-				Expect(sut.Reachable(destination)).To(BeTrue())
+				Expect(sut.Support(destination)).To(BeTrue())
 			})
 		})
 
-		Context("when drone can reach point without plenty", func() {
+		Context("when drone can support point without plenty of range and storage", func() {
 			It("returns true", func() {
+				destination := &gps.Point{
+					Latitude:    10,
+					PackageSize: 10,
+				}
+
 				sut := drone{
-					remaningRange: 10,
+					remaningRange:   10,
+					remaningStorage: 10,
 					vehicle: vehicle{
 						actualPosition: &gps.Point{
 							Latitude:  0,
@@ -101,14 +112,20 @@ var _ = Describe("Reachable", func() {
 						},
 					},
 				}
-				Expect(sut.Reachable(gps.Point{Latitude: 10})).To(BeTrue())
+				Expect(sut.Support(destination)).To(BeTrue())
 			})
 		})
 
-		Context("when drone can not reach point", func() {
+		Context("when drone can not support point because of range", func() {
 			It("returns false", func() {
+				destination := &gps.Point{
+					Latitude:    1,
+					PackageSize: 1,
+				}
+
 				sut := drone{
-					remaningRange: 0,
+					remaningRange:   0,
+					remaningStorage: 10,
 					vehicle: vehicle{
 						actualPosition: &gps.Point{
 							Latitude:  0,
@@ -116,7 +133,28 @@ var _ = Describe("Reachable", func() {
 						},
 					},
 				}
-				Expect(sut.Reachable(gps.Point{Latitude: 1})).To(BeFalse())
+				Expect(sut.Support(destination)).To(BeFalse())
+			})
+		})
+
+		Context("when drone can not support point because of storage", func() {
+			It("returns false", func() {
+				destination := &gps.Point{
+					Latitude:    1,
+					PackageSize: 1,
+				}
+
+				sut := drone{
+					remaningRange:   10,
+					remaningStorage: 0,
+					vehicle: vehicle{
+						actualPosition: &gps.Point{
+							Latitude:  0,
+							Longitude: 0,
+						},
+					},
+				}
+				Expect(sut.Support(destination)).To(BeFalse())
 			})
 		})
 	})
@@ -124,8 +162,8 @@ var _ = Describe("Reachable", func() {
 	Describe("multi destinations cases", func() {
 		Context("when drone can reach point with plenty", func() {
 			It("returns true", func() {
-				destination1 := gps.Point{Latitude: 10}
-				destination2 := gps.Point{Latitude: 15}
+				destination1 := &gps.Point{Latitude: 10}
+				destination2 := &gps.Point{Latitude: 15}
 				sut := drone{
 					remaningRange: 100,
 					vehicle: vehicle{
@@ -135,14 +173,14 @@ var _ = Describe("Reachable", func() {
 						},
 					},
 				}
-				Expect(sut.Reachable(destination1, destination2)).To(BeTrue())
+				Expect(sut.Support(destination1, destination2)).To(BeTrue())
 			})
 		})
 
 		Context("when drone can reach point without plenty", func() {
 			It("returns true", func() {
-				destination1 := gps.Point{Latitude: 5}
-				destination2 := gps.Point{Latitude: 10}
+				destination1 := &gps.Point{Latitude: 5}
+				destination2 := &gps.Point{Latitude: 10}
 				sut := drone{
 					remaningRange: 10,
 					vehicle: vehicle{
@@ -152,14 +190,14 @@ var _ = Describe("Reachable", func() {
 						},
 					},
 				}
-				Expect(sut.Reachable(destination1, destination2)).To(BeTrue())
+				Expect(sut.Support(destination1, destination2)).To(BeTrue())
 			})
 		})
 
 		Context("when drone can not reach first point", func() {
 			It("returns false", func() {
-				destination1 := gps.Point{Latitude: 5}
-				destination2 := gps.Point{Latitude: 10}
+				destination1 := &gps.Point{Latitude: 5}
+				destination2 := &gps.Point{Latitude: 10}
 				sut := drone{
 					remaningRange: 0,
 					vehicle: vehicle{
@@ -169,14 +207,14 @@ var _ = Describe("Reachable", func() {
 						},
 					},
 				}
-				Expect(sut.Reachable(destination1, destination2)).To(BeFalse())
+				Expect(sut.Support(destination1, destination2)).To(BeFalse())
 			})
 		})
 
 		Context("when drone can not reach second point", func() {
 			It("returns false", func() {
-				destination1 := gps.Point{Latitude: 5}
-				destination2 := gps.Point{Latitude: 10}
+				destination1 := &gps.Point{Latitude: 5}
+				destination2 := &gps.Point{Latitude: 10}
 				sut := drone{
 					remaningRange: 8,
 					vehicle: vehicle{
@@ -186,25 +224,8 @@ var _ = Describe("Reachable", func() {
 						},
 					},
 				}
-				Expect(sut.Reachable(destination1, destination2)).To(BeFalse())
+				Expect(sut.Support(destination1, destination2)).To(BeFalse())
 			})
 		})
 	})
 })
-
-var _ = DescribeTable("IsFlying", func(sut drone, expectedResponse bool) {
-	Expect(sut.IsFlying()).To(Equal(expectedResponse))
-},
-	Entry("when drone is flying, returns true",
-		drone{
-			isFlying: true,
-		},
-		true,
-	),
-	Entry("when drone is not flying, returns false",
-		drone{
-			isFlying: false,
-		},
-		false,
-	),
-)

@@ -22,7 +22,7 @@ var _ = Describe("NewCar", func() {
 					name:           "car1",
 					actualPosition: p,
 				},
-				drones: []drone{},
+				drones: []*drone{},
 			}
 
 			Expect(sut).To(Equal(&expectedCar))
@@ -68,7 +68,7 @@ var _ = Describe("Move", func() {
 	})
 })
 
-var _ = Describe("Reachable", func() {
+var _ = Describe("Support", func() {
 	Describe("single destination", func() {
 		Context("when car can reach point with plenty", func() {
 			It("returns true", func() {
@@ -81,7 +81,7 @@ var _ = Describe("Reachable", func() {
 						},
 					},
 				}
-				Expect(sut.Reachable(destination)).To(BeTrue())
+				Expect(sut.Support(&destination)).To(BeTrue())
 			})
 		})
 	})
@@ -99,7 +99,7 @@ var _ = Describe("Reachable", func() {
 						},
 					},
 				}
-				Expect(sut.Reachable(destination1, destination2)).To(BeTrue())
+				Expect(sut.Support(&destination1, &destination2)).To(BeTrue())
 			})
 		})
 	})
@@ -117,7 +117,7 @@ var _ = Describe("NewDrone", func() {
 				},
 			}
 
-			expectedDrone := drone{
+			expectedDrone := &drone{
 				totalStorage:    defaultStorage,
 				remaningStorage: defaultStorage,
 				totalRange:      defaultRange,
