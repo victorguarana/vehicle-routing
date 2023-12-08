@@ -18,7 +18,7 @@ var _ = Describe("NewCar", func() {
 
 			expectedCar := car{
 				vehicle: vehicle{
-					speed:          defaultSpeed,
+					speed:          defaultCarSpeed,
 					name:           "car1",
 					actualPosition: p,
 				},
@@ -117,22 +117,11 @@ var _ = Describe("NewDrone", func() {
 				},
 			}
 
-			expectedDrone := &drone{
-				totalStorage:    defaultStorage,
-				remaningStorage: defaultStorage,
-				totalRange:      defaultRange,
-				remaningRange:   defaultRange,
-				vehicle: vehicle{
-					speed:          defaultSpeed,
-					name:           "drone1",
-					actualPosition: sut.actualPosition,
-				},
-				car: &sut,
-			}
+			expectedDrone := newDrone("drone1", &sut)
 
 			sut.NewDrone("drone1")
 			Expect(len(sut.drones)).To(Equal(1))
-			Expect(sut.drones[0]).To(Equal(expectedDrone))
+			Expect(sut.drones).To(Equal([]*drone{expectedDrone}))
 		})
 	})
 })

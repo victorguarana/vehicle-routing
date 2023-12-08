@@ -11,6 +11,12 @@ var (
 	ErrWithoutStorage = errors.New("vehicle does not have enough storage")
 )
 
+var (
+	defaultDroneStorage = 10.0
+	defaultDroneRange   = 150.0
+	defaultDroneSpeed   = 25.0
+)
+
 type IDrone interface {
 	ivehicle
 }
@@ -23,6 +29,23 @@ type drone struct {
 	remaningStorage float64
 	totalRange      float64
 	remaningRange   float64
+}
+
+func newDrone(name string, car *car) *drone {
+	d := drone{
+		totalStorage:    defaultDroneStorage,
+		remaningStorage: defaultDroneStorage,
+		totalRange:      defaultDroneRange,
+		remaningRange:   defaultDroneRange,
+		vehicle: vehicle{
+			speed:          defaultDroneSpeed,
+			name:           name,
+			actualPosition: car.actualPosition,
+		},
+		car: car,
+	}
+
+	return &d
 }
 
 func (d *drone) Move(destination *gps.Point) error {
