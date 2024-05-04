@@ -7,29 +7,43 @@ var (
 )
 
 type ICar interface {
-	ivehicle
-
-	NewDrone(string)
-
+	ActualPosition() *gps.Point
 	Drones() []IDrone
+	Move(*gps.Point) error
+	Name() string
+	NewDrone(string)
+	Speed() float64
+	Support(...*gps.Point) bool
 }
 
 type car struct {
-	vehicle
-	drones []*drone
+	speed          float64
+	name           string
+	actualPosition *gps.Point
+	drones         []*drone
 }
 
 func NewCar(name string, startingPoint *gps.Point) ICar {
 	c := car{
-		vehicle: vehicle{
-			actualPosition: startingPoint,
-			name:           name,
-			speed:          defaultCarSpeed,
-		},
-		drones: []*drone{},
+		actualPosition: startingPoint,
+		name:           name,
+		speed:          defaultCarSpeed,
+		drones:         []*drone{},
 	}
 
 	return &c
+}
+
+func (c *car) ActualPosition() *gps.Point {
+	return c.actualPosition
+}
+
+func (c *car) Name() string {
+	return c.name
+}
+
+func (c *car) Speed() float64 {
+	return c.speed
 }
 
 func (c *car) NewDrone(name string) {

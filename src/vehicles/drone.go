@@ -17,14 +17,19 @@ var (
 )
 
 type IDrone interface {
-	ivehicle
-
+	ActualPosition() *gps.Point
 	Land(*gps.Point) error
+	Move(*gps.Point) error
+	Name() string
+	Speed() float64
+	Support(...*gps.Point) bool
 }
 
 type drone struct {
-	vehicle
-	car *car
+	speed          float64
+	name           string
+	actualPosition *gps.Point
+	car            *car
 
 	isFlying        bool
 	totalStorage    float64
@@ -39,15 +44,25 @@ func newDrone(name string, car *car) *drone {
 		remaningStorage: defaultDroneStorage,
 		totalRange:      defaultDroneRange,
 		remaningRange:   defaultDroneRange,
-		vehicle: vehicle{
-			speed:          defaultDroneSpeed,
-			name:           name,
-			actualPosition: car.actualPosition,
-		},
-		car: car,
+		speed:           defaultDroneSpeed,
+		name:            name,
+		actualPosition:  car.actualPosition,
+		car:             car,
 	}
 
 	return &d
+}
+
+func (d *drone) ActualPosition() *gps.Point {
+	return d.actualPosition
+}
+
+func (d *drone) Name() string {
+	return d.name
+}
+
+func (d *drone) Speed() float64 {
+	return d.speed
 }
 
 func (d *drone) Land(destination *gps.Point) error {
