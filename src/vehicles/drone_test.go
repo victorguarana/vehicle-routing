@@ -48,46 +48,9 @@ var _ = Describe("Move", func() {
 			}
 			distance := gps.DistanceBetweenPoints(p, sut.actualPosition)
 
-			Expect(sut.Move(p)).To(Succeed())
+			sut.Move(p)
 			Expect(sut.actualPosition).To(Equal(p))
 			Expect(sut.remaningRange).To(Equal(initialRange - distance))
-		})
-	})
-
-	Context("when drone can not move to next position", func() {
-		It("return correct error", func() {
-			initialRange := 1.0
-			p := &gps.Point{
-				Latitude:  10,
-				Longitude: 10,
-			}
-			sut := drone{
-				remaningRange: initialRange,
-				actualPosition: &gps.Point{
-					Latitude:  0,
-					Longitude: 0,
-				},
-			}
-
-			Expect(sut.Move(p)).To(MatchError(ErrDestinationNotSupported))
-			Expect(sut.actualPosition).NotTo(Equal(p))
-			Expect(sut.remaningRange).To(Equal(initialRange))
-		})
-	})
-
-	Context("when next position is nil", func() {
-		It("raise error", func() {
-			sut := drone{
-				actualPosition: &gps.Point{},
-			}
-			Expect(sut.Move(nil)).Error().To(MatchError(ErrInvalidParams))
-		})
-	})
-
-	Context("when drone does not have position", func() {
-		It("raise error", func() {
-			sut := drone{}
-			Expect(sut.Move(&gps.Point{})).Error().To(MatchError(ErrInvalidParams))
 		})
 	})
 })

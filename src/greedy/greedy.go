@@ -19,30 +19,12 @@ func closestPoint(originPoint *gps.Point, candidatePoints []*gps.Point) *gps.Poi
 	return closestPoint
 }
 
-func finishRoutes(routesList []routes.IRoute, m gps.Map) error {
+func finishRoutesOnClosestDeposits(routesList []routes.IRoute, m gps.Map) {
 	for _, route := range routesList {
 		closestDeposit := closestPoint(route.Last().Point(), m.Deposits)
-		err := moveAndAppend(route, closestDeposit)
-		if err != nil {
-			return err
-		}
+		route.Car().Move(closestDeposit)
+		route.Append(closestDeposit)
 	}
-
-	return nil
-}
-
-func moveAndAppend(route routes.IRoute, point *gps.Point) error {
-	err := route.Car().Move(point)
-	if err != nil {
-		return err
-	}
-
-	err = route.Append(point)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func swapBetween[T any](list []T, index int) T {

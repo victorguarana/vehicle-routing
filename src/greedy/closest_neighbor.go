@@ -25,24 +25,19 @@ func ClosestNeighbor(routeList []routes.IRoute, m gps.Map) error {
 		// Move to closest deposit when car does not support closest client
 		if !car.Support(closestClient, closestDepositFromClosestClient) {
 			closestDepositFromActualPosition := closestPoint(carActualPosition, m.Deposits)
-			err := moveAndAppend(route, closestDepositFromActualPosition)
-			if err != nil {
-				return err
-			}
+			route.Car().Move(closestDepositFromActualPosition)
+			route.Append(closestDepositFromActualPosition)
 			continue
 		}
 
 		// Move to closest client
-		err := moveAndAppend(route, closestClient)
-		if err != nil {
-			return err
-		}
+		route.Car().Move(closestClient)
+		route.Append(closestClient)
 
 		remaningClients = removePoint(remaningClients, closestClient)
 	}
 
-	// Finish routes in closest deposit
-	finishRoutes(routeList, m)
+	finishRoutesOnClosestDeposits(routeList, m)
 
 	return nil
 }

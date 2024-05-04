@@ -21,7 +21,7 @@ type IRoute interface {
 	Len() int
 	String() string
 
-	Append(*gps.Point) error
+	Append(*gps.Point)
 	AtIndex(int) (ICarStop, error)
 
 	RemoveCarStop(int) error
@@ -61,10 +61,9 @@ func (r *route) Len() int {
 	return len(r.stops)
 }
 
-func (r *route) Append(point *gps.Point) error {
+func (r *route) Append(point *gps.Point) {
 	carStop := newCarStop(r.car, point)
 	r.stops = append(r.stops, carStop)
-	return nil
 }
 
 func (r *route) AtIndex(index int) (ICarStop, error) {

@@ -18,8 +18,8 @@ var (
 
 type IDrone interface {
 	ActualPosition() *gps.Point
-	Land(*gps.Point) error
-	Move(*gps.Point) error
+	Land(*gps.Point)
+	Move(*gps.Point)
 	Name() string
 	Speed() float64
 	Support(...*gps.Point) bool
@@ -65,34 +65,18 @@ func (d *drone) Speed() float64 {
 	return d.speed
 }
 
-func (d *drone) Land(destination *gps.Point) error {
-	if gps.DistanceBetweenPoints(d.actualPosition, destination) > d.totalRange {
-		return ErrDestinationNotSupported
-	}
-
+func (d *drone) Land(destination *gps.Point) {
 	d.actualPosition = destination
 	d.isFlying = false
 
 	d.remaningRange = d.totalRange
 	d.remaningStorage = d.totalStorage
-
-	return nil
 }
 
-func (d *drone) Move(destination *gps.Point) error {
-	if d.actualPosition == nil || destination == nil {
-		return ErrInvalidParams
-	}
-
-	if !d.Support(destination) {
-		return ErrDestinationNotSupported
-	}
-
+func (d *drone) Move(destination *gps.Point) {
 	d.isFlying = true
 	d.remaningRange -= gps.DistanceBetweenPoints(d.actualPosition, destination)
 	d.actualPosition = destination
-
-	return nil
 }
 
 func (d *drone) Support(destinations ...*gps.Point) bool {

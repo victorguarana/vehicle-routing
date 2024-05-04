@@ -1,12 +1,13 @@
 package routes
 
 import (
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
-	"go.uber.org/mock/gomock"
+	"github.com/golang/mock/gomock"
 
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 	mockVehicles "github.com/victorguarana/go-vehicle-route/src/vehicles/mocks"
+
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("NewFlight", Ordered, func() {

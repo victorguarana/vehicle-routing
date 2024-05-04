@@ -9,7 +9,7 @@ var (
 type ICar interface {
 	ActualPosition() *gps.Point
 	Drones() []IDrone
-	Move(*gps.Point) error
+	Move(*gps.Point)
 	Name() string
 	NewDrone(string)
 	Speed() float64
@@ -52,15 +52,9 @@ func (c *car) NewDrone(name string) {
 	c.drones = append(c.drones, d)
 }
 
-func (c *car) Move(destination *gps.Point) error {
-	if c.actualPosition == nil || destination == nil {
-		return ErrInvalidParams
-	}
-
+func (c *car) Move(destination *gps.Point) {
 	c.actualPosition = destination
 	c.moveDockedDrones()
-
-	return nil
 }
 
 func (c *car) Support(destination ...*gps.Point) bool {

@@ -54,26 +54,10 @@ var _ = Describe("Move", func() {
 				},
 			}
 
-			Expect(sut.Move(p)).To(Succeed())
+			sut.Move(p)
 			Expect(sut.actualPosition).To(Equal(p))
 			Expect(drone1.actualPosition).To(Equal(&gps.Point{}))
 			Expect(drone2.actualPosition).To(Equal(sut.actualPosition))
-		})
-	})
-
-	Context("when next position is nil", func() {
-		It("raise error", func() {
-			sut := car{
-				actualPosition: &gps.Point{},
-			}
-			Expect(sut.Move(nil)).Error().To(MatchError(ErrInvalidParams))
-		})
-	})
-
-	Context("when car does not have position", func() {
-		It("raise error", func() {
-			sut := car{}
-			Expect(sut.Move(&gps.Point{})).Error().To(MatchError(ErrInvalidParams))
 		})
 	})
 })

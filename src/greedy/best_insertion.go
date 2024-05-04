@@ -25,15 +25,12 @@ func BestInsertion(routesList []routes.IRoute, m gps.Map) error {
 				j--
 			}
 
-			if err := moveAndAppend(route, destination); err != nil {
-				return err
-			}
+			route.Car().Move(destination)
+			route.Append(destination)
 		}
 
-		err := moveAndAppend(route, closestDeposit)
-		if err != nil {
-			return err
-		}
+		route.Car().Move(closestDeposit)
+		route.Append(closestDeposit)
 	}
 
 	return nil

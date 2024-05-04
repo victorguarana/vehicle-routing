@@ -11,9 +11,9 @@ package mockvehicles
 import (
 	reflect "reflect"
 
+	gomock "github.com/golang/mock/gomock"
 	gps "github.com/victorguarana/go-vehicle-route/src/gps"
 	vehicles "github.com/victorguarana/go-vehicle-route/src/vehicles"
-	gomock "go.uber.org/mock/gomock"
 )
 
 // MockICar is a mock of ICar interface.
@@ -68,15 +68,13 @@ func (mr *MockICarMockRecorder) Drones() *gomock.Call {
 }
 
 // Move mocks base method.
-func (m *MockICar) Move(arg0 *gps.Point) error {
+func (m *MockICar) Move(arg0 *gps.Point) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Move", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
+	m.ctrl.Call(m, "Move", arg0)
 }
 
 // Move indicates an expected call of Move.
-func (mr *MockICarMockRecorder) Move(arg0 any) *gomock.Call {
+func (mr *MockICarMockRecorder) Move(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Move", reflect.TypeOf((*MockICar)(nil).Move), arg0)
 }
@@ -102,7 +100,7 @@ func (m *MockICar) NewDrone(arg0 string) {
 }
 
 // NewDrone indicates an expected call of NewDrone.
-func (mr *MockICarMockRecorder) NewDrone(arg0 any) *gomock.Call {
+func (mr *MockICarMockRecorder) NewDrone(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewDrone", reflect.TypeOf((*MockICar)(nil).NewDrone), arg0)
 }
@@ -124,7 +122,7 @@ func (mr *MockICarMockRecorder) Speed() *gomock.Call {
 // Support mocks base method.
 func (m *MockICar) Support(arg0 ...*gps.Point) bool {
 	m.ctrl.T.Helper()
-	varargs := []any{}
+	varargs := []interface{}{}
 	for _, a := range arg0 {
 		varargs = append(varargs, a)
 	}
@@ -134,7 +132,7 @@ func (m *MockICar) Support(arg0 ...*gps.Point) bool {
 }
 
 // Support indicates an expected call of Support.
-func (mr *MockICarMockRecorder) Support(arg0 ...any) *gomock.Call {
+func (mr *MockICarMockRecorder) Support(arg0 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Support", reflect.TypeOf((*MockICar)(nil).Support), arg0...)
 }

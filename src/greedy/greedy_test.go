@@ -1,16 +1,15 @@
 package greedy
 
 import (
-	"errors"
+	"github.com/golang/mock/gomock"
 
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 	"github.com/victorguarana/go-vehicle-route/src/routes"
 	mockroutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
-	"github.com/victorguarana/go-vehicle-route/src/vehicles"
 	mockvehicles "github.com/victorguarana/go-vehicle-route/src/vehicles/mocks"
-	"go.uber.org/mock/gomock"
+
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("closestPoint", func() {
@@ -34,7 +33,7 @@ var _ = Describe("closestPoint", func() {
 	})
 })
 
-var _ = Describe("finishRoutes", func() {
+var _ = Describe("finishRoutesOnClosestDeposits", func() {
 	var (
 		mockCtrl      *gomock.Controller
 		mockedCar     *mockvehicles.MockICar
@@ -67,76 +66,10 @@ var _ = Describe("finishRoutes", func() {
 
 	Context("when car can support the route", func() {
 		It("move the car to the closest deposit and append it to the route", func() {
-			mockedCar.EXPECT().Move(closestDeposit).Return(nil)
-			mockedRoute.EXPECT().Append(closestDeposit).Return(nil)
+			mockedCar.EXPECT().Move(closestDeposit)
+			mockedRoute.EXPECT().Append(closestDeposit)
 
-			Expect(finishRoutes(routesList, m)).To(Succeed())
-		})
-	})
-
-	Context("when car can not support the route", func() {
-		It("return an error", func() {
-			mockedErr := errors.New("mocked error")
-			mockedCar.EXPECT().Move(closestDeposit).Return(mockedErr)
-
-			receivedErr := finishRoutes(routesList, m)
-
-			Expect(receivedErr).To(MatchError(mockedErr))
-		})
-	})
-})
-
-var _ = Describe("moveAndAppend", func() {
-	var mockCtrl *gomock.Controller
-	var mockedRoute *mockroutes.MockIRoute
-	var mockedCar *mockvehicles.MockICar
-
-	BeforeEach(func() {
-		mockCtrl = gomock.NewController(GinkgoT())
-		mockedCar = mockvehicles.NewMockICar(mockCtrl)
-		mockedRoute = mockroutes.NewMockIRoute(mockCtrl)
-	})
-
-	AfterEach(func() {
-		mockCtrl.Finish()
-	})
-
-	Context("when car can move to the point", func() {
-		It("move the car and append the point to the route", func() {
-			point := &gps.Point{Latitude: 1, Longitude: 1}
-			mockedCar.EXPECT().Move(point).Return(nil)
-			mockedRoute.EXPECT().Car().Return(mockedCar)
-			mockedRoute.EXPECT().Append(point).Return(nil)
-
-			receivedErr := moveAndAppend(mockedRoute, point)
-
-			Expect(receivedErr).NotTo(HaveOccurred())
-		})
-	})
-
-	Context("when car can not move to the point", func() {
-		It("return an error", func() {
-			point := &gps.Point{Latitude: 1, Longitude: 1}
-			mockedCar.EXPECT().Move(point).Return(vehicles.ErrDestinationNotSupported)
-			mockedRoute.EXPECT().Car().Return(mockedCar)
-
-			err := moveAndAppend(mockedRoute, point)
-
-			Expect(err).To(MatchError(vehicles.ErrDestinationNotSupported))
-		})
-	})
-
-	Context("when route can not append point", func() {
-		It("return an error", func() {
-			point := &gps.Point{Latitude: 1, Longitude: 1}
-			mockedErr := errors.New("mocked error")
-			mockedCar.EXPECT().Move(point).Return(nil)
-			mockedRoute.EXPECT().Car().Return(mockedCar)
-			mockedRoute.EXPECT().Append(point).Return(mockedErr)
-
-			err := moveAndAppend(mockedRoute, point)
-
-			Expect(err).To(MatchError(mockedErr))
+			finishRoutesOnClosestDeposits(routesList, m)
 		})
 	})
 })

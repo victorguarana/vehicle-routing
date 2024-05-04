@@ -76,15 +76,8 @@ func createFlight(drone vehicles.IDrone, takeoffCarStop, landingCarStop routes.I
 		return err
 	}
 
-	err = drone.Move(point)
-	if err != nil {
-		return err
-	}
-
-	err = drone.Land(landingCarStop.Point())
-	if err != nil {
-		return err
-	}
+	drone.Move(point)
+	drone.Land(landingCarStop.Point())
 
 	return nil
 }
