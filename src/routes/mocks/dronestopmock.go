@@ -70,10 +70,10 @@ func (mr *MockIDroneStopMockRecorder) Flight() *gomock.Call {
 }
 
 // Point mocks base method.
-func (m *MockIDroneStop) Point() *gps.Point {
+func (m *MockIDroneStop) Point() gps.Point {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Point")
-	ret0, _ := ret[0].(*gps.Point)
+	ret0, _ := ret[0].(gps.Point)
 	return ret0
 }
 

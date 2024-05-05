@@ -40,19 +40,19 @@ var _ = Describe("ClosestNeighbor", func() {
 
 	Context("when car supports entire route", func() {
 		It("return a route without deposits between clients", func() {
-			initialPoint := &gps.Point{Latitude: 0, Longitude: 0}
-			client1 := &gps.Point{Latitude: 1, Longitude: 1, PackageSize: 1}
-			client2 := &gps.Point{Latitude: 2, Longitude: 2, PackageSize: 1}
-			client3 := &gps.Point{Latitude: 3, Longitude: 3, PackageSize: 1}
-			client4 := &gps.Point{Latitude: 4, Longitude: 4, PackageSize: 1}
-			client5 := &gps.Point{Latitude: 5, Longitude: 5, PackageSize: 1}
-			client6 := &gps.Point{Latitude: 6, Longitude: 6, PackageSize: 1}
-			deposit1 := &gps.Point{Latitude: 0, Longitude: 0}
-			deposit2 := &gps.Point{Latitude: 7, Longitude: 7}
+			initialPoint := gps.Point{Latitude: 0, Longitude: 0}
+			client1 := gps.Point{Latitude: 1, Longitude: 1, PackageSize: 1}
+			client2 := gps.Point{Latitude: 2, Longitude: 2, PackageSize: 1}
+			client3 := gps.Point{Latitude: 3, Longitude: 3, PackageSize: 1}
+			client4 := gps.Point{Latitude: 4, Longitude: 4, PackageSize: 1}
+			client5 := gps.Point{Latitude: 5, Longitude: 5, PackageSize: 1}
+			client6 := gps.Point{Latitude: 6, Longitude: 6, PackageSize: 1}
+			deposit1 := gps.Point{Latitude: 0, Longitude: 0}
+			deposit2 := gps.Point{Latitude: 7, Longitude: 7}
 
 			m := gps.Map{
-				Clients:  []*gps.Point{client4, client2, client5, client1, client3, client6},
-				Deposits: []*gps.Point{deposit1, deposit2},
+				Clients:  []gps.Point{client4, client2, client5, client1, client3, client6},
+				Deposits: []gps.Point{deposit1, deposit2},
 			}
 
 			mockedRoute1.EXPECT().Car().Return(mockedCar1).AnyTimes()
@@ -104,10 +104,10 @@ var _ = Describe("ClosestNeighbor", func() {
 })
 
 var _ = Describe("removePoint", func() {
-	var points []*gps.Point
+	var points []gps.Point
 
 	BeforeEach(func() {
-		points = []*gps.Point{
+		points = []gps.Point{
 			{Latitude: 1, Longitude: 1},
 			{Latitude: 2, Longitude: 2},
 			{Latitude: 3, Longitude: 3},
@@ -118,7 +118,7 @@ var _ = Describe("removePoint", func() {
 		Context("when point is the first element", func() {
 			It("remove the point", func() {
 				point := points[0]
-				expectedPoints := []*gps.Point{{Latitude: 2, Longitude: 2}, {Latitude: 3, Longitude: 3}}
+				expectedPoints := []gps.Point{{Latitude: 2, Longitude: 2}, {Latitude: 3, Longitude: 3}}
 				receivedPoints := removePoint(points, point)
 
 				Expect(receivedPoints).To(Equal(expectedPoints))
@@ -128,7 +128,7 @@ var _ = Describe("removePoint", func() {
 		Context("when point is in the middle", func() {
 			It("remove the point", func() {
 				point := points[1]
-				expectedPoints := []*gps.Point{{Latitude: 1, Longitude: 1}, {Latitude: 3, Longitude: 3}}
+				expectedPoints := []gps.Point{{Latitude: 1, Longitude: 1}, {Latitude: 3, Longitude: 3}}
 				receivedPoints := removePoint(points, point)
 
 				Expect(receivedPoints).To(Equal(expectedPoints))
@@ -138,7 +138,7 @@ var _ = Describe("removePoint", func() {
 		Context("when point is the last element", func() {
 			It("remove the point", func() {
 				point := points[2]
-				expectedPoints := []*gps.Point{{Latitude: 1, Longitude: 1}, {Latitude: 2, Longitude: 2}}
+				expectedPoints := []gps.Point{{Latitude: 1, Longitude: 1}, {Latitude: 2, Longitude: 2}}
 				receivedPoints := removePoint(points, point)
 
 				Expect(receivedPoints).To(Equal(expectedPoints))

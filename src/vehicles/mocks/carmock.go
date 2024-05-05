@@ -41,10 +41,10 @@ func (m *MockICar) EXPECT() *MockICarMockRecorder {
 }
 
 // ActualPosition mocks base method.
-func (m *MockICar) ActualPosition() *gps.Point {
+func (m *MockICar) ActualPosition() gps.Point {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ActualPosition")
-	ret0, _ := ret[0].(*gps.Point)
+	ret0, _ := ret[0].(gps.Point)
 	return ret0
 }
 
@@ -69,7 +69,7 @@ func (mr *MockICarMockRecorder) Drones() *gomock.Call {
 }
 
 // Move mocks base method.
-func (m *MockICar) Move(arg0 *gps.Point) {
+func (m *MockICar) Move(arg0 gps.Point) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "Move", arg0)
 }
@@ -121,7 +121,7 @@ func (mr *MockICarMockRecorder) Speed() *gomock.Call {
 }
 
 // Support mocks base method.
-func (m *MockICar) Support(arg0 ...*gps.Point) bool {
+func (m *MockICar) Support(arg0 ...gps.Point) bool {
 	m.ctrl.T.Helper()
 	varargs := []any{}
 	for _, a := range arg0 {

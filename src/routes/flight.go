@@ -19,7 +19,7 @@ type IFlight interface {
 	Drone() vehicles.IDrone
 
 	Land(ICarStop) error
-	Append(*gps.Point) error
+	Append(gps.Point) error
 }
 
 type flight struct {
@@ -69,7 +69,7 @@ func (f *flight) Drone() vehicles.IDrone {
 	return f.drone
 }
 
-func (f *flight) Append(point *gps.Point) error {
+func (f *flight) Append(point gps.Point) error {
 	ds := newDroneStop(f.drone, point, f)
 
 	f.stops = append(f.stops, ds)

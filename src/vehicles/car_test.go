@@ -10,7 +10,7 @@ import (
 var _ = Describe("NewCar", func() {
 	Context("when car can be created", func() {
 		It("create with correct params", func() {
-			p := &gps.Point{
+			p := gps.Point{
 				Latitude:  10,
 				Longitude: 10,
 			}
@@ -31,24 +31,24 @@ var _ = Describe("NewCar", func() {
 var _ = Describe("Move", func() {
 	Context("when car can move to next position", func() {
 		It("move car and docked drones", func() {
-			p := &gps.Point{
+			p := gps.Point{
 				Latitude:  10,
 				Longitude: 10,
 			}
 
 			drone1 := drone{
 				isFlying:       true,
-				actualPosition: &gps.Point{},
+				actualPosition: gps.Point{},
 			}
 
 			drone2 := drone{
 				isFlying:       false,
-				actualPosition: &gps.Point{},
+				actualPosition: gps.Point{},
 			}
 
 			sut := car{
 				drones: []*drone{&drone1, &drone2},
-				actualPosition: &gps.Point{
+				actualPosition: gps.Point{
 					Latitude:  0,
 					Longitude: 0,
 				},
@@ -56,7 +56,7 @@ var _ = Describe("Move", func() {
 
 			sut.Move(p)
 			Expect(sut.actualPosition).To(Equal(p))
-			Expect(drone1.actualPosition).To(Equal(&gps.Point{}))
+			Expect(drone1.actualPosition).To(Equal(gps.Point{}))
 			Expect(drone2.actualPosition).To(Equal(sut.actualPosition))
 		})
 	})
@@ -68,12 +68,12 @@ var _ = Describe("Support", func() {
 			It("returns true", func() {
 				destination := gps.Point{Latitude: 10}
 				sut := car{
-					actualPosition: &gps.Point{
+					actualPosition: gps.Point{
 						Latitude:  0,
 						Longitude: 0,
 					},
 				}
-				Expect(sut.Support(&destination)).To(BeTrue())
+				Expect(sut.Support(destination)).To(BeTrue())
 			})
 		})
 	})
@@ -84,12 +84,12 @@ var _ = Describe("Support", func() {
 				destination1 := gps.Point{Latitude: 10}
 				destination2 := gps.Point{Latitude: 20}
 				sut := car{
-					actualPosition: &gps.Point{
+					actualPosition: gps.Point{
 						Latitude:  0,
 						Longitude: 0,
 					},
 				}
-				Expect(sut.Support(&destination1, &destination2)).To(BeTrue())
+				Expect(sut.Support(destination1, destination2)).To(BeTrue())
 			})
 		})
 	})
@@ -99,7 +99,7 @@ var _ = Describe("NewDrone", func() {
 	Context("when car can create a new drone", func() {
 		It("create with correct params", func() {
 			sut := car{
-				actualPosition: &gps.Point{
+				actualPosition: gps.Point{
 					Latitude:  0,
 					Longitude: 0,
 				},
@@ -116,7 +116,7 @@ var _ = Describe("NewDrone", func() {
 
 var _ = Describe("ActualPosition", func() {
 	It("returns car position", func() {
-		p := &gps.Point{
+		p := gps.Point{
 			Latitude:  10,
 			Longitude: 10,
 		}

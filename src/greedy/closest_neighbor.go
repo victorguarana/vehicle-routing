@@ -9,9 +9,9 @@ import (
 func ClosestNeighbor(routeList []routes.IRoute, m gps.Map) error {
 	var route routes.IRoute
 	var car vehicles.ICar
-	var carActualPosition, closestClient, closestDepositFromClosestClient *gps.Point
+	var carActualPosition, closestClient, closestDepositFromClosestClient gps.Point
 
-	remaningClients := make([]*gps.Point, len(m.Clients))
+	remaningClients := make([]gps.Point, len(m.Clients))
 	copy(remaningClients, m.Clients)
 
 	for i := 0; len(remaningClients) > 0; i++ {
@@ -42,8 +42,8 @@ func ClosestNeighbor(routeList []routes.IRoute, m gps.Map) error {
 	return nil
 }
 
-func removePoint(points []*gps.Point, point *gps.Point) []*gps.Point {
-	var newPoints []*gps.Point
+func removePoint(points []gps.Point, point gps.Point) []gps.Point {
+	var newPoints []gps.Point
 
 	for _, p := range points {
 		if p != point {

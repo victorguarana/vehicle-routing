@@ -21,8 +21,8 @@ var _ = Describe("NewFlight", Ordered, func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockedDrone = mockVehicles.NewMockIDrone(mockCtrl)
 
-		validTakeoff = &carStop{point: &gps.Point{}}
-		ValidLanding = &carStop{point: &gps.Point{}}
+		validTakeoff = &carStop{point: gps.Point{}}
+		ValidLanding = &carStop{point: gps.Point{}}
 	})
 
 	Describe("valid params", func() {
@@ -88,11 +88,11 @@ var _ = Describe("Append", Ordered, func() {
 	var (
 		sut flight
 
-		validPoint *gps.Point
+		validPoint gps.Point
 	)
 
 	BeforeAll(func() {
-		validPoint = &gps.Point{}
+		validPoint = gps.Point{}
 		sut = flight{
 			takeoffPoint: &carStop{point: validPoint},
 			landingPoint: &carStop{point: validPoint},
@@ -116,14 +116,14 @@ var _ = Describe("Land", Ordered, func() {
 
 	BeforeAll(func() {
 		sut = flight{
-			takeoffPoint: &carStop{point: &gps.Point{}},
-			landingPoint: &carStop{point: &gps.Point{}},
+			takeoffPoint: &carStop{point: gps.Point{}},
+			landingPoint: &carStop{point: gps.Point{}},
 		}
 	})
 
 	Context("when landing point is valid", func() {
 		It("lands drone and sets landing point", func() {
-			paramLandingPoint := &carStop{point: &gps.Point{}}
+			paramLandingPoint := &carStop{point: gps.Point{}}
 			receivedErr := sut.Land(paramLandingPoint)
 
 			Expect(receivedErr).NotTo(HaveOccurred())

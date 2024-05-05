@@ -42,7 +42,7 @@ func (m *MockIRoute) EXPECT() *MockIRouteMockRecorder {
 }
 
 // Append mocks base method.
-func (m *MockIRoute) Append(arg0 *gps.Point) {
+func (m *MockIRoute) Append(arg0 gps.Point) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "Append", arg0)
 }

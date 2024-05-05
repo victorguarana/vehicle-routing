@@ -17,18 +17,18 @@ var (
 )
 
 type IDrone interface {
-	ActualPosition() *gps.Point
-	Land(*gps.Point)
-	Move(*gps.Point)
+	ActualPosition() gps.Point
+	Land(gps.Point)
+	Move(gps.Point)
 	Name() string
 	Speed() float64
-	Support(...*gps.Point) bool
+	Support(...gps.Point) bool
 }
 
 type drone struct {
 	speed          float64
 	name           string
-	actualPosition *gps.Point
+	actualPosition gps.Point
 	car            *car
 
 	isFlying        bool
@@ -53,7 +53,7 @@ func newDrone(name string, car *car) *drone {
 	return &d
 }
 
-func (d *drone) ActualPosition() *gps.Point {
+func (d *drone) ActualPosition() gps.Point {
 	return d.actualPosition
 }
 
@@ -65,7 +65,7 @@ func (d *drone) Speed() float64 {
 	return d.speed
 }
 
-func (d *drone) Land(destination *gps.Point) {
+func (d *drone) Land(destination gps.Point) {
 	d.actualPosition = destination
 	d.isFlying = false
 
@@ -73,14 +73,14 @@ func (d *drone) Land(destination *gps.Point) {
 	d.remaningStorage = d.totalStorage
 }
 
-func (d *drone) Move(destination *gps.Point) {
+func (d *drone) Move(destination gps.Point) {
 	d.isFlying = true
 	d.remaningRange -= gps.DistanceBetweenPoints(d.actualPosition, destination)
 	d.actualPosition = destination
 }
 
-func (d *drone) Support(destinations ...*gps.Point) bool {
-	distance := gps.DistanceBetweenPoints(append([]*gps.Point{d.actualPosition}, destinations...)...)
+func (d *drone) Support(destinations ...gps.Point) bool {
+	distance := gps.DistanceBetweenPoints(append([]gps.Point{d.actualPosition}, destinations...)...)
 	packagesSize := 0.0
 
 	for _, destination := range destinations {

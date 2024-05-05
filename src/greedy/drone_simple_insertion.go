@@ -65,7 +65,7 @@ func DroneSimpleInsertion(route routes.IRoute) {
 	}
 }
 
-func createFlight(drone vehicles.IDrone, takeoffCarStop, landingCarStop routes.ICarStop, point *gps.Point) error {
+func createFlight(drone vehicles.IDrone, takeoffCarStop, landingCarStop routes.ICarStop, point gps.Point) error {
 	actualFlight, err := routes.NewFlight(drone, takeoffCarStop, landingCarStop)
 	if err != nil {
 		return err

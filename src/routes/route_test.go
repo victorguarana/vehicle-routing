@@ -22,7 +22,7 @@ var _ = Describe("NewRoute", func() {
 
 	Context("when all params are valid", func() {
 		It("returns new route", func() {
-			intitialPosition := &gps.Point{}
+			intitialPosition := gps.Point{}
 			expectedRoute := &route{
 				car:   mockedCar,
 				stops: []*carStop{newCarStop(mockedCar, intitialPosition)},
@@ -54,14 +54,14 @@ var _ = Describe("Append", func() {
 
 		sut route
 
-		validPoint *gps.Point
+		validPoint gps.Point
 	)
 
 	BeforeEach(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockedCar = mockvehicles.NewMockICar(mockCtrl)
 
-		validPoint = &gps.Point{}
+		validPoint = gps.Point{}
 		sut = route{
 			car:   mockedCar,
 			stops: []*carStop{},
@@ -93,8 +93,8 @@ var _ = Describe("AtIndex", func() {
 		sut = route{
 			car: mockedCar,
 			stops: []*carStop{
-				{point: &gps.Point{Latitude: 0, Longitude: 0}, car: mockedCar},
-				{point: &gps.Point{Latitude: 1, Longitude: 1}, car: mockedCar},
+				{point: gps.Point{Latitude: 0, Longitude: 0}, car: mockedCar},
+				{point: gps.Point{Latitude: 1, Longitude: 1}, car: mockedCar},
 			},
 		}
 	})
@@ -135,8 +135,8 @@ var _ = Describe("RemoveCarStop", func() {
 		sut = route{
 			car: mockedCar,
 			stops: []*carStop{
-				{point: &gps.Point{Latitude: 0, Longitude: 0}, car: mockedCar},
-				{point: &gps.Point{Latitude: 1, Longitude: 1}, car: mockedCar},
+				{point: gps.Point{Latitude: 0, Longitude: 0}, car: mockedCar},
+				{point: gps.Point{Latitude: 1, Longitude: 1}, car: mockedCar},
 			},
 		}
 	})
@@ -144,7 +144,7 @@ var _ = Describe("RemoveCarStop", func() {
 	Context("when index is valid", func() {
 		It("removes car stop at index", func() {
 			expectedStops := []*carStop{
-				{point: &gps.Point{Latitude: 0, Longitude: 0}, car: mockedCar},
+				{point: gps.Point{Latitude: 0, Longitude: 0}, car: mockedCar},
 			}
 
 			Expect(sut.RemoveCarStop(1)).To(Succeed())

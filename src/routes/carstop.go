@@ -16,16 +16,16 @@ type ICarStop interface {
 	IsClient() bool
 	IsDeposit() bool
 	Flights() []IFlight
-	Point() *gps.Point
+	Point() gps.Point
 }
 
 type carStop struct {
-	point   *gps.Point
+	point   gps.Point
 	car     vehicles.ICar
 	flights []*flight
 }
 
-func newCarStop(car vehicles.ICar, point *gps.Point) *carStop {
+func newCarStop(car vehicles.ICar, point gps.Point) *carStop {
 	return &carStop{
 		point:   point,
 		car:     car,
@@ -54,6 +54,6 @@ func (cs *carStop) Flights() []IFlight {
 	return flights
 }
 
-func (cs *carStop) Point() *gps.Point {
+func (cs *carStop) Point() gps.Point {
 	return cs.point
 }

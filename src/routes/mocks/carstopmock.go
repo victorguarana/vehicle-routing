@@ -98,10 +98,10 @@ func (mr *MockICarStopMockRecorder) IsDeposit() *gomock.Call {
 }
 
 // Point mocks base method.
-func (m *MockICarStop) Point() *gps.Point {
+func (m *MockICarStop) Point() gps.Point {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Point")
-	ret0, _ := ret[0].(*gps.Point)
+	ret0, _ := ret[0].(gps.Point)
 	return ret0
 }
 

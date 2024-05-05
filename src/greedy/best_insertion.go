@@ -8,7 +8,7 @@ import (
 func BestInsertion(routesList []routes.IRoute, m gps.Map) error {
 	orderedClientsListsByRoute := orderedClientsByRoutes(routesList, m.Clients)
 
-	var closestDeposit *gps.Point
+	var closestDeposit gps.Point
 	for i, orderedClients := range orderedClientsListsByRoute {
 		route := routesList[i]
 		car := route.Car()
@@ -17,7 +17,7 @@ func BestInsertion(routesList []routes.IRoute, m gps.Map) error {
 			client := orderedClients[j]
 			closestDeposit = closestPoint(client, m.Deposits)
 
-			var destination *gps.Point
+			var destination gps.Point
 			if car.Support(client, closestDeposit) {
 				destination = client
 			} else {
@@ -36,10 +36,10 @@ func BestInsertion(routesList []routes.IRoute, m gps.Map) error {
 	return nil
 }
 
-func orderedClientsByRoutes(routes []routes.IRoute, clients []*gps.Point) [][]*gps.Point {
+func orderedClientsByRoutes(routes []routes.IRoute, clients []gps.Point) [][]gps.Point {
 	size := len(routes)
-	orderedClientsLists := make([][]*gps.Point, size)
-	initialPoints := make([]*gps.Point, size)
+	orderedClientsLists := make([][]gps.Point, size)
+	initialPoints := make([]gps.Point, size)
 	for i := range routes {
 		initialPoints[i] = routes[i].Car().ActualPosition()
 	}
@@ -53,7 +53,7 @@ func orderedClientsByRoutes(routes []routes.IRoute, clients []*gps.Point) [][]*g
 	return orderedClientsLists
 }
 
-func findBestInsertionIndex(initialPoint *gps.Point, client *gps.Point, orderedClients []*gps.Point) int {
+func findBestInsertionIndex(initialPoint gps.Point, client gps.Point, orderedClients []gps.Point) int {
 	if len(orderedClients) == 0 {
 		return 0
 	}
@@ -78,8 +78,8 @@ func findBestInsertionIndex(initialPoint *gps.Point, client *gps.Point, orderedC
 	return bestIndex
 }
 
-func insertAt(index int, client *gps.Point, orderedClients []*gps.Point) []*gps.Point {
-	newClientsList := make([]*gps.Point, len(orderedClients)+1)
+func insertAt(index int, client gps.Point, orderedClients []gps.Point) []gps.Point {
+	newClientsList := make([]gps.Point, len(orderedClients)+1)
 	for i := 0; i < len(newClientsList); i++ {
 		switch {
 		case i < index:

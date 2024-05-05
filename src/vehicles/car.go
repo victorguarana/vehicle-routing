@@ -7,23 +7,23 @@ var (
 )
 
 type ICar interface {
-	ActualPosition() *gps.Point
+	ActualPosition() gps.Point
 	Drones() []IDrone
-	Move(*gps.Point)
+	Move(gps.Point)
 	Name() string
 	NewDrone(string)
 	Speed() float64
-	Support(...*gps.Point) bool
+	Support(...gps.Point) bool
 }
 
 type car struct {
 	speed          float64
 	name           string
-	actualPosition *gps.Point
+	actualPosition gps.Point
 	drones         []*drone
 }
 
-func NewCar(name string, startingPoint *gps.Point) ICar {
+func NewCar(name string, startingPoint gps.Point) ICar {
 	c := car{
 		actualPosition: startingPoint,
 		name:           name,
@@ -34,7 +34,7 @@ func NewCar(name string, startingPoint *gps.Point) ICar {
 	return &c
 }
 
-func (c *car) ActualPosition() *gps.Point {
+func (c *car) ActualPosition() gps.Point {
 	return c.actualPosition
 }
 
@@ -52,12 +52,12 @@ func (c *car) NewDrone(name string) {
 	c.drones = append(c.drones, d)
 }
 
-func (c *car) Move(destination *gps.Point) {
+func (c *car) Move(destination gps.Point) {
 	c.actualPosition = destination
 	c.moveDockedDrones()
 }
 
-func (c *car) Support(destination ...*gps.Point) bool {
+func (c *car) Support(destination ...gps.Point) bool {
 	return true
 }
 

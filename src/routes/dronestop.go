@@ -8,16 +8,16 @@ import (
 type IDroneStop interface {
 	Drone() vehicles.IDrone
 	Flight() IFlight
-	Point() *gps.Point
+	Point() gps.Point
 }
 
 type droneStop struct {
-	point  *gps.Point
+	point  gps.Point
 	drone  vehicles.IDrone
 	flight *flight
 }
 
-func newDroneStop(d vehicles.IDrone, p *gps.Point, f *flight) *droneStop {
+func newDroneStop(d vehicles.IDrone, p gps.Point, f *flight) *droneStop {
 	return &droneStop{
 		point:  p,
 		drone:  d,
@@ -33,6 +33,6 @@ func (ds *droneStop) Flight() IFlight {
 	return ds.flight
 }
 
-func (ds *droneStop) Point() *gps.Point {
+func (ds *droneStop) Point() gps.Point {
 	return ds.point
 }

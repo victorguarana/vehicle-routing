@@ -5,12 +5,12 @@ import (
 	"github.com/victorguarana/go-vehicle-route/src/routes"
 )
 
-func closestPoint(originPoint *gps.Point, candidatePoints []*gps.Point) *gps.Point {
-	var closestPoint *gps.Point
+func closestPoint(originPoint gps.Point, candidatePoints []gps.Point) gps.Point {
+	var closestPoint gps.Point
 	var closestDistance float64
 
 	for _, candidatePoint := range candidatePoints {
-		if closestPoint == nil || gps.DistanceBetweenPoints(originPoint, candidatePoint) < closestDistance {
+		if closestDistance == 0 || gps.DistanceBetweenPoints(originPoint, candidatePoint) < closestDistance {
 			closestPoint = candidatePoint
 			closestDistance = gps.DistanceBetweenPoints(originPoint, candidatePoint)
 		}
