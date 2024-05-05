@@ -1,11 +1,13 @@
 package routes
 
 import (
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
+	"github.com/golang/mock/gomock"
+
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 	mockvehicles "github.com/victorguarana/go-vehicle-route/src/vehicles/mocks"
-	"go.uber.org/mock/gomock"
+
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("NewRoute", func() {
@@ -71,7 +73,7 @@ var _ = Describe("Append", func() {
 		It("appends new car stop", func() {
 			expectedStop := newCarStop(mockedCar, validPoint)
 
-			Expect(sut.Append(validPoint)).To(Succeed())
+			sut.Append(validPoint)
 			Expect(sut.stops).To(Equal([]*carStop{expectedStop}))
 		})
 	})

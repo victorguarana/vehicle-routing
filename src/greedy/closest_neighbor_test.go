@@ -1,14 +1,15 @@
 package greedy
 
 import (
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
-	"go.uber.org/mock/gomock"
+	"github.com/golang/mock/gomock"
 
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 	"github.com/victorguarana/go-vehicle-route/src/routes"
 	mockroutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
 	mockvehicles "github.com/victorguarana/go-vehicle-route/src/vehicles/mocks"
+
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("ClosestNeighbor", func() {
@@ -60,42 +61,42 @@ var _ = Describe("ClosestNeighbor", func() {
 
 			mockedCar1.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar1.EXPECT().Support(client1, deposit1).Return(true)
-			mockedCar1.EXPECT().Move(client1).Return(nil)
+			mockedCar1.EXPECT().Move(client1)
 			mockedRoute1.EXPECT().Append(client1)
 
 			mockedCar2.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar2.EXPECT().Support(client2, deposit1).Return(true)
-			mockedCar2.EXPECT().Move(client2).Return(nil)
+			mockedCar2.EXPECT().Move(client2)
 			mockedRoute2.EXPECT().Append(client2)
 
 			mockedCar1.EXPECT().ActualPosition().Return(client1)
 			mockedCar1.EXPECT().Support(client3, deposit1).Return(true)
-			mockedCar1.EXPECT().Move(client3).Return(nil)
+			mockedCar1.EXPECT().Move(client3)
 			mockedRoute1.EXPECT().Append(client3)
 
 			mockedCar2.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar2.EXPECT().Support(client4, deposit2).Return(true)
-			mockedCar2.EXPECT().Move(client4).Return(nil)
+			mockedCar2.EXPECT().Move(client4)
 			mockedRoute2.EXPECT().Append(client4)
 
 			mockedCar1.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar1.EXPECT().Support(client5, deposit2).Return(true)
-			mockedCar1.EXPECT().Move(client5).Return(nil)
+			mockedCar1.EXPECT().Move(client5)
 			mockedRoute1.EXPECT().Append(client5)
 
 			mockedCar2.EXPECT().ActualPosition().Return(initialPoint)
 			mockedCar2.EXPECT().Support(client6, deposit2).Return(true)
-			mockedCar2.EXPECT().Move(client6).Return(nil)
+			mockedCar2.EXPECT().Move(client6)
 			mockedRoute2.EXPECT().Append(client6)
 
 			mockedRoute1.EXPECT().Last().Return(mockedCarStop)
 			mockedCarStop.EXPECT().Point().Return(client5)
-			mockedCar1.EXPECT().Move(deposit2).Return(nil)
+			mockedCar1.EXPECT().Move(deposit2)
 			mockedRoute1.EXPECT().Append(deposit2)
 
 			mockedRoute2.EXPECT().Last().Return(mockedCarStop)
 			mockedCarStop.EXPECT().Point().Return(client6)
-			mockedCar2.EXPECT().Move(deposit2).Return(nil)
+			mockedCar2.EXPECT().Move(deposit2)
 			mockedRoute2.EXPECT().Append(deposit2)
 
 			Expect(ClosestNeighbor(routesList, m)).To(Succeed())

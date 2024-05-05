@@ -11,10 +11,10 @@ package mockroutes
 import (
 	reflect "reflect"
 
+	gomock "github.com/golang/mock/gomock"
 	gps "github.com/victorguarana/go-vehicle-route/src/gps"
 	routes "github.com/victorguarana/go-vehicle-route/src/routes"
 	vehicles "github.com/victorguarana/go-vehicle-route/src/vehicles"
-	gomock "go.uber.org/mock/gomock"
 )
 
 // MockIDroneStop is a mock of IDroneStop interface.

@@ -11,10 +11,10 @@ package mockroutes
 import (
 	reflect "reflect"
 
+	gomock "github.com/golang/mock/gomock"
 	gps "github.com/victorguarana/go-vehicle-route/src/gps"
 	routes "github.com/victorguarana/go-vehicle-route/src/routes"
 	vehicles "github.com/victorguarana/go-vehicle-route/src/vehicles"
-	gomock "go.uber.org/mock/gomock"
 )
 
 // MockIRoute is a mock of IRoute interface.
@@ -41,15 +41,13 @@ func (m *MockIRoute) EXPECT() *MockIRouteMockRecorder {
 }
 
 // Append mocks base method.
-func (m *MockIRoute) Append(arg0 *gps.Point) error {
+func (m *MockIRoute) Append(arg0 *gps.Point) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Append", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
+	m.ctrl.Call(m, "Append", arg0)
 }
 
 // Append indicates an expected call of Append.
-func (mr *MockIRouteMockRecorder) Append(arg0 any) *gomock.Call {
+func (mr *MockIRouteMockRecorder) Append(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Append", reflect.TypeOf((*MockIRoute)(nil).Append), arg0)
 }
@@ -64,7 +62,7 @@ func (m *MockIRoute) AtIndex(arg0 int) (routes.ICarStop, error) {
 }
 
 // AtIndex indicates an expected call of AtIndex.
-func (mr *MockIRouteMockRecorder) AtIndex(arg0 any) *gomock.Call {
+func (mr *MockIRouteMockRecorder) AtIndex(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AtIndex", reflect.TypeOf((*MockIRoute)(nil).AtIndex), arg0)
 }
@@ -134,7 +132,7 @@ func (m *MockIRoute) RemoveCarStop(arg0 int) error {
 }
 
 // RemoveCarStop indicates an expected call of RemoveCarStop.
-func (mr *MockIRouteMockRecorder) RemoveCarStop(arg0 any) *gomock.Call {
+func (mr *MockIRouteMockRecorder) RemoveCarStop(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveCarStop", reflect.TypeOf((*MockIRoute)(nil).RemoveCarStop), arg0)
 }
