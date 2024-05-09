@@ -10,8 +10,9 @@ import (
 
 // Insert 2 different drones in the same route
 // Each drone will deliver a client and return immediately to the car
-func DroneSimpleInsertion(route routes.IRoute) {
-	car := route.Car()
+func DroneSimpleInsertion(itinerary routes.Itinerary) {
+	route := itinerary.Route
+	car := itinerary.Car
 	drones := car.Drones()
 
 	for actualCarStopIndex := 1; actualCarStopIndex < route.Len(); actualCarStopIndex++ {
@@ -22,8 +23,8 @@ func DroneSimpleInsertion(route routes.IRoute) {
 		// Case #1: Actual point is a Client and next is a Deposit -> Deliver actual point with the first available drone
 		if actualCarStop.IsClient() && nextCarStop.IsDeposit() {
 			if drones[0].Support(actualCarStop.Point()) {
-				createFlight(drones[0], previousCarStop, nextCarStop, actualCarStop.Point())
-				route.RemoveCarStop(actualCarStopIndex)
+				createSubRoute(drones[0], previousCarStop, nextCarStop, actualCarStop.Point())
+				route.RemoveMainStop(actualCarStopIndex)
 			}
 
 			continue
@@ -38,23 +39,23 @@ func DroneSimpleInsertion(route routes.IRoute) {
 			switch {
 			// Case #2.1: Both drones support both clients -> Deliver each client with an each drone
 			case drone0SupportsActual && drone1SupportsNext:
-				createFlight(drones[0], previousCarStop, nextNextCarStop, actualCarStop.Point())
-				createFlight(drones[1], previousCarStop, nextNextCarStop, nextCarStop.Point())
+				createSubRoute(drones[0], previousCarStop, nextNextCarStop, actualCarStop.Point())
+				createSubRoute(drones[1], previousCarStop, nextNextCarStop, nextCarStop.Point())
 
-				route.RemoveCarStop(actualCarStopIndex)
-				route.RemoveCarStop(actualCarStopIndex)
+				route.RemoveMainStop(actualCarStopIndex)
+				route.RemoveMainStop(actualCarStopIndex)
 
 				// Increment the index because the next point is now a landing point
 
 			// Case #2.2: Just first drone supports actual -> Just deliver actual client with the first drone
 			case drone0SupportsActual && !drone1SupportsNext:
-				createFlight(drones[0], previousCarStop, nextCarStop, actualCarStop.Point())
-				route.RemoveCarStop(actualCarStopIndex)
+				createSubRoute(drones[0], previousCarStop, nextCarStop, actualCarStop.Point())
+				route.RemoveMainStop(actualCarStopIndex)
 
 			// Case #2.3: Just second drone supports next client -> Just deliver next client with the second drone
 			case !drone0SupportsActual && drone1SupportsNext:
-				createFlight(drones[1], actualCarStop, nextNextCarStop, nextCarStop.Point())
-				route.RemoveCarStop(actualCarStopIndex + 1)
+				createSubRoute(drones[1], actualCarStop, nextNextCarStop, nextCarStop.Point())
+				route.RemoveMainStop(actualCarStopIndex + 1)
 
 				// Increment the index because we skipped the actual point
 				// actualCarStopIndex++
@@ -65,19 +66,10 @@ func DroneSimpleInsertion(route routes.IRoute) {
 	}
 }
 
-func createFlight(drone vehicles.IDrone, takeoffCarStop, landingCarStop routes.ICarStop, point gps.Point) error {
-	actualFlight, err := routes.NewFlight(drone, takeoffCarStop, landingCarStop)
-	if err != nil {
-		return err
-	}
-
-	err = actualFlight.Append(point)
-	if err != nil {
-		return err
-	}
-
+func createSubRoute(drone vehicles.IDrone, takeoffCarStop, landingCarStop routes.IMainStop, point gps.Point) error {
+	actualFlight := routes.NewSubRoute(takeoffCarStop, landingCarStop)
+	actualFlight.Append(routes.NewSubStop(point))
 	drone.Move(point)
 	drone.Land(landingCarStop.Point())
-
 	return nil
 }

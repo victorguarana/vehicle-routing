@@ -3,92 +3,67 @@ package greedy
 import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 	"github.com/victorguarana/go-vehicle-route/src/routes"
+	"github.com/victorguarana/go-vehicle-route/src/slc"
 )
 
-func BestInsertion(routesList []routes.IRoute, m gps.Map) error {
-	orderedClientsListsByRoute := orderedClientsByRoutes(routesList, m.Clients)
-
-	var closestDeposit gps.Point
-	for i, orderedClients := range orderedClientsListsByRoute {
-		route := routesList[i]
-		car := route.Car()
-
-		for j := range orderedClients {
-			client := orderedClients[j]
-			closestDeposit = closestPoint(client, m.Deposits)
-
-			var destination gps.Point
-			if car.Support(client, closestDeposit) {
-				destination = client
-			} else {
-				destination = closestDeposit
-				j--
-			}
-
-			route.Car().Move(destination)
-			route.Append(destination)
-		}
-
-		route.Car().Move(closestDeposit)
-		route.Append(closestDeposit)
+func BestInsertion(itineraryList []routes.Itinerary, m gps.Map) {
+	orderedClientsListsByRoute := orderedClientsByItinerary(itineraryList, m.Clients)
+	for itinerary, orderedClients := range orderedClientsListsByRoute {
+		fillRoute(itinerary, orderedClients, m.Deposits)
 	}
-
-	return nil
+	finishItineraryOnClosestDeposits(itineraryList, m)
 }
 
-func orderedClientsByRoutes(routes []routes.IRoute, clients []gps.Point) [][]gps.Point {
-	size := len(routes)
-	orderedClientsLists := make([][]gps.Point, size)
-	initialPoints := make([]gps.Point, size)
-	for i := range routes {
-		initialPoints[i] = routes[i].Car().ActualPosition()
-	}
-
+func orderedClientsByItinerary(itineraryList []routes.Itinerary, clients []gps.Point) map[routes.Itinerary][]gps.Point {
+	orderedClientsByItinerary := map[routes.Itinerary][]gps.Point{}
 	for i, client := range clients {
-		i = i % size
-		index := findBestInsertionIndex(initialPoints[i], client, orderedClientsLists[i])
-		orderedClientsLists[i] = insertAt(index, client, orderedClientsLists[i])
+		itinerary := slc.CircularSelection(itineraryList, i)
+		initialPoint := itinerary.Car.ActualPosition()
+		orderedClients := orderedClientsByItinerary[itinerary]
+		orderedClientsByItinerary[itinerary] = insertInBestPosition(initialPoint, client, orderedClients)
 	}
-
-	return orderedClientsLists
+	return orderedClientsByItinerary
 }
 
-func findBestInsertionIndex(initialPoint gps.Point, client gps.Point, orderedClients []gps.Point) int {
+func insertInBestPosition(initialPoint gps.Point, client gps.Point, orderedClients []gps.Point) []gps.Point {
 	if len(orderedClients) == 0 {
-		return 0
+		return []gps.Point{client}
 	}
+	bestIndex := findBestPosition(initialPoint, client, orderedClients)
+	return slc.InsertAt(orderedClients, client, bestIndex)
+}
 
-	bestIndex := 0
-	bestAdicionalDistance := gps.DistanceBetweenPoints(initialPoint, client, orderedClients[0]) - gps.DistanceBetweenPoints(initialPoint, orderedClients[0])
-
-	for i := 0; i < len(orderedClients)-1; i++ {
-		adicionalDistance := gps.DistanceBetweenPoints(orderedClients[i], client, orderedClients[i+1]) - gps.DistanceBetweenPoints(orderedClients[i], orderedClients[i+1])
-
-		if adicionalDistance < bestAdicionalDistance {
-			bestIndex = i + 1
-			bestAdicionalDistance = adicionalDistance
+func findBestPosition(initialPoint gps.Point, client gps.Point, orderedClients []gps.Point) int {
+	var bestIndex int
+	shortestAdditionalDistance := calcAdditionalDistance(initialPoint, client, orderedClients[0])
+	for i := 1; i < len(orderedClients); i++ {
+		addictionalDistance := calcAdditionalDistance(orderedClients[i-1], client, orderedClients[i])
+		if addictionalDistance < shortestAdditionalDistance {
+			bestIndex = i
+			shortestAdditionalDistance = addictionalDistance
 		}
 	}
 
-	adicionalDistance := gps.DistanceBetweenPoints(orderedClients[len(orderedClients)-1], client)
-	if adicionalDistance < bestAdicionalDistance {
+	addictionalDistance := calcAdditionalDistance(orderedClients[len(orderedClients)-1], client, initialPoint)
+	if addictionalDistance < shortestAdditionalDistance {
 		bestIndex = len(orderedClients)
 	}
 
 	return bestIndex
 }
 
-func insertAt(index int, client gps.Point, orderedClients []gps.Point) []gps.Point {
-	newClientsList := make([]gps.Point, len(orderedClients)+1)
-	for i := 0; i < len(newClientsList); i++ {
-		switch {
-		case i < index:
-			newClientsList[i] = orderedClients[i]
-		case i == index:
-			newClientsList[i] = client
-		case i > index:
-			newClientsList[i] = orderedClients[i-1]
+func fillRoute(itinerary routes.Itinerary, orderedClients []gps.Point, deposits []gps.Point) {
+	route := itinerary.Route
+	car := itinerary.Car
+	for _, client := range orderedClients {
+		closestDeposit := closestPoint(client, deposits)
+		if !car.Support(client, closestDeposit) {
+			moveCarAndAppendRoute(car, route, closestDeposit)
 		}
+		moveCarAndAppendRoute(car, route, client)
 	}
-	return newClientsList
+}
+
+func calcAdditionalDistance(from, through, to gps.Point) float64 {
+	return gps.DistanceBetweenPoints(from, through, to) - gps.DistanceBetweenPoints(from, to)
 }
