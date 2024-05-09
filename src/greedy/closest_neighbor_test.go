@@ -1,12 +1,11 @@
 package greedy
 
 import (
-	"github.com/golang/mock/gomock"
-
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 	"github.com/victorguarana/go-vehicle-route/src/routes"
 	mockroutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
 	mockvehicles "github.com/victorguarana/go-vehicle-route/src/vehicles/mocks"
+	"go.uber.org/mock/gomock"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"

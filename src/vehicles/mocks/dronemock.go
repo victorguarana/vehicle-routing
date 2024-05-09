@@ -5,14 +5,15 @@
 //
 //	mockgen -source=src/vehicles/drone.go -destination=src/vehicles/mocks/dronemock.go -package=mockvehicles
 //
+
 // Package mockvehicles is a generated GoMock package.
 package mockvehicles
 
 import (
 	reflect "reflect"
 
-	gomock "github.com/golang/mock/gomock"
 	gps "github.com/victorguarana/go-vehicle-route/src/gps"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockIDrone is a mock of IDrone interface.
@@ -59,7 +60,7 @@ func (m *MockIDrone) Land(arg0 *gps.Point) {
 }
 
 // Land indicates an expected call of Land.
-func (mr *MockIDroneMockRecorder) Land(arg0 interface{}) *gomock.Call {
+func (mr *MockIDroneMockRecorder) Land(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Land", reflect.TypeOf((*MockIDrone)(nil).Land), arg0)
 }
@@ -71,7 +72,7 @@ func (m *MockIDrone) Move(arg0 *gps.Point) {
 }
 
 // Move indicates an expected call of Move.
-func (mr *MockIDroneMockRecorder) Move(arg0 interface{}) *gomock.Call {
+func (mr *MockIDroneMockRecorder) Move(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Move", reflect.TypeOf((*MockIDrone)(nil).Move), arg0)
 }
@@ -107,7 +108,7 @@ func (mr *MockIDroneMockRecorder) Speed() *gomock.Call {
 // Support mocks base method.
 func (m *MockIDrone) Support(arg0 ...*gps.Point) bool {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{}
+	varargs := []any{}
 	for _, a := range arg0 {
 		varargs = append(varargs, a)
 	}
@@ -117,7 +118,7 @@ func (m *MockIDrone) Support(arg0 ...*gps.Point) bool {
 }
 
 // Support indicates an expected call of Support.
-func (mr *MockIDroneMockRecorder) Support(arg0 ...interface{}) *gomock.Call {
+func (mr *MockIDroneMockRecorder) Support(arg0 ...any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Support", reflect.TypeOf((*MockIDrone)(nil).Support), arg0...)
 }

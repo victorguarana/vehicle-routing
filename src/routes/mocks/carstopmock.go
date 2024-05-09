@@ -5,16 +5,17 @@
 //
 //	mockgen -source=src/routes/carstop.go -destination=src/routes/mocks/carstopmock.go -package=mockroutes
 //
+
 // Package mockroutes is a generated GoMock package.
 package mockroutes
 
 import (
 	reflect "reflect"
 
-	gomock "github.com/golang/mock/gomock"
 	gps "github.com/victorguarana/go-vehicle-route/src/gps"
 	routes "github.com/victorguarana/go-vehicle-route/src/routes"
 	vehicles "github.com/victorguarana/go-vehicle-route/src/vehicles"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockICarStop is a mock of ICarStop interface.
