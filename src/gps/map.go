@@ -3,8 +3,8 @@ package gps
 var singletonMap Map
 
 type Map struct {
-	Deposits []*Point
-	Clients  []*Point
+	Deposits []Point
+	Clients  []Point
 }
 
 func init() {
@@ -13,11 +13,11 @@ func init() {
 
 func loadMap() Map {
 	return Map{
-		Deposits: []*Point{
+		Deposits: []Point{
 			{Name: "Dep#1", Latitude: -1, Longitude: 27},
 			{Name: "Dep#2", Latitude: -14, Longitude: -43},
 		},
-		Clients: []*Point{
+		Clients: []Point{
 			{Name: "Cli#1", Latitude: 36, Longitude: 17, PackageSize: 8},
 			{Name: "Cli#2", Latitude: -45, Longitude: -19, PackageSize: 2},
 			{Name: "Cli#3", Latitude: 46, Longitude: -32, PackageSize: 4},
