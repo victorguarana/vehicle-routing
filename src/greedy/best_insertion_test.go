@@ -5,7 +5,7 @@ import (
 
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 	"github.com/victorguarana/go-vehicle-route/src/routes"
-	mockroutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
+	"github.com/victorguarana/go-vehicle-route/src/vehicles"
 	mockvehicles "github.com/victorguarana/go-vehicle-route/src/vehicles/mocks"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -13,25 +13,16 @@ import (
 )
 
 var _ = Describe("BestInsertion", func() {
-	var itineraryList []routes.Itinerary
-	var (
-		mockCtrl     *gomock.Controller
-		mockedCar1   *mockvehicles.MockICar
-		mockedCar2   *mockvehicles.MockICar
-		mockedRoute1 *mockroutes.MockIMainRoute
-		mockedRoute2 *mockroutes.MockIMainRoute
-	)
+	var carsList []vehicles.ICar
+	var mockCtrl *gomock.Controller
+	var mockedCar1 *mockvehicles.MockICar
+	var mockedCar2 *mockvehicles.MockICar
 
 	BeforeEach(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockedCar1 = mockvehicles.NewMockICar(mockCtrl)
 		mockedCar2 = mockvehicles.NewMockICar(mockCtrl)
-		mockedRoute1 = mockroutes.NewMockIMainRoute(mockCtrl)
-		mockedRoute2 = mockroutes.NewMockIMainRoute(mockCtrl)
-		itineraryList = []routes.Itinerary{
-			{Car: mockedCar1, Route: mockedRoute1},
-			{Car: mockedCar2, Route: mockedRoute2},
-		}
+		carsList = []vehicles.ICar{mockedCar1, mockedCar2}
 	})
 
 	Context("when car supports entire route", func() {
@@ -50,75 +41,49 @@ var _ = Describe("BestInsertion", func() {
 		}
 
 		It("return a route without deposits between clients", func() {
-			mockedCar1.EXPECT().ActualPosition().Return(initialPoint).AnyTimes()
+			mockedCar1.EXPECT().ActualPoint().Return(initialPoint).AnyTimes()
 			mockedCar1.EXPECT().Support(client3, deposit1).Return(true)
-			mockedCar1.EXPECT().Move(client3)
-			mockedRoute1.EXPECT().Append(routes.NewMainStop(client3))
-
+			mockedCar1.EXPECT().Move(routes.NewMainStop(client3))
 			mockedCar1.EXPECT().Support(client5, deposit2).Return(true)
-			mockedCar1.EXPECT().Move(client5)
-			mockedRoute1.EXPECT().Append(routes.NewMainStop(client5))
-
+			mockedCar1.EXPECT().Move(routes.NewMainStop(client5))
 			mockedCar1.EXPECT().Support(client4, deposit2).Return(true)
-			mockedCar1.EXPECT().Move(client4)
-			mockedRoute1.EXPECT().Append(routes.NewMainStop(client4))
+			mockedCar1.EXPECT().Move(routes.NewMainStop(client4))
+			mockedCar1.EXPECT().Move(routes.NewMainStop(deposit1))
 
-			mockedRoute1.EXPECT().Last().Return(routes.NewMainStop(client4))
-			mockedCar1.EXPECT().Move(deposit2)
-			mockedRoute1.EXPECT().Append(routes.NewMainStop(deposit2))
-
-			mockedCar2.EXPECT().ActualPosition().Return(initialPoint).AnyTimes()
+			mockedCar2.EXPECT().ActualPoint().Return(initialPoint).AnyTimes()
 			mockedCar2.EXPECT().Support(client1, deposit1).Return(true)
-			mockedCar2.EXPECT().Move(client1)
-			mockedRoute2.EXPECT().Append(routes.NewMainStop(client1))
-
+			mockedCar2.EXPECT().Move(routes.NewMainStop(client1))
 			mockedCar2.EXPECT().Support(client6, deposit2).Return(true)
-			mockedCar2.EXPECT().Move(client6)
-			mockedRoute2.EXPECT().Append(routes.NewMainStop(client6))
-
+			mockedCar2.EXPECT().Move(routes.NewMainStop(client6))
 			mockedCar2.EXPECT().Support(client2, deposit1).Return(true)
-			mockedCar2.EXPECT().Move(client2)
-			mockedRoute2.EXPECT().Append(routes.NewMainStop(client2))
+			mockedCar2.EXPECT().Move(routes.NewMainStop(client2))
+			mockedCar2.EXPECT().Move(routes.NewMainStop(deposit1))
 
-			mockedRoute2.EXPECT().Last().Return(routes.NewMainStop(client2))
-			mockedCar2.EXPECT().Move(deposit1)
-			mockedRoute2.EXPECT().Append(routes.NewMainStop(deposit1))
-
-			BestInsertion(itineraryList, m)
+			BestInsertion(carsList, m)
 		})
 	})
 })
 
-var _ = Describe("orderedClientsByItinerary", func() {
-	var itinerary1 routes.Itinerary
-	var itinerary2 routes.Itinerary
-	var itineraryList []routes.Itinerary
-	var (
-		mockCtrl     *gomock.Controller
-		mockedCar1   *mockvehicles.MockICar
-		mockedCar2   *mockvehicles.MockICar
-		mockedRoute1 *mockroutes.MockIMainRoute
-		mockedRoute2 *mockroutes.MockIMainRoute
-	)
+var _ = Describe("orderedClientsByCars", func() {
+	var carsList []vehicles.ICar
+	var mockCtrl *gomock.Controller
+	var mockedCar1 *mockvehicles.MockICar
+	var mockedCar2 *mockvehicles.MockICar
 
 	BeforeEach(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockedCar1 = mockvehicles.NewMockICar(mockCtrl)
 		mockedCar2 = mockvehicles.NewMockICar(mockCtrl)
-		mockedRoute1 = mockroutes.NewMockIMainRoute(mockCtrl)
-		mockedRoute2 = mockroutes.NewMockIMainRoute(mockCtrl)
-		itinerary1 = routes.Itinerary{Car: mockedCar1, Route: mockedRoute1}
-		itinerary2 = routes.Itinerary{Car: mockedCar2, Route: mockedRoute2}
-		itineraryList = []routes.Itinerary{itinerary1, itinerary2}
+		carsList = []vehicles.ICar{mockedCar1, mockedCar2}
 
-		mockedCar1.EXPECT().ActualPosition().Return(gps.Point{Latitude: 0, Longitude: 0}).AnyTimes()
-		mockedCar2.EXPECT().ActualPosition().Return(gps.Point{Latitude: 0, Longitude: 0}).AnyTimes()
+		mockedCar1.EXPECT().ActualPoint().Return(gps.Point{Latitude: 0, Longitude: 0}).AnyTimes()
+		mockedCar2.EXPECT().ActualPoint().Return(gps.Point{Latitude: 0, Longitude: 0}).AnyTimes()
 	})
 
 	Context("when clients is empty", func() {
 		It("return empty array", func() {
-			expectedOrderedClients := map[routes.Itinerary][]gps.Point{}
-			receivedOrderedClients := orderedClientsByItinerary(itineraryList, []gps.Point{})
+			expectedOrderedClients := map[vehicles.ICar][]gps.Point{}
+			receivedOrderedClients := orderedClientsByCars(carsList, []gps.Point{})
 			Expect(receivedOrderedClients).To(Equal(expectedOrderedClients))
 		})
 	})
@@ -133,11 +98,11 @@ var _ = Describe("orderedClientsByItinerary", func() {
 		var clients = []gps.Point{client5, client2, client4, client6, client1, client3}
 
 		It("return ordered clients", func() {
-			var expectedOrderedClients = map[routes.Itinerary][]gps.Point{
-				itinerary1: {client1, client4, client5},
-				itinerary2: {client6, client3, client2},
+			var expectedOrderedClients = map[vehicles.ICar][]gps.Point{
+				mockedCar1: {client1, client4, client5},
+				mockedCar2: {client6, client3, client2},
 			}
-			receivedOrderedClients := orderedClientsByItinerary(itineraryList, clients)
+			receivedOrderedClients := orderedClientsByCars(carsList, clients)
 			Expect(receivedOrderedClients).To(Equal(expectedOrderedClients))
 		})
 	})

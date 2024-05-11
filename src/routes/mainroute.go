@@ -22,6 +22,13 @@ type mainRoute struct {
 	mainStops []*mainStop
 }
 
+func NewMainRoute(iMainStop IMainStop) IMainRoute {
+	ms := iMainStop.(*mainStop)
+	return &mainRoute{
+		mainStops: []*mainStop{ms},
+	}
+}
+
 func (r *mainRoute) Append(iMainStop IMainStop) {
 	ms := iMainStop.(*mainStop)
 	r.mainStops = append(r.mainStops, ms)

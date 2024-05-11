@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("NewSubRoute", Ordered, func() {
+var _ = Describe("NewSubRoute", func() {
 	var startingPoint = &mainStop{point: gps.Point{}}
 	var returningPoint = &mainStop{point: gps.Point{}}
 
@@ -24,29 +24,77 @@ var _ = Describe("NewSubRoute", Ordered, func() {
 	})
 })
 
-var _ = Describe("Append", Ordered, func() {
-	var validPoint = gps.Point{}
-	var sut = subRoute{
-		startingPoint:  &mainStop{point: validPoint},
-		returningPoint: &mainStop{point: validPoint},
-	}
+var _ = Describe("subRoute{}", func() {
+	var _ = Describe("Append", func() {
+		var validPoint = gps.Point{}
+		var sut = subRoute{
+			startingPoint:  &mainStop{point: validPoint},
+			returningPoint: &mainStop{point: validPoint},
+		}
 
-	It("appends substop to subRoute", func() {
-		appendedPoint := &subStop{point: validPoint}
-		sut.Append(appendedPoint)
-		Expect(sut.stops).To(Equal([]*subStop{appendedPoint}))
+		It("should append sub stop to sub route", func() {
+			appendedPoint := &subStop{point: validPoint}
+			sut.Append(appendedPoint)
+			Expect(sut.stops).To(Equal([]*subStop{appendedPoint}))
+		})
 	})
-})
 
-var _ = Describe("Land", Ordered, func() {
-	var sut = subRoute{
-		startingPoint:  &mainStop{point: gps.Point{}},
-		returningPoint: &mainStop{point: gps.Point{}},
-	}
+	var _ = Describe("First", func() {
+		var firstSubStop = &subStop{point: gps.Point{Latitude: 1}}
+		var secondSubStop = &subStop{point: gps.Point{Latitude: 2}}
+		var sut = subRoute{
+			stops: []*subStop{firstSubStop, secondSubStop},
+		}
 
-	It("lands drone and sets landing point", func() {
-		returningPoint := &mainStop{point: gps.Point{}}
-		sut.Return(returningPoint)
-		Expect(sut.returningPoint).To(Equal(returningPoint))
+		It("should return first stop", func() {
+			Expect(sut.First()).To(Equal(firstSubStop))
+		})
+	})
+
+	var _ = Describe("Last", func() {
+		var firstSubStop = &subStop{point: gps.Point{Latitude: 1}}
+		var secondSubStop = &subStop{point: gps.Point{Latitude: 2}}
+		var sut = subRoute{
+			stops: []*subStop{firstSubStop, secondSubStop},
+		}
+
+		It("should return last stop", func() {
+			Expect(sut.Last()).To(Equal(secondSubStop))
+		})
+	})
+
+	var _ = Describe("Return", func() {
+		var sut = subRoute{
+			startingPoint:  &mainStop{point: gps.Point{}},
+			returningPoint: &mainStop{point: gps.Point{}},
+		}
+
+		It("should set returning point", func() {
+			returningPoint := &mainStop{point: gps.Point{}}
+			sut.Return(returningPoint)
+			Expect(sut.returningPoint).To(Equal(returningPoint))
+		})
+	})
+
+	var _ = Describe("ReturningPoint", func() {
+		var returningPoint = &mainStop{point: gps.Point{}}
+		var sut = subRoute{
+			returningPoint: returningPoint,
+		}
+
+		It("should return returning point", func() {
+			Expect(sut.ReturningPoint()).To(Equal(returningPoint))
+		})
+	})
+
+	var _ = Describe("StartingPoint", func() {
+		var startingPoint = &mainStop{point: gps.Point{}}
+		var sut = subRoute{
+			startingPoint: startingPoint,
+		}
+
+		It("should return starting point", func() {
+			Expect(sut.StartingPoint()).To(Equal(startingPoint))
+		})
 	})
 })

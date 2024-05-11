@@ -51,6 +51,34 @@ func (mr *MockISubRouteMockRecorder) Append(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Append", reflect.TypeOf((*MockISubRoute)(nil).Append), arg0)
 }
 
+// First mocks base method.
+func (m *MockISubRoute) First() routes.ISubStop {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "First")
+	ret0, _ := ret[0].(routes.ISubStop)
+	return ret0
+}
+
+// First indicates an expected call of First.
+func (mr *MockISubRouteMockRecorder) First() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "First", reflect.TypeOf((*MockISubRoute)(nil).First))
+}
+
+// Last mocks base method.
+func (m *MockISubRoute) Last() routes.ISubStop {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Last")
+	ret0, _ := ret[0].(routes.ISubStop)
+	return ret0
+}
+
+// Last indicates an expected call of Last.
+func (mr *MockISubRouteMockRecorder) Last() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Last", reflect.TypeOf((*MockISubRoute)(nil).Last))
+}
+
 // Return mocks base method.
 func (m *MockISubRoute) Return(arg0 routes.IMainStop) {
 	m.ctrl.T.Helper()

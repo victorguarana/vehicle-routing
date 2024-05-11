@@ -13,6 +13,7 @@ import (
 	reflect "reflect"
 
 	gps "github.com/victorguarana/go-vehicle-route/src/gps"
+	routes "github.com/victorguarana/go-vehicle-route/src/routes"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -39,42 +40,28 @@ func (m *MockIDrone) EXPECT() *MockIDroneMockRecorder {
 	return m.recorder
 }
 
-// ActualPosition mocks base method.
-func (m *MockIDrone) ActualPosition() gps.Point {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ActualPosition")
-	ret0, _ := ret[0].(gps.Point)
-	return ret0
-}
-
-// ActualPosition indicates an expected call of ActualPosition.
-func (mr *MockIDroneMockRecorder) ActualPosition() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActualPosition", reflect.TypeOf((*MockIDrone)(nil).ActualPosition))
-}
-
 // Land mocks base method.
-func (m *MockIDrone) Land(arg0 gps.Point) {
+func (m *MockIDrone) Land(landingPoint routes.IMainStop) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Land", arg0)
+	m.ctrl.Call(m, "Land", landingPoint)
 }
 
 // Land indicates an expected call of Land.
-func (mr *MockIDroneMockRecorder) Land(arg0 any) *gomock.Call {
+func (mr *MockIDroneMockRecorder) Land(landingPoint any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Land", reflect.TypeOf((*MockIDrone)(nil).Land), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Land", reflect.TypeOf((*MockIDrone)(nil).Land), landingPoint)
 }
 
 // Move mocks base method.
-func (m *MockIDrone) Move(arg0 gps.Point) {
+func (m *MockIDrone) Move(destination routes.ISubStop) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Move", arg0)
+	m.ctrl.Call(m, "Move", destination)
 }
 
 // Move indicates an expected call of Move.
-func (mr *MockIDroneMockRecorder) Move(arg0 any) *gomock.Call {
+func (mr *MockIDroneMockRecorder) Move(destination any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Move", reflect.TypeOf((*MockIDrone)(nil).Move), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Move", reflect.TypeOf((*MockIDrone)(nil).Move), destination)
 }
 
 // Name mocks base method.

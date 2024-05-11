@@ -18,17 +18,10 @@ func closestPoint(originPoint gps.Point, candidatePoints []gps.Point) gps.Point 
 	return closestPoint
 }
 
-func finishItineraryOnClosestDeposits(itineraryList []routes.Itinerary, m gps.Map) {
-	for _, itinerary := range itineraryList {
-		route := itinerary.Route
-		car := itinerary.Car
-		lastStop := route.Last()
-		closestDeposit := closestPoint(lastStop.Point(), m.Deposits)
-		moveCarAndAppendRoute(car, route, closestDeposit)
+func finishItineraryOnClosestDeposits(carsList []vehicles.ICar, m gps.Map) {
+	for _, car := range carsList {
+		position := car.ActualPoint()
+		closestDeposit := closestPoint(position, m.Deposits)
+		car.Move(routes.NewMainStop(closestDeposit))
 	}
-}
-
-func moveCarAndAppendRoute(car vehicles.ICar, route routes.IMainRoute, point gps.Point) {
-	car.Move(point)
-	route.Append(routes.NewMainStop(point))
 }

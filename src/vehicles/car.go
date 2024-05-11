@@ -1,39 +1,46 @@
 package vehicles
 
-import "github.com/victorguarana/go-vehicle-route/src/gps"
-
-var (
-	defaultCarSpeed = 10.0
+import (
+	"github.com/victorguarana/go-vehicle-route/src/gps"
+	"github.com/victorguarana/go-vehicle-route/src/routes"
 )
 
+var defaultCarSpeed = 10.0
+
 type ICar interface {
-	ActualPosition() gps.Point
+	ActualPoint() gps.Point
 	Drones() []IDrone
-	Move(gps.Point)
+	Move(destination routes.IMainStop)
 	Name() string
-	NewDrone(string)
+	NewDrone(params DroneParams)
 	Speed() float64
 	Support(...gps.Point) bool
 }
 
 type car struct {
-	actualPosition gps.Point
-	drones         []*drone
-	name           string
-	speed          float64
+	drones []*drone
+	name   string
+	route  routes.IMainRoute
+	speed  float64
 }
 
-func NewCar(name string, startingPoint gps.Point) ICar {
+type CarParams struct {
+	Name          string
+	StartingPoint routes.IMainStop
+	RouteFactory  func(routes.IMainStop) routes.IMainRoute
+}
+
+func NewCar(params CarParams) ICar {
 	return &car{
-		actualPosition: startingPoint,
-		drones:         []*drone{},
-		name:           name,
-		speed:          defaultCarSpeed,
+		drones: []*drone{},
+		name:   params.Name,
+		route:  params.RouteFactory(params.StartingPoint),
+		speed:  defaultCarSpeed,
 	}
 }
 
-func (c *car) ActualPosition() gps.Point {
-	return c.actualPosition
+func (c *car) ActualPoint() gps.Point {
+	return c.route.Last().Point()
 }
 
 func (c *car) Drones() []IDrone {
@@ -44,17 +51,17 @@ func (c *car) Drones() []IDrone {
 	return drones
 }
 
-func (c *car) Move(destination gps.Point) {
-	c.actualPosition = destination
-	c.moveDockedDrones()
+func (c *car) Move(destination routes.IMainStop) {
+	c.route.Append(destination)
 }
 
 func (c *car) Name() string {
 	return c.name
 }
 
-func (c *car) NewDrone(name string) {
-	d := newDrone(name, c)
+func (c *car) NewDrone(params DroneParams) {
+	params.car = c
+	d := newDrone(params)
 	c.drones = append(c.drones, d)
 }
 
@@ -64,12 +71,4 @@ func (c *car) Speed() float64 {
 
 func (c *car) Support(destination ...gps.Point) bool {
 	return true
-}
-
-func (c *car) moveDockedDrones() {
-	for _, d := range c.drones {
-		if !d.isFlying {
-			d.actualPosition = c.actualPosition
-		}
-	}
 }
