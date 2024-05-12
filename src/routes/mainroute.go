@@ -4,12 +4,15 @@ import (
 	"fmt"
 	"log"
 	"strings"
+
+	"github.com/victorguarana/go-vehicle-route/src/slc"
 )
 
 type IMainRoute interface {
 	Append(mainStop IMainStop)
 	AtIndex(index int) IMainStop
 	First() IMainStop
+	Iterator() slc.Iterator[IMainStop]
 	Last() IMainStop
 	Len() int
 	RemoveMainStop(index int)
@@ -42,6 +45,15 @@ func (r *mainRoute) AtIndex(index int) IMainStop {
 
 func (r *mainRoute) First() IMainStop {
 	return r.mainStops[0]
+}
+
+func (r *mainRoute) Iterator() slc.Iterator[IMainStop] {
+	iMainStops := make([]IMainStop, len(r.mainStops))
+	for i, ms := range r.mainStops {
+		iMainStops[i] = ms
+	}
+
+	return slc.NewIterator(iMainStops)
 }
 
 func (r *mainRoute) Last() IMainStop {
