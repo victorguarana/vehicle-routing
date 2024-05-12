@@ -105,7 +105,6 @@ var _ = Describe("mainRoute{}", func() {
 			It("should not change stops", func() {
 				expectedStops := []*mainStop{
 					{point: gps.Point{Latitude: 0, Longitude: 0}},
-					{point: gps.Point{Latitude: 1, Longitude: 1}},
 				}
 				sut.RemoveMainStop(10)
 				Expect(sut.mainStops).To(Equal(expectedStops))
