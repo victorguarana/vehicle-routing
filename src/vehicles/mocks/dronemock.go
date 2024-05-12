@@ -40,6 +40,34 @@ func (m *MockIDrone) EXPECT() *MockIDroneMockRecorder {
 	return m.recorder
 }
 
+// Flight mocks base method.
+func (m *MockIDrone) Flight() routes.ISubRoute {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Flight")
+	ret0, _ := ret[0].(routes.ISubRoute)
+	return ret0
+}
+
+// Flight indicates an expected call of Flight.
+func (mr *MockIDroneMockRecorder) Flight() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Flight", reflect.TypeOf((*MockIDrone)(nil).Flight))
+}
+
+// IsFlying mocks base method.
+func (m *MockIDrone) IsFlying() bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsFlying")
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsFlying indicates an expected call of IsFlying.
+func (mr *MockIDroneMockRecorder) IsFlying() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsFlying", reflect.TypeOf((*MockIDrone)(nil).IsFlying))
+}
+
 // Land mocks base method.
 func (m *MockIDrone) Land(landingPoint routes.IMainStop) {
 	m.ctrl.T.Helper()

@@ -107,6 +107,20 @@ func (mr *MockICarMockRecorder) NewDrone(params any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewDrone", reflect.TypeOf((*MockICar)(nil).NewDrone), params)
 }
 
+// Route mocks base method.
+func (m *MockICar) Route() routes.IMainRoute {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Route")
+	ret0, _ := ret[0].(routes.IMainRoute)
+	return ret0
+}
+
+// Route indicates an expected call of Route.
+func (mr *MockICarMockRecorder) Route() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Route", reflect.TypeOf((*MockICar)(nil).Route))
+}
+
 // Speed mocks base method.
 func (m *MockICar) Speed() float64 {
 	m.ctrl.T.Helper()

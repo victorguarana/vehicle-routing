@@ -10,12 +10,15 @@ var defaultDroneSpeed = 25.0
 var defaultDroneStorage = 10.0
 
 type IDrone interface {
+	Flight() routes.ISubRoute
+	IsFlying() bool
 	Land(landingPoint routes.IMainStop)
 	Move(destination routes.ISubStop)
 	Name() string
 	Speed() float64
 	Support(...gps.Point) bool
 }
+
 type DroneParams struct {
 	Name               string
 	DroneFlightFactory func(routes.IMainStop, routes.IMainStop) routes.ISubRoute
@@ -46,6 +49,14 @@ func newDrone(params DroneParams) *drone {
 		totalStorage:    defaultDroneStorage,
 		flightFactory:   params.DroneFlightFactory,
 	}
+}
+
+func (d *drone) Flight() routes.ISubRoute {
+	return d.flight
+}
+
+func (d *drone) IsFlying() bool {
+	return d.isFlying
 }
 
 func (d *drone) Land(destination routes.IMainStop) {
