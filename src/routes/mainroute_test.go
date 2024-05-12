@@ -44,16 +44,14 @@ var _ = Describe("mainRoute{}", func() {
 		Context("when index is valid", func() {
 			It("should return car stop at index", func() {
 				expectedStop := sut.mainStops[1]
-				receivedStop, receivedErr := sut.AtIndex(1)
-				Expect(receivedErr).NotTo(HaveOccurred())
+				receivedStop := sut.AtIndex(1)
 				Expect(receivedStop).To(Equal(expectedStop))
 			})
 		})
 
 		Context("when index is invalid", func() {
-			It("should return index out of range error", func() {
-				receivedStop, receivedErr := sut.AtIndex(2)
-				Expect(receivedErr).To(MatchError(ErrIndexOutOfRange))
+			It("should return nil", func() {
+				receivedStop := sut.AtIndex(2)
 				Expect(receivedStop).To(BeNil())
 			})
 		})
@@ -94,18 +92,23 @@ var _ = Describe("mainRoute{}", func() {
 		}
 
 		Context("when index is valid", func() {
-			It("removes car stop at index", func() {
+			It("should remove stop at index", func() {
 				expectedStops := []*mainStop{
 					{point: gps.Point{Latitude: 0, Longitude: 0}},
 				}
-				Expect(sut.RemoveMainStop(1)).To(Succeed())
+				sut.RemoveMainStop(1)
 				Expect(sut.mainStops).To(Equal(expectedStops))
 			})
 		})
 
 		Context("when index is invalid", func() {
-			It("returns index out of range error", func() {
-				Expect(sut.RemoveMainStop(10)).To(MatchError(ErrIndexOutOfRange))
+			It("should not change stops", func() {
+				expectedStops := []*mainStop{
+					{point: gps.Point{Latitude: 0, Longitude: 0}},
+					{point: gps.Point{Latitude: 1, Longitude: 1}},
+				}
+				sut.RemoveMainStop(10)
+				Expect(sut.mainStops).To(Equal(expectedStops))
 			})
 		})
 	})
