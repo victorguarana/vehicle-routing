@@ -9,18 +9,15 @@ import (
 
 var _ = Describe("NewSubRoute", func() {
 	var startingPoint = &mainStop{point: gps.Point{}}
-	var returningPoint = &mainStop{point: gps.Point{}}
 
 	It("takes off drone and returns correct struct", func() {
 		expectedSubRoute := &subRoute{
-			startingPoint:  startingPoint,
-			returningPoint: returningPoint,
-			stops:          []*subStop{},
+			startingPoint: startingPoint,
+			stops:         []*subStop{},
 		}
-		receivedSubRoute := NewSubRoute(startingPoint, returningPoint)
+		receivedSubRoute := NewSubRoute(startingPoint)
 		Expect(receivedSubRoute).To(Equal(expectedSubRoute))
-		Expect(startingPoint.subRoutes).To(ContainElement(receivedSubRoute))
-		Expect(returningPoint.subRoutes).To(ContainElement(receivedSubRoute))
+		Expect(startingPoint.startingSubRoutes).To(ContainElement(receivedSubRoute))
 	})
 })
 

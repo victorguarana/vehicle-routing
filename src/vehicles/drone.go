@@ -21,7 +21,7 @@ type IDrone interface {
 
 type DroneParams struct {
 	Name               string
-	DroneFlightFactory func(routes.IMainStop, routes.IMainStop) routes.ISubRoute
+	DroneFlightFactory func(routes.IMainStop) routes.ISubRoute
 	car                *car
 }
 
@@ -35,7 +35,7 @@ type drone struct {
 	remaningStorage float64
 	totalRange      float64
 	totalStorage    float64
-	flightFactory   func(routes.IMainStop, routes.IMainStop) routes.ISubRoute
+	flightFactory   func(routes.IMainStop) routes.ISubRoute
 }
 
 func newDrone(params DroneParams) *drone {
@@ -75,7 +75,7 @@ func (d *drone) Move(destination routes.ISubStop) {
 
 	d.isFlying = true
 	actualCarStop := d.car.route.Last()
-	d.flight = d.flightFactory(actualCarStop, nil)
+	d.flight = d.flightFactory(actualCarStop)
 	d.flight.Append(destination)
 	d.remaningRange -= gps.DistanceBetweenPoints(actualCarStop.Point(), destination.Point())
 }

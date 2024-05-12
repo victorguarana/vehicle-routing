@@ -64,7 +64,7 @@ func (r *mainRoute) String() string {
 	str := []string{"Route:"}
 	for i, mainStop := range r.mainStops {
 		str = append(str, fmt.Sprintf("  MainStop #%d (%s)", i, mainStop.point))
-		for j, flight := range mainStop.subRoutes {
+		for j, flight := range mainStop.startingSubRoutes {
 			if flight.startingPoint != mainStop {
 				continue
 			}

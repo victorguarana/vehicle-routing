@@ -75,7 +75,7 @@ var _ = Describe("drone{}", func() {
 			var mockedDroneStop *mockRoutes.MockISubStop
 			var mockedRoute *mockRoutes.MockIMainRoute
 			var mockedFlight *mockRoutes.MockISubRoute
-			var mockedFlightFactory func(routes.IMainStop, routes.IMainStop) routes.ISubRoute
+			var mockedFlightFactory func(routes.IMainStop) routes.ISubRoute
 
 			BeforeEach(func() {
 				mockCtrl = gomock.NewController(GinkgoT())
@@ -83,7 +83,7 @@ var _ = Describe("drone{}", func() {
 				mockedDroneStop = mockRoutes.NewMockISubStop(mockCtrl)
 				mockedRoute = mockRoutes.NewMockIMainRoute(mockCtrl)
 				mockedFlight = mockRoutes.NewMockISubRoute(mockCtrl)
-				mockedFlightFactory = func(routes.IMainStop, routes.IMainStop) routes.ISubRoute { return mockedFlight }
+				mockedFlightFactory = func(routes.IMainStop) routes.ISubRoute { return mockedFlight }
 
 				c := car{
 					route: mockedRoute,
