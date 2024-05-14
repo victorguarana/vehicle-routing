@@ -5,30 +5,23 @@ import (
 )
 
 type IMainStop interface {
-	SubRoutes() []ISubRoute
 	IsClient() bool
 	IsDeposit() bool
 	Point() gps.Point
 }
 
 type mainStop struct {
-	point     gps.Point
-	subRoutes []*subRoute
+	point              gps.Point
+	startingSubRoutes  []*subRoute
+	returningSubRoutes []*subRoute
 }
 
 func NewMainStop(point gps.Point) IMainStop {
 	return &mainStop{
-		point:     point,
-		subRoutes: []*subRoute{},
+		point:              point,
+		startingSubRoutes:  []*subRoute{},
+		returningSubRoutes: []*subRoute{},
 	}
-}
-
-func (ms *mainStop) SubRoutes() []ISubRoute {
-	subroutes := make([]ISubRoute, len(ms.subRoutes))
-	for _, f := range ms.subRoutes {
-		subroutes = append(subroutes, f)
-	}
-	return subroutes
 }
 
 func (ms *mainStop) IsClient() bool {

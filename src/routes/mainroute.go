@@ -1,20 +1,18 @@
 package routes
 
 import (
-	"errors"
 	"fmt"
+	"log"
 	"strings"
 )
 
-var ErrIndexOutOfRange = errors.New("index out of range")
-
 type IMainRoute interface {
 	Append(mainStop IMainStop)
-	AtIndex(index int) (IMainStop, error)
+	AtIndex(index int) IMainStop
 	First() IMainStop
 	Last() IMainStop
 	Len() int
-	RemoveMainStop(int) error
+	RemoveMainStop(index int)
 	String() string
 }
 
@@ -22,16 +20,24 @@ type mainRoute struct {
 	mainStops []*mainStop
 }
 
+func NewMainRoute(iMainStop IMainStop) IMainRoute {
+	ms := iMainStop.(*mainStop)
+	return &mainRoute{
+		mainStops: []*mainStop{ms},
+	}
+}
+
 func (r *mainRoute) Append(iMainStop IMainStop) {
 	ms := iMainStop.(*mainStop)
 	r.mainStops = append(r.mainStops, ms)
 }
 
-func (r *mainRoute) AtIndex(index int) (IMainStop, error) {
+func (r *mainRoute) AtIndex(index int) IMainStop {
 	if index < 0 || index >= len(r.mainStops) {
-		return nil, ErrIndexOutOfRange
+		log.Printf("AtIndex: index (%d) out of range\n", index)
+		return nil
 	}
-	return r.mainStops[index], nil
+	return r.mainStops[index]
 }
 
 func (r *mainRoute) First() IMainStop {
@@ -46,19 +52,19 @@ func (r *mainRoute) Len() int {
 	return len(r.mainStops)
 }
 
-func (r *mainRoute) RemoveMainStop(index int) error {
+func (r *mainRoute) RemoveMainStop(index int) {
 	if index < 0 || index >= len(r.mainStops) {
-		return ErrIndexOutOfRange
+		log.Printf("RemoveMainStop: index (%d) out of range\n", index)
+		return
 	}
 	r.mainStops = append(r.mainStops[:index], r.mainStops[index+1:]...)
-	return nil
 }
 
 func (r *mainRoute) String() string {
 	str := []string{"Route:"}
 	for i, mainStop := range r.mainStops {
 		str = append(str, fmt.Sprintf("  MainStop #%d (%s)", i, mainStop.point))
-		for j, flight := range mainStop.subRoutes {
+		for j, flight := range mainStop.startingSubRoutes {
 			if flight.startingPoint != mainStop {
 				continue
 			}

@@ -52,12 +52,11 @@ func (mr *MockIMainRouteMockRecorder) Append(mainStop any) *gomock.Call {
 }
 
 // AtIndex mocks base method.
-func (m *MockIMainRoute) AtIndex(index int) (routes.IMainStop, error) {
+func (m *MockIMainRoute) AtIndex(index int) routes.IMainStop {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AtIndex", index)
 	ret0, _ := ret[0].(routes.IMainStop)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	return ret0
 }
 
 // AtIndex indicates an expected call of AtIndex.
@@ -109,17 +108,15 @@ func (mr *MockIMainRouteMockRecorder) Len() *gomock.Call {
 }
 
 // RemoveMainStop mocks base method.
-func (m *MockIMainRoute) RemoveMainStop(arg0 int) error {
+func (m *MockIMainRoute) RemoveMainStop(index int) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RemoveMainStop", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
+	m.ctrl.Call(m, "RemoveMainStop", index)
 }
 
 // RemoveMainStop indicates an expected call of RemoveMainStop.
-func (mr *MockIMainRouteMockRecorder) RemoveMainStop(arg0 any) *gomock.Call {
+func (mr *MockIMainRouteMockRecorder) RemoveMainStop(index any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveMainStop", reflect.TypeOf((*MockIMainRoute)(nil).RemoveMainStop), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveMainStop", reflect.TypeOf((*MockIMainRoute)(nil).RemoveMainStop), index)
 }
 
 // String mocks base method.

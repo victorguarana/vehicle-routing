@@ -4,23 +4,24 @@ import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 	"github.com/victorguarana/go-vehicle-route/src/routes"
 	"github.com/victorguarana/go-vehicle-route/src/slc"
+	"github.com/victorguarana/go-vehicle-route/src/vehicles"
 )
 
-func BestInsertion(itineraryList []routes.Itinerary, m gps.Map) {
-	orderedClientsListsByRoute := orderedClientsByItinerary(itineraryList, m.Clients)
+func BestInsertion(cars []vehicles.ICar, m gps.Map) {
+	orderedClientsListsByRoute := orderedClientsByCars(cars, m.Clients)
 	for itinerary, orderedClients := range orderedClientsListsByRoute {
 		fillRoute(itinerary, orderedClients, m.Deposits)
 	}
-	finishItineraryOnClosestDeposits(itineraryList, m)
+	finishItineraryOnClosestDeposits(cars, m)
 }
 
-func orderedClientsByItinerary(itineraryList []routes.Itinerary, clients []gps.Point) map[routes.Itinerary][]gps.Point {
-	orderedClientsByItinerary := map[routes.Itinerary][]gps.Point{}
+func orderedClientsByCars(cars []vehicles.ICar, clients []gps.Point) map[vehicles.ICar][]gps.Point {
+	orderedClientsByItinerary := map[vehicles.ICar][]gps.Point{}
 	for i, client := range clients {
-		itinerary := slc.CircularSelection(itineraryList, i)
-		initialPoint := itinerary.Car.ActualPosition()
-		orderedClients := orderedClientsByItinerary[itinerary]
-		orderedClientsByItinerary[itinerary] = insertInBestPosition(initialPoint, client, orderedClients)
+		car := slc.CircularSelection(cars, i)
+		initialPoint := car.ActualPoint()
+		orderedClients := orderedClientsByItinerary[car]
+		orderedClientsByItinerary[car] = insertInBestPosition(initialPoint, client, orderedClients)
 	}
 	return orderedClientsByItinerary
 }
@@ -52,15 +53,13 @@ func findBestPosition(initialPoint gps.Point, client gps.Point, orderedClients [
 	return bestIndex
 }
 
-func fillRoute(itinerary routes.Itinerary, orderedClients []gps.Point, deposits []gps.Point) {
-	route := itinerary.Route
-	car := itinerary.Car
+func fillRoute(car vehicles.ICar, orderedClients []gps.Point, deposits []gps.Point) {
 	for _, client := range orderedClients {
 		closestDeposit := closestPoint(client, deposits)
 		if !car.Support(client, closestDeposit) {
-			moveCarAndAppendRoute(car, route, closestDeposit)
+			car.Move(routes.NewMainStop(closestDeposit))
 		}
-		moveCarAndAppendRoute(car, route, client)
+		car.Move(routes.NewMainStop(client))
 	}
 }
 

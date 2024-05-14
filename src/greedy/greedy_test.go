@@ -1,12 +1,12 @@
 package greedy
 
 import (
-	"go.uber.org/mock/gomock"
-
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 	"github.com/victorguarana/go-vehicle-route/src/routes"
-	mockroutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
+	"github.com/victorguarana/go-vehicle-route/src/vehicles"
 	mockvehicles "github.com/victorguarana/go-vehicle-route/src/vehicles/mocks"
+
+	"go.uber.org/mock/gomock"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -54,22 +54,17 @@ var _ = Describe("closestPoint", func() {
 })
 
 var _ = Describe("finishRoutesOnClosestDeposits", func() {
-	var itineraryList []routes.Itinerary
-	var closestDeposit = gps.Point{Latitude: 1, Longitude: 1}
-	var closestDepositMainStop = routes.NewMainStop(closestDeposit)
-	var gpsMap = gps.Map{Deposits: []gps.Point{closestDeposit}}
-
 	var mockCtrl *gomock.Controller
 	var mockedCar *mockvehicles.MockICar
-	var mockedRoute *mockroutes.MockIMainRoute
-	var mockedMainStop *mockroutes.MockIMainStop
+	var carsList []vehicles.ICar
+	var closestDeposit = gps.Point{Latitude: 1}
+	var actualCarPoint = gps.Point{Latitude: 0}
+	var gpsMap = gps.Map{Deposits: []gps.Point{closestDeposit}}
 
 	BeforeEach(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockedCar = mockvehicles.NewMockICar(mockCtrl)
-		mockedRoute = mockroutes.NewMockIMainRoute(mockCtrl)
-		mockedMainStop = mockroutes.NewMockIMainStop(mockCtrl)
-		itineraryList = []routes.Itinerary{{Car: mockedCar, Route: mockedRoute}}
+		carsList = []vehicles.ICar{mockedCar}
 	})
 
 	AfterEach(func() {
@@ -78,11 +73,9 @@ var _ = Describe("finishRoutesOnClosestDeposits", func() {
 
 	Context("when car can support the route", func() {
 		It("move the car to the closest deposit and append it to the route", func() {
-			mockedRoute.EXPECT().Last().Return(mockedMainStop)
-			mockedMainStop.EXPECT().Point().Return(closestDeposit)
-			mockedCar.EXPECT().Move(closestDeposit)
-			mockedRoute.EXPECT().Append(closestDepositMainStop)
-			finishItineraryOnClosestDeposits(itineraryList, gpsMap)
+			mockedCar.EXPECT().ActualPoint().Return(actualCarPoint)
+			mockedCar.EXPECT().Move(routes.NewMainStop(closestDeposit))
+			finishItineraryOnClosestDeposits(carsList, gpsMap)
 		})
 	})
 })

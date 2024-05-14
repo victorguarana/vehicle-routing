@@ -2,63 +2,82 @@ package vehicles
 
 import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
+	"github.com/victorguarana/go-vehicle-route/src/routes"
 )
 
-var (
-	defaultDroneRange   = 150.0
-	defaultDroneSpeed   = 25.0
-	defaultDroneStorage = 10.0
-)
+var defaultDroneRange = 150.0
+var defaultDroneSpeed = 25.0
+var defaultDroneStorage = 10.0
 
 type IDrone interface {
-	ActualPosition() gps.Point
-	Land(gps.Point)
-	Move(gps.Point)
+	Flight() routes.ISubRoute
+	IsFlying() bool
+	Land(landingPoint routes.IMainStop)
+	Move(destination routes.ISubStop)
 	Name() string
 	Speed() float64
 	Support(...gps.Point) bool
 }
 
+type DroneParams struct {
+	Name               string
+	DroneFlightFactory func(routes.IMainStop) routes.ISubRoute
+	car                *car
+}
+
 type drone struct {
-	actualPosition  gps.Point
 	car             *car
 	name            string
 	speed           float64
+	flight          routes.ISubRoute
 	isFlying        bool
 	remaningRange   float64
 	remaningStorage float64
 	totalRange      float64
 	totalStorage    float64
+	flightFactory   func(routes.IMainStop) routes.ISubRoute
 }
 
-func newDrone(name string, car *car) *drone {
+func newDrone(params DroneParams) *drone {
 	return &drone{
-		actualPosition:  car.actualPosition,
-		car:             car,
-		name:            name,
+		car:             params.car,
+		name:            params.Name,
 		speed:           defaultDroneSpeed,
 		remaningRange:   defaultDroneRange,
 		remaningStorage: defaultDroneStorage,
 		totalRange:      defaultDroneRange,
 		totalStorage:    defaultDroneStorage,
+		flightFactory:   params.DroneFlightFactory,
 	}
 }
 
-func (d *drone) ActualPosition() gps.Point {
-	return d.actualPosition
+func (d *drone) Flight() routes.ISubRoute {
+	return d.flight
 }
 
-func (d *drone) Land(destination gps.Point) {
-	d.Move(destination)
+func (d *drone) IsFlying() bool {
+	return d.isFlying
+}
+
+func (d *drone) Land(destination routes.IMainStop) {
 	d.isFlying = false
-	d.remaningRange = d.totalRange
-	d.remaningStorage = d.totalStorage
+	d.flight.Return(destination)
+	d.flight = nil
+	d.resetAttributes()
 }
 
-func (d *drone) Move(destination gps.Point) {
+func (d *drone) Move(destination routes.ISubStop) {
+	if d.isFlying {
+		d.remaningRange -= gps.DistanceBetweenPoints(d.actualPoint(), destination.Point())
+		d.flight.Append(destination)
+		return
+	}
+
 	d.isFlying = true
-	d.remaningRange -= gps.DistanceBetweenPoints(d.actualPosition, destination)
-	d.actualPosition = destination
+	actualCarStop := d.car.route.Last()
+	d.flight = d.flightFactory(actualCarStop)
+	d.flight.Append(destination)
+	d.remaningRange -= gps.DistanceBetweenPoints(actualCarStop.Point(), destination.Point())
 }
 
 func (d *drone) Name() string {
@@ -70,7 +89,7 @@ func (d *drone) Speed() float64 {
 }
 
 func (d *drone) Support(destinations ...gps.Point) bool {
-	distance := gps.DistanceBetweenPoints(append([]gps.Point{d.actualPosition}, destinations...)...)
+	distance := gps.DistanceBetweenPoints(append([]gps.Point{d.actualPoint()}, destinations...)...)
 	packagesSize := 0.0
 	for _, destination := range destinations {
 		packagesSize += destination.PackageSize
@@ -82,4 +101,16 @@ func (d *drone) Support(destinations ...gps.Point) bool {
 		return false
 	}
 	return true
+}
+
+func (d *drone) actualPoint() gps.Point {
+	if d.isFlying {
+		return d.flight.Last().Point()
+	}
+	return d.car.ActualPoint()
+}
+
+func (d *drone) resetAttributes() {
+	d.remaningRange = d.totalRange
+	d.remaningStorage = d.totalStorage
 }

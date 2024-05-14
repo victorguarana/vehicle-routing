@@ -1,128 +1,152 @@
 package vehicles
 
 import (
+	"github.com/victorguarana/go-vehicle-route/src/gps"
+	"github.com/victorguarana/go-vehicle-route/src/routes"
+	mockRoutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
+
+	"go.uber.org/mock/gomock"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-
-	"github.com/victorguarana/go-vehicle-route/src/gps"
 )
 
 var _ = Describe("NewCar", func() {
 	Context("when car can be created", func() {
-		It("create with correct params", func() {
-			p := gps.Point{
-				Latitude:  10,
-				Longitude: 10,
-			}
-			sut := NewCar("car1", p)
+		var mockCtrl *gomock.Controller
+		var mockedInitialStop *mockRoutes.MockIMainStop
+		var mockedRoute *mockRoutes.MockIMainRoute
+		var mockedRoutesFactory func(routes.IMainStop) routes.IMainRoute
 
+		BeforeEach(func() {
+			mockCtrl = gomock.NewController(GinkgoT())
+			mockedInitialStop = mockRoutes.NewMockIMainStop(mockCtrl)
+			mockedRoute = mockRoutes.NewMockIMainRoute(mockCtrl)
+			mockedRoutesFactory = func(routes.IMainStop) routes.IMainRoute { return mockedRoute }
+		})
+
+		AfterEach(func() {
+			defer mockCtrl.Finish()
+		})
+
+		It("should create car with correct params", func() {
+			carParams := CarParams{
+				Name:          "car1",
+				StartingPoint: mockedInitialStop,
+				RouteFactory:  mockedRoutesFactory,
+			}
+
+			receivedCar := NewCar(carParams)
 			expectedCar := car{
-				speed:          defaultCarSpeed,
-				name:           "car1",
-				actualPosition: p,
-				drones:         []*drone{},
+				drones: []*drone{},
+				name:   "car1",
+				route:  mockedRoute,
+				speed:  defaultCarSpeed,
 			}
 
-			Expect(sut).To(Equal(&expectedCar))
+			Expect(receivedCar).To(Equal(&expectedCar))
 		})
 	})
 })
 
-var _ = Describe("Move", func() {
-	Context("when car can move to next position", func() {
-		It("move car and docked drones", func() {
-			p := gps.Point{
-				Latitude:  10,
-				Longitude: 10,
-			}
+var _ = Describe("car{}", func() {
+	Describe("ActualPoint", func() {
+		var sut *car
+		var mockCtrl *gomock.Controller
+		var mockedCarStop *mockRoutes.MockIMainStop
+		var mockedRoute *mockRoutes.MockIMainRoute
 
-			drone1 := drone{
-				isFlying:       true,
-				actualPosition: gps.Point{},
-			}
+		BeforeEach(func() {
+			mockCtrl = gomock.NewController(GinkgoT())
+			mockedCarStop = mockRoutes.NewMockIMainStop(mockCtrl)
+			mockedRoute = mockRoutes.NewMockIMainRoute(mockCtrl)
 
-			drone2 := drone{
-				isFlying:       false,
-				actualPosition: gps.Point{},
+			sut = &car{
+				route: mockedRoute,
 			}
-
-			sut := car{
-				drones: []*drone{&drone1, &drone2},
-				actualPosition: gps.Point{
-					Latitude:  0,
-					Longitude: 0,
-				},
-			}
-
-			sut.Move(p)
-			Expect(sut.actualPosition).To(Equal(p))
-			Expect(drone1.actualPosition).To(Equal(gps.Point{}))
-			Expect(drone2.actualPosition).To(Equal(sut.actualPosition))
 		})
-	})
-})
 
-var _ = Describe("Support", func() {
-	Describe("single destination", func() {
-		Context("when car can reach point with plenty", func() {
-			It("returns true", func() {
-				destination := gps.Point{Latitude: 10}
-				sut := car{
-					actualPosition: gps.Point{
-						Latitude:  0,
-						Longitude: 0,
-					},
-				}
-				Expect(sut.Support(destination)).To(BeTrue())
-			})
+		AfterEach(func() {
+			defer mockCtrl.Finish()
+		})
+
+		It("should return last stop from route", func() {
+			mockedRoute.EXPECT().Last().Return(mockedCarStop)
+			mockedCarStop.EXPECT().Point().Return(gps.Point{})
+			sut.ActualPoint()
 		})
 	})
 
-	Describe("multi destination", func() {
-		Context("when car can reach point with plenty", func() {
-			It("returns true", func() {
-				destination1 := gps.Point{Latitude: 10}
-				destination2 := gps.Point{Latitude: 20}
-				sut := car{
-					actualPosition: gps.Point{
-						Latitude:  0,
-						Longitude: 0,
-					},
-				}
-				Expect(sut.Support(destination1, destination2)).To(BeTrue())
-			})
-		})
-	})
-})
-
-var _ = Describe("NewDrone", func() {
-	Context("when car can create a new drone", func() {
-		It("create with correct params", func() {
-			sut := car{
-				actualPosition: gps.Point{
-					Latitude:  0,
-					Longitude: 0,
-				},
-			}
-
-			expectedDrone := newDrone("drone1", &sut)
-
-			sut.NewDrone("drone1")
-			Expect(len(sut.drones)).To(Equal(1))
-			Expect(sut.drones).To(Equal([]*drone{expectedDrone}))
-		})
-	})
-})
-
-var _ = Describe("ActualPosition", func() {
-	It("returns car position", func() {
-		p := gps.Point{
-			Latitude:  10,
-			Longitude: 10,
+	Describe("Drones", func() {
+		var drone1 = &drone{}
+		var drone2 = &drone{}
+		var sut = &car{
+			drones: []*drone{drone1, drone2},
 		}
-		sut := car{
-			actualPosition: p,
+
+		It("should return all drones", func() {
+			Expect(sut.Drones()).To(Equal([]IDrone{drone1, drone2}))
+		})
+	})
+
+	Describe("Move", func() {
+		var sut *car
+		var mockCtrl *gomock.Controller
+		var mockedCarStop *mockRoutes.MockIMainStop
+		var mockedRoute *mockRoutes.MockIMainRoute
+
+		BeforeEach(func() {
+			mockCtrl = gomock.NewController(GinkgoT())
+			mockedCarStop = mockRoutes.NewMockIMainStop(mockCtrl)
+			mockedRoute = mockRoutes.NewMockIMainRoute(mockCtrl)
+
+			sut = &car{
+				route: mockedRoute,
+			}
+		})
+
+		AfterEach(func() {
+			defer mockCtrl.Finish()
+		})
+
+		It("should append stop to route", func() {
+			mockedRoute.EXPECT().Append(mockedCarStop)
+			sut.Move(mockedCarStop)
+		})
+	})
+
+	Describe("Name", func() {
+		var sut = &car{
+			name: "car1",
 		}
-		Expect(sut.ActualPosition()).To(Equal(p))
+
+		It("should return car name", func() {
+			Expect(sut.Name()).To(Equal("car1"))
+		})
+	})
+
+	Describe("NewDrone", func() {
+		var sut = &car{
+			drones: []*drone{},
+			name:   "car1",
+		}
+
+		It("should create new drone", func() {
+			droneParams := DroneParams{
+				Name: "drone1",
+			}
+			sut.NewDrone(droneParams)
+			Expect(len(sut.Drones())).To(Equal(1))
+		})
+	})
+
+	Describe("Speed", func() {
+		var sut = &car{
+			speed: defaultCarSpeed,
+		}
+
+		It("should return car speed", func() {
+			Expect(sut.Speed()).To(Equal(defaultCarSpeed))
+		})
 	})
 })
