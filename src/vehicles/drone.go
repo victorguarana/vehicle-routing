@@ -10,6 +10,7 @@ var defaultDroneSpeed = 25.0
 var defaultDroneStorage = 10.0
 
 type IDrone interface {
+	CanReach(...gps.Point) bool
 	Flight() routes.ISubRoute
 	IsFlying() bool
 	Land(landingPoint routes.IMainStop)
@@ -49,6 +50,11 @@ func newDrone(params DroneParams) *drone {
 		totalStorage:    defaultDroneStorage,
 		flightFactory:   params.DroneFlightFactory,
 	}
+}
+
+func (d *drone) CanReach(destinations ...gps.Point) bool {
+	distance := gps.DistanceBetweenPoints(append([]gps.Point{d.actualPoint()}, destinations...)...)
+	return distance <= d.remaningRange
 }
 
 func (d *drone) Flight() routes.ISubRoute {

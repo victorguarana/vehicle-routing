@@ -40,6 +40,24 @@ func (m *MockIDrone) EXPECT() *MockIDroneMockRecorder {
 	return m.recorder
 }
 
+// CanReach mocks base method.
+func (m *MockIDrone) CanReach(arg0 ...gps.Point) bool {
+	m.ctrl.T.Helper()
+	varargs := []any{}
+	for _, a := range arg0 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CanReach", varargs...)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// CanReach indicates an expected call of CanReach.
+func (mr *MockIDroneMockRecorder) CanReach(arg0 ...any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CanReach", reflect.TypeOf((*MockIDrone)(nil).CanReach), arg0...)
+}
+
 // Flight mocks base method.
 func (m *MockIDrone) Flight() routes.ISubRoute {
 	m.ctrl.T.Helper()

@@ -151,8 +151,11 @@ var _ = Describe("anyDroneNeedToLand", func() {
 
 		It("should return true if any drone need to land", func() {
 			mockedCarStop.EXPECT().Point().Return(mockedCarStopPoint)
-			mockedDrone1.EXPECT().Support(mockedCarStopPoint).Return(true)
-			mockedDrone2.EXPECT().Support(mockedCarStopPoint).Return(false)
+			mockedDrone1.EXPECT().IsFlying().Return(false)
+			mockedDrone2.EXPECT().IsFlying().Return(true)
+			mockedDrone2.EXPECT().CanReach(mockedCarStopPoint).Return(true)
+			mockedDrone3.EXPECT().IsFlying().Return(true)
+			mockedDrone3.EXPECT().CanReach(mockedCarStopPoint).Return(false)
 			Expect(anyDroneNeedToLand(mockedDroneStrikes, mockedCarStop)).To(BeTrue())
 		})
 	})
@@ -182,8 +185,9 @@ var _ = Describe("anyDroneNeedToLand", func() {
 
 		It("should return false if no drone need to land", func() {
 			mockedCarStop.EXPECT().Point().Return(mockedCarStopPoint)
-			mockedDrone1.EXPECT().Support(mockedCarStopPoint).Return(true)
-			mockedDrone2.EXPECT().Support(mockedCarStopPoint).Return(true)
+			mockedDrone1.EXPECT().IsFlying().Return(false)
+			mockedDrone2.EXPECT().IsFlying().Return(true)
+			mockedDrone2.EXPECT().CanReach(mockedCarStopPoint).Return(true)
 			Expect(anyDroneNeedToLand(mockedDroneStrikes, mockedCarStop)).To(BeFalse())
 		})
 	})
@@ -194,6 +198,7 @@ var _ = Describe("updateDroneStrikes", func() {
 	var mockedCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
 	var mockedDrone1 = mockVehicles.NewMockIDrone(mockedCtrl)
 	var mockedDrone2 = mockVehicles.NewMockIDrone(mockedCtrl)
+	var mockedDrone3 = mockVehicles.NewMockIDrone(mockedCtrl)
 	var mockedDroneStrikes []droneStrikes
 	var mockedStopPoint = gps.Point{}
 
@@ -202,9 +207,11 @@ var _ = Describe("updateDroneStrikes", func() {
 		mockedCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
 		mockedDrone1 = mockVehicles.NewMockIDrone(mockedCtrl)
 		mockedDrone2 = mockVehicles.NewMockIDrone(mockedCtrl)
+		mockedDrone3 = mockVehicles.NewMockIDrone(mockedCtrl)
 		mockedDroneStrikes = []droneStrikes{
 			{drone: mockedDrone1, strikes: 0},
 			{drone: mockedDrone2, strikes: 0},
+			{drone: mockedDrone3, strikes: 0},
 		}
 	})
 
@@ -214,27 +221,34 @@ var _ = Describe("updateDroneStrikes", func() {
 
 	It("should update drone strikes", func() {
 		mockedCarStop.EXPECT().Point().Return(mockedStopPoint)
+		mockedDrone1.EXPECT().IsFlying().Return(true)
 		mockedDrone1.EXPECT().Support(mockedStopPoint).Return(true)
+		mockedDrone2.EXPECT().IsFlying().Return(true)
 		mockedDrone2.EXPECT().Support(mockedStopPoint).Return(false)
+		mockedDrone3.EXPECT().IsFlying().Return(false)
 		updateDroneStrikes(mockedDroneStrikes, mockedCarStop)
 		Expect(mockedDroneStrikes[0].strikes).To(Equal(0))
 		Expect(mockedDroneStrikes[1].strikes).To(Equal(1))
+		Expect(mockedDroneStrikes[2].strikes).To(Equal(0))
 	})
 })
 
 var _ = Describe("flyingDroneThatCanSupport", func() {
 	var mockedCtrl *gomock.Controller
-	var mockedCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
+	var mockedActualCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
+	var mockedNextCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
 	var mockedDrone1 = mockVehicles.NewMockIDrone(mockedCtrl)
 	var mockedDrone2 = mockVehicles.NewMockIDrone(mockedCtrl)
 	var mockedDrone3 = mockVehicles.NewMockIDrone(mockedCtrl)
 	var mockedDrone4 = mockVehicles.NewMockIDrone(mockedCtrl)
 	var mockedDroneStrikes []droneStrikes
-	var mockedStopPoint = gps.Point{}
+	var mockedActualStopPoint = gps.Point{}
+	var mockedNextStopPoint = gps.Point{}
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
-		mockedCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
+		mockedActualCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
+		mockedNextCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
 		mockedDrone1 = mockVehicles.NewMockIDrone(mockedCtrl)
 		mockedDrone2 = mockVehicles.NewMockIDrone(mockedCtrl)
 		mockedDrone3 = mockVehicles.NewMockIDrone(mockedCtrl)
@@ -253,29 +267,33 @@ var _ = Describe("flyingDroneThatCanSupport", func() {
 	})
 
 	It("should return first flying drone that can support", func() {
-		mockedCarStop.EXPECT().Point().Return(mockedStopPoint)
+		mockedActualCarStop.EXPECT().Point().Return(mockedActualStopPoint)
+		mockedNextCarStop.EXPECT().Point().Return(mockedNextStopPoint)
 		mockedDrone1.EXPECT().IsFlying().Return(false)
 		mockedDrone2.EXPECT().IsFlying().Return(true)
-		mockedDrone2.EXPECT().Support(mockedStopPoint).Return(false)
+		mockedDrone2.EXPECT().Support(mockedActualStopPoint, mockedNextStopPoint).Return(false)
 		mockedDrone3.EXPECT().IsFlying().Return(true)
-		mockedDrone3.EXPECT().Support(mockedStopPoint).Return(true)
-		Expect(flyingDroneThatCanSupport(mockedDroneStrikes, mockedCarStop)).To(Equal(mockedDrone3))
+		mockedDrone3.EXPECT().Support(mockedActualStopPoint, mockedNextStopPoint).Return(true)
+		Expect(flyingDroneThatCanSupport(mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)).To(Equal(mockedDrone3))
 	})
 })
 
 var _ = Describe("dockedDroneThatCanSupport", func() {
 	var mockedCtrl *gomock.Controller
-	var mockedCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
+	var mockedActualCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
+	var mockedNextCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
 	var mockedDrone1 = mockVehicles.NewMockIDrone(mockedCtrl)
 	var mockedDrone2 = mockVehicles.NewMockIDrone(mockedCtrl)
 	var mockedDrone3 = mockVehicles.NewMockIDrone(mockedCtrl)
 	var mockedDrone4 = mockVehicles.NewMockIDrone(mockedCtrl)
 	var mockedDroneStrikes []droneStrikes
-	var mockedStopPoint = gps.Point{}
+	var mockedActualStopPoint = gps.Point{}
+	var mockedNextStopPoint = gps.Point{}
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
-		mockedCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
+		mockedActualCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
+		mockedNextCarStop = mockRoutes.NewMockIMainStop(mockedCtrl)
 		mockedDrone1 = mockVehicles.NewMockIDrone(mockedCtrl)
 		mockedDrone2 = mockVehicles.NewMockIDrone(mockedCtrl)
 		mockedDrone3 = mockVehicles.NewMockIDrone(mockedCtrl)
@@ -293,12 +311,13 @@ var _ = Describe("dockedDroneThatCanSupport", func() {
 	})
 
 	It("should return first docked drone that can support", func() {
-		mockedCarStop.EXPECT().Point().Return(mockedStopPoint)
+		mockedActualCarStop.EXPECT().Point().Return(mockedActualStopPoint)
+		mockedNextCarStop.EXPECT().Point().Return(mockedNextStopPoint)
 		mockedDrone1.EXPECT().IsFlying().Return(true)
 		mockedDrone2.EXPECT().IsFlying().Return(false)
-		mockedDrone2.EXPECT().Support(mockedStopPoint).Return(false)
+		mockedDrone2.EXPECT().Support(mockedActualStopPoint, mockedNextStopPoint).Return(false)
 		mockedDrone3.EXPECT().IsFlying().Return(false)
-		mockedDrone3.EXPECT().Support(mockedStopPoint).Return(true)
-		Expect(dockedDroneThatCanSupport(mockedDroneStrikes, mockedCarStop)).To(Equal(mockedDrone2))
+		mockedDrone3.EXPECT().Support(mockedActualStopPoint, mockedNextStopPoint).Return(true)
+		Expect(dockedDroneThatCanSupport(mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)).To(Equal(mockedDrone2))
 	})
 })

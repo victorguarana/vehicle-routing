@@ -18,30 +18,33 @@ func DroneStrikesInsertion(car vehicles.ICar) {
 
 	for routeIterator.HasNext() {
 		actualStop := routeIterator.Actual()
+		nextStop := routeIterator.Next()
 		if actualStop.IsDeposit() {
 			landAllFlyingDrones(droneStrikes, actualStop)
+			resetDroneStrikes(droneStrikes)
 			routeIterator.GoToNext()
 			continue
 		}
 
 		if actualStop.IsClient() {
-			if anyDroneWasStriked(droneStrikes) || anyDroneNeedToLand(droneStrikes, routeIterator.Next()) {
+			if anyDroneWasStriked(droneStrikes) || anyDroneNeedToLand(droneStrikes, nextStop) {
 				landAllFlyingDrones(droneStrikes, actualStop)
+				resetDroneStrikes(droneStrikes)
 				routeIterator.GoToNext()
 				continue
 			}
 
 			updateDroneStrikes(droneStrikes, actualStop)
-			if drone := dockedDroneThatCanSupport(droneStrikes, actualStop); drone != nil {
-				drone.Move(routes.NewSubStop(actualStop.Point()))
+			if drone := dockedDroneThatCanSupport(droneStrikes, actualStop, nextStop); drone != nil {
+				drone.Move(routes.NewSubStop(actualStop.Point())) // Checked
 				car.Route().RemoveMainStop(routeIterator.Index())
 				routeIterator.GoToNext()
 				continue
 			}
 
-			if drone := flyingDroneThatCanSupport(droneStrikes, actualStop); drone != nil {
+			if drone := flyingDroneThatCanSupport(droneStrikes, actualStop, nextStop); drone != nil {
 				drone.Move(routes.NewSubStop(actualStop.Point()))
-				car.Route().RemoveMainStop(routeIterator.Index())
+				car.Route().RemoveMainStop(routeIterator.Index()) // Checked
 				routeIterator.GoToNext()
 				continue
 			}
@@ -50,7 +53,7 @@ func DroneStrikesInsertion(car vehicles.ICar) {
 		routeIterator.GoToNext()
 	}
 
-	landAllFlyingDrones(droneStrikes, routeIterator.Next())
+	landAllFlyingDrones(droneStrikes, routeIterator.Actual())
 }
 
 func initDroneStrikes(car vehicles.ICar) []droneStrikes {
@@ -71,6 +74,13 @@ func landAllFlyingDrones(dStrks []droneStrikes, landingPoint routes.IMainStop) {
 	}
 }
 
+func resetDroneStrikes(dStrks []droneStrikes) {
+	for i, dStrk := range dStrks {
+		dStrk.strikes = 0
+		dStrks[i] = dStrk
+	}
+}
+
 func anyDroneWasStriked(dStrks []droneStrikes) bool {
 	for _, dStrk := range dStrks {
 		if dStrk.strikes >= maxStrikes {
@@ -83,39 +93,43 @@ func anyDroneWasStriked(dStrks []droneStrikes) bool {
 func anyDroneNeedToLand(dStrks []droneStrikes, stop routes.IMainStop) bool {
 	point := stop.Point()
 	for _, dStrk := range dStrks {
-		if dStrk.drone.IsFlying() && !dStrk.drone.Support(point) {
+		if dStrk.drone.IsFlying() && !dStrk.drone.CanReach(point) {
 			return true
 		}
 	}
 	return false
 }
 
-func updateDroneStrikes(dStrks []droneStrikes, stop routes.IMainStop) {
-	point := stop.Point()
+func updateDroneStrikes(dStrks []droneStrikes, next routes.IMainStop) {
+	nextPoint := next.Point()
 	for i, dStrk := range dStrks {
-		if dStrk.drone.IsFlying() && dStrk.drone.Support(point) {
-			dStrk.strikes = 0
-		} else {
-			dStrk.strikes++
+		if dStrk.drone.IsFlying() {
+			if dStrk.drone.Support(nextPoint) {
+				dStrk.strikes = 0
+			} else {
+				dStrk.strikes++
+			}
+			dStrks[i] = dStrk
 		}
-		dStrks[i] = dStrk
 	}
 }
 
-func flyingDroneThatCanSupport(dStrks []droneStrikes, stop routes.IMainStop) vehicles.IDrone {
-	point := stop.Point()
+func flyingDroneThatCanSupport(dStrks []droneStrikes, actual routes.IMainStop, next routes.IMainStop) vehicles.IDrone {
+	actualPoint := actual.Point()
+	nextPoint := next.Point()
 	for _, dStrk := range dStrks {
-		if dStrk.drone.IsFlying() && dStrk.drone.Support(point) {
+		if dStrk.drone.IsFlying() && dStrk.drone.Support(actualPoint, nextPoint) {
 			return dStrk.drone
 		}
 	}
 	return nil
 }
 
-func dockedDroneThatCanSupport(dStrks []droneStrikes, stop routes.IMainStop) vehicles.IDrone {
-	point := stop.Point()
+func dockedDroneThatCanSupport(dStrks []droneStrikes, actual routes.IMainStop, next routes.IMainStop) vehicles.IDrone {
+	actualPoint := actual.Point()
+	nextPoint := next.Point()
 	for _, dStrk := range dStrks {
-		if !dStrk.drone.IsFlying() && dStrk.drone.Support(point) {
+		if !dStrk.drone.IsFlying() && dStrk.drone.Support(actualPoint, nextPoint) {
 			return dStrk.drone
 		}
 	}
