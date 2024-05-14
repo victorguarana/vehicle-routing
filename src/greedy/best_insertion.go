@@ -55,7 +55,7 @@ func findBestPosition(initialPoint gps.Point, client gps.Point, orderedClients [
 
 func fillRoute(car vehicles.ICar, orderedClients []gps.Point, deposits []gps.Point) {
 	for _, client := range orderedClients {
-		closestDeposit := closestPoint(client, deposits)
+		closestDeposit := gps.ClosestPoint(client, deposits)
 		if !car.Support(client, closestDeposit) {
 			car.Move(routes.NewMainStop(closestDeposit))
 		}

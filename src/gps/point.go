@@ -24,3 +24,15 @@ func DistanceBetweenPoints(points ...Point) float64 {
 	}
 	return totalDistance
 }
+
+func ClosestPoint(originPoint Point, candidatePoints []Point) Point {
+	var closestPoint Point
+	closestDistance := -1.0
+	for _, candidatePoint := range candidatePoints {
+		if closestDistance < 0 || DistanceBetweenPoints(originPoint, candidatePoint) < closestDistance {
+			closestPoint = candidatePoint
+			closestDistance = DistanceBetweenPoints(originPoint, closestPoint)
+		}
+	}
+	return closestPoint
+}

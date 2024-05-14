@@ -12,8 +12,8 @@ func ClosestNeighbor(cars []vehicles.ICar, m gps.Map) {
 	for i := 0; len(remaningClients) > 0; i++ {
 		car := slc.CircularSelection(cars, i)
 		carActualPosition := car.ActualPoint()
-		closestClient := closestPoint(carActualPosition, remaningClients)
-		closestDepositFromClosestClient := closestPoint(closestClient, m.Deposits)
+		closestClient := gps.ClosestPoint(carActualPosition, remaningClients)
+		closestDepositFromClosestClient := gps.ClosestPoint(closestClient, m.Deposits)
 
 		if car.Support(closestClient, closestDepositFromClosestClient) {
 			car.Move(routes.NewMainStop(closestClient))
@@ -21,7 +21,7 @@ func ClosestNeighbor(cars []vehicles.ICar, m gps.Map) {
 			continue
 		}
 
-		closestDepositFromActualPosition := closestPoint(carActualPosition, m.Deposits)
+		closestDepositFromActualPosition := gps.ClosestPoint(carActualPosition, m.Deposits)
 		car.Move(routes.NewMainStop(closestDepositFromActualPosition))
 	}
 
