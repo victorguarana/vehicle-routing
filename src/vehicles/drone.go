@@ -11,10 +11,9 @@ var defaultDroneStorage = 10.0
 
 type IDrone interface {
 	CanReach(...gps.Point) bool
-	Flight() routes.ISubRoute
 	IsFlying() bool
-	Land(landingPoint routes.IMainStop)
-	Move(destination routes.ISubStop)
+	Land()
+	Move(from, to gps.Point)
 	Name() string
 	Speed() float64
 	Support(...gps.Point) bool
@@ -30,7 +29,6 @@ type drone struct {
 	car             *car
 	name            string
 	speed           float64
-	flight          routes.ISubRoute
 	isFlying        bool
 	remaningRange   float64
 	remaningStorage float64
@@ -52,38 +50,23 @@ func newDrone(params DroneParams) *drone {
 	}
 }
 
-func (d *drone) CanReach(destinations ...gps.Point) bool {
-	distance := gps.DistanceBetweenPoints(append([]gps.Point{d.actualPoint()}, destinations...)...)
+func (d *drone) CanReach(route ...gps.Point) bool {
+	distance := gps.DistanceBetweenPoints(route...)
 	return distance <= d.remaningRange
-}
-
-func (d *drone) Flight() routes.ISubRoute {
-	return d.flight
 }
 
 func (d *drone) IsFlying() bool {
 	return d.isFlying
 }
 
-func (d *drone) Land(destination routes.IMainStop) {
+func (d *drone) Land() {
 	d.isFlying = false
-	d.flight.Return(destination)
-	d.flight = nil
 	d.resetAttributes()
 }
 
-func (d *drone) Move(destination routes.ISubStop) {
-	if d.isFlying {
-		d.remaningRange -= gps.DistanceBetweenPoints(d.actualPoint(), destination.Point())
-		d.flight.Append(destination)
-		return
-	}
-
+func (d *drone) Move(from, to gps.Point) {
 	d.isFlying = true
-	actualCarStop := d.car.route.Last()
-	d.flight = d.flightFactory(actualCarStop)
-	d.flight.Append(destination)
-	d.remaningRange -= gps.DistanceBetweenPoints(actualCarStop.Point(), destination.Point())
+	d.remaningRange -= gps.DistanceBetweenPoints(from, to)
 }
 
 func (d *drone) Name() string {
@@ -94,10 +77,10 @@ func (d *drone) Speed() float64 {
 	return d.speed
 }
 
-func (d *drone) Support(destinations ...gps.Point) bool {
-	distance := gps.DistanceBetweenPoints(append([]gps.Point{d.actualPoint()}, destinations...)...)
+func (d *drone) Support(route ...gps.Point) bool {
+	distance := gps.DistanceBetweenPoints(route...)
 	packagesSize := 0.0
-	for _, destination := range destinations {
+	for _, destination := range route {
 		packagesSize += destination.PackageSize
 	}
 	if distance > d.remaningRange {
@@ -107,13 +90,6 @@ func (d *drone) Support(destinations ...gps.Point) bool {
 		return false
 	}
 	return true
-}
-
-func (d *drone) actualPoint() gps.Point {
-	if d.isFlying {
-		return d.flight.Last().Point()
-	}
-	return d.car.ActualPoint()
 }
 
 func (d *drone) resetAttributes() {

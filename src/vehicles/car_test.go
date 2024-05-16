@@ -1,8 +1,6 @@
 package vehicles
 
 import (
-	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/routes"
 	mockRoutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
 
 	"go.uber.org/mock/gomock"
@@ -15,14 +13,10 @@ var _ = Describe("NewCar", func() {
 	Context("when car can be created", func() {
 		var mockCtrl *gomock.Controller
 		var mockedInitialStop *mockRoutes.MockIMainStop
-		var mockedRoute *mockRoutes.MockIMainRoute
-		var mockedRoutesFactory func(routes.IMainStop) routes.IMainRoute
 
 		BeforeEach(func() {
 			mockCtrl = gomock.NewController(GinkgoT())
 			mockedInitialStop = mockRoutes.NewMockIMainStop(mockCtrl)
-			mockedRoute = mockRoutes.NewMockIMainRoute(mockCtrl)
-			mockedRoutesFactory = func(routes.IMainStop) routes.IMainRoute { return mockedRoute }
 		})
 
 		AfterEach(func() {
@@ -33,14 +27,12 @@ var _ = Describe("NewCar", func() {
 			carParams := CarParams{
 				Name:          "car1",
 				StartingPoint: mockedInitialStop,
-				RouteFactory:  mockedRoutesFactory,
 			}
 
 			receivedCar := NewCar(carParams)
 			expectedCar := car{
 				drones: []*drone{},
 				name:   "car1",
-				route:  mockedRoute,
 				speed:  defaultCarSpeed,
 			}
 
@@ -50,33 +42,6 @@ var _ = Describe("NewCar", func() {
 })
 
 var _ = Describe("car{}", func() {
-	Describe("ActualPoint", func() {
-		var sut *car
-		var mockCtrl *gomock.Controller
-		var mockedCarStop *mockRoutes.MockIMainStop
-		var mockedRoute *mockRoutes.MockIMainRoute
-
-		BeforeEach(func() {
-			mockCtrl = gomock.NewController(GinkgoT())
-			mockedCarStop = mockRoutes.NewMockIMainStop(mockCtrl)
-			mockedRoute = mockRoutes.NewMockIMainRoute(mockCtrl)
-
-			sut = &car{
-				route: mockedRoute,
-			}
-		})
-
-		AfterEach(func() {
-			defer mockCtrl.Finish()
-		})
-
-		It("should return last stop from route", func() {
-			mockedRoute.EXPECT().Last().Return(mockedCarStop)
-			mockedCarStop.EXPECT().Point().Return(gps.Point{})
-			sut.ActualPoint()
-		})
-	})
-
 	Describe("Drones", func() {
 		var drone1 = &drone{}
 		var drone2 = &drone{}
@@ -86,32 +51,6 @@ var _ = Describe("car{}", func() {
 
 		It("should return all drones", func() {
 			Expect(sut.Drones()).To(Equal([]IDrone{drone1, drone2}))
-		})
-	})
-
-	Describe("Move", func() {
-		var sut *car
-		var mockCtrl *gomock.Controller
-		var mockedCarStop *mockRoutes.MockIMainStop
-		var mockedRoute *mockRoutes.MockIMainRoute
-
-		BeforeEach(func() {
-			mockCtrl = gomock.NewController(GinkgoT())
-			mockedCarStop = mockRoutes.NewMockIMainStop(mockCtrl)
-			mockedRoute = mockRoutes.NewMockIMainRoute(mockCtrl)
-
-			sut = &car{
-				route: mockedRoute,
-			}
-		})
-
-		AfterEach(func() {
-			defer mockCtrl.Finish()
-		})
-
-		It("should append stop to route", func() {
-			mockedRoute.EXPECT().Append(mockedCarStop)
-			sut.Move(mockedCarStop)
 		})
 	})
 
