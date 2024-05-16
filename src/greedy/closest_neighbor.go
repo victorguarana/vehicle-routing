@@ -2,28 +2,27 @@ package greedy
 
 import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/routes"
+	"github.com/victorguarana/go-vehicle-route/src/itinerary"
 	"github.com/victorguarana/go-vehicle-route/src/slc"
-	"github.com/victorguarana/go-vehicle-route/src/vehicles"
 )
 
-func ClosestNeighbor(cars []vehicles.ICar, m gps.Map) {
+func ClosestNeighbor(itineraryList []itinerary.Itinerary, m gps.Map) {
 	remaningClients := slc.Copy(m.Clients)
 	for i := 0; len(remaningClients) > 0; i++ {
-		car := slc.CircularSelection(cars, i)
-		carActualPosition := car.ActualPoint()
-		closestClient := gps.ClosestPoint(carActualPosition, remaningClients)
+		itinerary := slc.CircularSelection(itineraryList, i)
+		itineraryActualPosition := itinerary.ActualCarPoint()
+		closestClient := gps.ClosestPoint(itineraryActualPosition, remaningClients)
 		closestDepositFromClosestClient := gps.ClosestPoint(closestClient, m.Deposits)
 
-		if car.Support(closestClient, closestDepositFromClosestClient) {
-			car.Move(routes.NewMainStop(closestClient))
+		if itinerary.CarSupport(closestClient, closestDepositFromClosestClient) {
+			itinerary.MoveCar(closestClient)
 			remaningClients = slc.RemoveElement(remaningClients, closestClient)
 			continue
 		}
 
-		closestDepositFromActualPosition := gps.ClosestPoint(carActualPosition, m.Deposits)
-		car.Move(routes.NewMainStop(closestDepositFromActualPosition))
+		closestDepositFromActualPosition := gps.ClosestPoint(itineraryActualPosition, m.Deposits)
+		itinerary.MoveCar(closestDepositFromActualPosition)
 	}
 
-	finishItineraryOnClosestDeposits(cars, m)
+	finishItineraryOnClosestDeposits(itineraryList, m)
 }

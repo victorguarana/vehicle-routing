@@ -2,26 +2,25 @@ package greedy
 
 import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/routes"
+	"github.com/victorguarana/go-vehicle-route/src/itinerary"
 	"github.com/victorguarana/go-vehicle-route/src/slc"
-	"github.com/victorguarana/go-vehicle-route/src/vehicles"
 )
 
-func BestInsertion(cars []vehicles.ICar, m gps.Map) {
-	orderedClientsListsByRoute := orderedClientsByCars(cars, m.Clients)
+func BestInsertion(itineraryList []itinerary.Itinerary, m gps.Map) {
+	orderedClientsListsByRoute := orderClientsByItinerary(itineraryList, m.Clients)
 	for itinerary, orderedClients := range orderedClientsListsByRoute {
 		fillRoute(itinerary, orderedClients, m.Deposits)
 	}
-	finishItineraryOnClosestDeposits(cars, m)
+	finishItineraryOnClosestDeposits(itineraryList, m)
 }
 
-func orderedClientsByCars(cars []vehicles.ICar, clients []gps.Point) map[vehicles.ICar][]gps.Point {
-	orderedClientsByItinerary := map[vehicles.ICar][]gps.Point{}
+func orderClientsByItinerary(itineraryList []itinerary.Itinerary, clients []gps.Point) map[itinerary.Itinerary][]gps.Point {
+	orderedClientsByItinerary := map[itinerary.Itinerary][]gps.Point{}
 	for i, client := range clients {
-		car := slc.CircularSelection(cars, i)
-		initialPoint := car.ActualPoint()
-		orderedClients := orderedClientsByItinerary[car]
-		orderedClientsByItinerary[car] = insertInBestPosition(initialPoint, client, orderedClients)
+		itinerary := slc.CircularSelection(itineraryList, i)
+		initialPoint := itinerary.ActualCarPoint()
+		orderedClients := orderedClientsByItinerary[itinerary]
+		orderedClientsByItinerary[itinerary] = insertInBestPosition(initialPoint, client, orderedClients)
 	}
 	return orderedClientsByItinerary
 }
@@ -53,16 +52,17 @@ func findBestPosition(initialPoint gps.Point, client gps.Point, orderedClients [
 	return bestIndex
 }
 
-func fillRoute(car vehicles.ICar, orderedClients []gps.Point, deposits []gps.Point) {
+func fillRoute(itinerary itinerary.Itinerary, orderedClients []gps.Point, deposits []gps.Point) {
 	for _, client := range orderedClients {
 		closestDeposit := gps.ClosestPoint(client, deposits)
-		if !car.Support(client, closestDeposit) {
-			car.Move(routes.NewMainStop(closestDeposit))
+		if !itinerary.CarSupport(client, closestDeposit) {
+			itinerary.MoveCar(closestDeposit)
 		}
-		car.Move(routes.NewMainStop(client))
+		itinerary.MoveCar(client)
 	}
 }
 
+// TODO: Move this method to gps package
 func calcAdditionalDistance(from, through, to gps.Point) float64 {
 	return gps.DistanceBetweenPoints(from, through, to) - gps.DistanceBetweenPoints(from, to)
 }

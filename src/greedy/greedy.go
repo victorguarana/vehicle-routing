@@ -2,14 +2,13 @@ package greedy
 
 import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/routes"
-	"github.com/victorguarana/go-vehicle-route/src/vehicles"
+	"github.com/victorguarana/go-vehicle-route/src/itinerary"
 )
 
-func finishItineraryOnClosestDeposits(carsList []vehicles.ICar, m gps.Map) {
-	for _, car := range carsList {
-		position := car.ActualPoint()
+func finishItineraryOnClosestDeposits(itineraryList []itinerary.Itinerary, m gps.Map) {
+	for _, itinerary := range itineraryList {
+		position := itinerary.ActualCarPoint()
 		closestDeposit := gps.ClosestPoint(position, m.Deposits)
-		car.Move(routes.NewMainStop(closestDeposit))
+		itinerary.MoveCar(closestDeposit)
 	}
 }
