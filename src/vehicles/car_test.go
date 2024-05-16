@@ -1,35 +1,14 @@
 package vehicles
 
 import (
-	mockRoutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
-
-	"go.uber.org/mock/gomock"
-
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("NewCar", func() {
 	Context("when car can be created", func() {
-		var mockCtrl *gomock.Controller
-		var mockedInitialStop *mockRoutes.MockIMainStop
-
-		BeforeEach(func() {
-			mockCtrl = gomock.NewController(GinkgoT())
-			mockedInitialStop = mockRoutes.NewMockIMainStop(mockCtrl)
-		})
-
-		AfterEach(func() {
-			defer mockCtrl.Finish()
-		})
-
 		It("should create car with correct params", func() {
-			carParams := CarParams{
-				Name:          "car1",
-				StartingPoint: mockedInitialStop,
-			}
-
-			receivedCar := NewCar(carParams)
+			receivedCar := NewCar("car1")
 			expectedCar := car{
 				drones: []*drone{},
 				name:   "car1",

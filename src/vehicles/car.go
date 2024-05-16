@@ -2,7 +2,6 @@ package vehicles
 
 import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/routes"
 )
 
 var defaultCarSpeed = 10.0
@@ -21,15 +20,10 @@ type car struct {
 	speed  float64
 }
 
-type CarParams struct {
-	Name          string
-	StartingPoint routes.IMainStop
-}
-
-func NewCar(params CarParams) ICar {
+func NewCar(name string) ICar {
 	return &car{
 		drones: []*drone{},
-		name:   params.Name,
+		name:   name,
 		speed:  defaultCarSpeed,
 	}
 }
