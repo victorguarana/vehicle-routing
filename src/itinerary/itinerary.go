@@ -15,6 +15,7 @@ type DroneNumber int
 
 type Itinerary interface {
 	ActualCarPoint() gps.Point
+	ActualCarStop() routes.IMainStop
 	CarSupport(nextPoints ...gps.Point) bool
 	DroneCanReach(droneNumber DroneNumber, nextPoints ...gps.Point) bool
 	DroneNumbers() []DroneNumber
@@ -49,6 +50,10 @@ func New(car vehicles.ICar) Itinerary {
 
 func (i itinerary) ActualCarPoint() gps.Point {
 	return i.car.ActualPoint()
+}
+
+func (i itinerary) ActualCarStop() routes.IMainStop {
+	return i.route.Last()
 }
 
 func (i itinerary) CarSupport(nextPoints ...gps.Point) bool {

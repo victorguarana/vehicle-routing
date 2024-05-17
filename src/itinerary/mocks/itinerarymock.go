@@ -56,6 +56,20 @@ func (mr *MockItineraryMockRecorder) ActualCarPoint() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActualCarPoint", reflect.TypeOf((*MockItinerary)(nil).ActualCarPoint))
 }
 
+// ActualCarStop mocks base method.
+func (m *MockItinerary) ActualCarStop() routes.IMainStop {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ActualCarStop")
+	ret0, _ := ret[0].(routes.IMainStop)
+	return ret0
+}
+
+// ActualCarStop indicates an expected call of ActualCarStop.
+func (mr *MockItineraryMockRecorder) ActualCarStop() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActualCarStop", reflect.TypeOf((*MockItinerary)(nil).ActualCarStop))
+}
+
 // CarSupport mocks base method.
 func (m *MockItinerary) CarSupport(nextPoints ...gps.Point) bool {
 	m.ctrl.T.Helper()
