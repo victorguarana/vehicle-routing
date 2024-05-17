@@ -11,6 +11,7 @@ type Iterator[T any] interface {
 	HasPrevious() bool
 	GoToNext()
 	GoToPrevious()
+	ForEach(f func())
 }
 
 type iterator[T any] struct {
@@ -69,4 +70,11 @@ func (i *iterator[T]) GoToPrevious() {
 	}
 
 	i.index--
+}
+
+func (i *iterator[T]) ForEach(f func()) {
+	for i.index < len(i.list) {
+		f()
+		i.index++
+	}
 }
