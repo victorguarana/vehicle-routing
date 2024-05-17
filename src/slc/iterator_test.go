@@ -138,4 +138,18 @@ var _ = Describe("Iterator", func() {
 			})
 		})
 	})
+
+	Describe("ForEach", func() {
+		var sut = &iterator[int]{
+			list:  []int{1, 2, 3},
+			index: 0,
+		}
+		var sum = 0
+		It("should iterate over elements", func() {
+			sut.ForEach(func() {
+				sum += sut.Actual()
+			})
+			Expect(sum).To(Equal(6))
+		})
+	})
 })
