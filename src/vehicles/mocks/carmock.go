@@ -40,6 +40,20 @@ func (m *MockICar) EXPECT() *MockICarMockRecorder {
 	return m.recorder
 }
 
+// ActualPoint mocks base method.
+func (m *MockICar) ActualPoint() gps.Point {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ActualPoint")
+	ret0, _ := ret[0].(gps.Point)
+	return ret0
+}
+
+// ActualPoint indicates an expected call of ActualPoint.
+func (mr *MockICarMockRecorder) ActualPoint() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActualPoint", reflect.TypeOf((*MockICar)(nil).ActualPoint))
+}
+
 // Drones mocks base method.
 func (m *MockICar) Drones() []vehicles.IDrone {
 	m.ctrl.T.Helper()
@@ -52,6 +66,18 @@ func (m *MockICar) Drones() []vehicles.IDrone {
 func (mr *MockICarMockRecorder) Drones() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Drones", reflect.TypeOf((*MockICar)(nil).Drones))
+}
+
+// Move mocks base method.
+func (m *MockICar) Move(destination gps.Point) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Move", destination)
+}
+
+// Move indicates an expected call of Move.
+func (mr *MockICarMockRecorder) Move(destination any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Move", reflect.TypeOf((*MockICar)(nil).Move), destination)
 }
 
 // Name mocks base method.

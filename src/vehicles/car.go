@@ -7,7 +7,9 @@ import (
 var defaultCarSpeed = 10.0
 
 type ICar interface {
+	ActualPoint() gps.Point
 	Drones() []IDrone
+	Move(destination gps.Point)
 	Name() string
 	NewDrone(params DroneParams)
 	Speed() float64
@@ -15,17 +17,23 @@ type ICar interface {
 }
 
 type car struct {
-	drones []*drone
-	name   string
-	speed  float64
+	actualPoint gps.Point
+	drones      []*drone
+	name        string
+	speed       float64
 }
 
-func NewCar(name string) ICar {
+func NewCar(name string, startingPoint gps.Point) ICar {
 	return &car{
-		drones: []*drone{},
-		name:   name,
-		speed:  defaultCarSpeed,
+		actualPoint: startingPoint,
+		drones:      []*drone{},
+		name:        name,
+		speed:       defaultCarSpeed,
 	}
+}
+
+func (c *car) ActualPoint() gps.Point {
+	return c.actualPoint
 }
 
 func (c *car) Drones() []IDrone {
@@ -34,6 +42,11 @@ func (c *car) Drones() []IDrone {
 		drones = append(drones, d)
 	}
 	return drones
+}
+
+func (c *car) Move(destination gps.Point) {
+	c.actualPoint = destination
+	c.moveDockedDrones(destination)
 }
 
 func (c *car) Name() string {
@@ -52,4 +65,12 @@ func (c *car) Speed() float64 {
 
 func (c *car) Support(destination ...gps.Point) bool {
 	return true
+}
+
+func (c *car) moveDockedDrones(destination gps.Point) {
+	for _, d := range c.drones {
+		if !d.isFlying {
+			d.actualPoint = destination
+		}
+	}
 }

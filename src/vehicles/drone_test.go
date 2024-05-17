@@ -30,9 +30,19 @@ var _ = Describe("newDrone", func() {
 })
 
 var _ = Describe("drone{}", func() {
+	Describe("ActualPoint", func() {
+		var actualPoint = gps.Point{Latitude: 1}
+		var sut = drone{
+			actualPoint: actualPoint,
+		}
+
+		It("should return actual point", func() {
+			Expect(sut.ActualPoint()).To(Equal(actualPoint))
+		})
+	})
+
 	Describe("CanReach", func() {
 		var sut = drone{
-			isFlying:      true,
 			remaningRange: 10,
 		}
 		var initialPoint = gps.Point{Latitude: 0}
@@ -53,32 +63,33 @@ var _ = Describe("drone{}", func() {
 	})
 
 	Describe("Land", func() {
+		var destination = gps.Point{Latitude: 10}
 		var sut = drone{
-			isFlying:     true,
 			totalStorage: 10,
 			totalRange:   100,
 		}
 
 		It("should land drone and reset attributes", func() {
-			sut.Land()
-			Expect(sut.isFlying).To(BeFalse())
+			sut.Land(destination)
 			Expect(sut.remaningRange).To(Equal(sut.totalRange))
 			Expect(sut.remaningStorage).To(Equal(defaultDroneStorage))
+			Expect(sut.isFlying).To(BeFalse())
+			Expect(sut.actualPoint).To(Equal(destination))
 		})
 	})
 
 	var _ = Describe("Move", func() {
 		Context("when drone is not flying", func() {
+			var initialPoint = gps.Point{Latitude: 5}
+			var destinationPoint = gps.Point{Latitude: 10}
 			var sut = drone{
+				actualPoint:   initialPoint,
 				remaningRange: defaultDroneRange,
 			}
-			var takeoffPoint = gps.Point{Latitude: 5}
-			var destinationPoint = gps.Point{Latitude: 10}
 
 			It("should create flight and move drone", func() {
-				distance := gps.DistanceBetweenPoints(takeoffPoint, destinationPoint)
-
-				sut.Move(takeoffPoint, destinationPoint)
+				distance := gps.DistanceBetweenPoints(initialPoint, destinationPoint)
+				sut.Move(destinationPoint)
 				Expect(sut.remaningRange).To(Equal(defaultDroneRange - distance))
 				Expect(sut.isFlying).To(BeTrue())
 			})
@@ -113,7 +124,6 @@ var _ = Describe("drone{}", func() {
 			sut = drone{
 				remaningRange:   10,
 				remaningStorage: 10,
-				isFlying:        true,
 			}
 		})
 
