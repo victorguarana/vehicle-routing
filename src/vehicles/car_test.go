@@ -16,7 +16,7 @@ var _ = Describe("NewCar", func() {
 				actualPoint: initialPoint,
 				drones:      []*drone{},
 				name:        "car1",
-				speed:       defaultCarSpeed,
+				speed:       CarSpeed,
 			}
 
 			Expect(receivedCar).To(Equal(&expectedCar))
@@ -51,8 +51,8 @@ var _ = Describe("car{}", func() {
 	Describe("Move", func() {
 		var initialPoint = gps.Point{Latitude: 1, Longitude: 2, PackageSize: 3, Name: "initialPoint"}
 		var destination = gps.Point{Latitude: 4, Longitude: 5, PackageSize: 6, Name: "destination"}
-		var dockedDrone = drone{actualPoint: initialPoint, isFlying: false, remaningRange: defaultDroneRange}
-		var flyingDrone = drone{actualPoint: gps.Point{}, isFlying: true, remaningRange: defaultDroneRange}
+		var dockedDrone = drone{actualPoint: initialPoint, isFlying: false, remaningRange: DroneRange}
+		var flyingDrone = drone{actualPoint: gps.Point{}, isFlying: true, remaningRange: DroneRange}
 		var sut = &car{
 			actualPoint: initialPoint,
 			drones:      []*drone{&dockedDrone, &flyingDrone},
@@ -62,9 +62,9 @@ var _ = Describe("car{}", func() {
 			sut.Move(destination)
 			Expect(sut.actualPoint).To(Equal(destination))
 			Expect(flyingDrone.actualPoint).NotTo(Equal(destination))
-			Expect(flyingDrone.remaningRange).To(Equal(defaultDroneRange))
+			Expect(flyingDrone.remaningRange).To(Equal(DroneRange))
 			Expect(dockedDrone.actualPoint).To(Equal(destination))
-			Expect(dockedDrone.remaningRange).To(Equal(defaultDroneRange))
+			Expect(dockedDrone.remaningRange).To(Equal(DroneRange))
 		})
 	})
 
@@ -95,11 +95,11 @@ var _ = Describe("car{}", func() {
 
 	Describe("Speed", func() {
 		var sut = &car{
-			speed: defaultCarSpeed,
+			speed: CarSpeed,
 		}
 
 		It("should return car speed", func() {
-			Expect(sut.Speed()).To(Equal(defaultCarSpeed))
+			Expect(sut.Speed()).To(Equal(CarSpeed))
 		})
 	})
 })

@@ -18,11 +18,11 @@ var _ = Describe("newDrone", func() {
 		expectedDrone := drone{
 			car:             car,
 			name:            droneParams.Name,
-			speed:           defaultDroneSpeed,
-			remaningRange:   defaultDroneRange,
-			remaningStorage: defaultDroneStorage,
-			totalRange:      defaultDroneRange,
-			totalStorage:    defaultDroneStorage,
+			speed:           DroneSpeed,
+			remaningRange:   DroneRange,
+			remaningStorage: DroneStorage,
+			totalRange:      DroneRange,
+			totalStorage:    DroneStorage,
 		}
 		receivedDrone := newDrone(droneParams)
 		Expect(receivedDrone).To(Equal(&expectedDrone))
@@ -72,7 +72,7 @@ var _ = Describe("drone{}", func() {
 		It("should land drone and reset attributes", func() {
 			sut.Land(destination)
 			Expect(sut.remaningRange).To(Equal(sut.totalRange))
-			Expect(sut.remaningStorage).To(Equal(defaultDroneStorage))
+			Expect(sut.remaningStorage).To(Equal(DroneStorage))
 			Expect(sut.isFlying).To(BeFalse())
 			Expect(sut.actualPoint).To(Equal(destination))
 		})
@@ -84,13 +84,13 @@ var _ = Describe("drone{}", func() {
 			var destinationPoint = gps.Point{Latitude: 10}
 			var sut = drone{
 				actualPoint:   initialPoint,
-				remaningRange: defaultDroneRange,
+				remaningRange: DroneRange,
 			}
 
 			It("should create flight and move drone", func() {
 				distance := gps.DistanceBetweenPoints(initialPoint, destinationPoint)
 				sut.Move(destinationPoint)
-				Expect(sut.remaningRange).To(Equal(defaultDroneRange - distance))
+				Expect(sut.remaningRange).To(Equal(DroneRange - distance))
 				Expect(sut.isFlying).To(BeTrue())
 			})
 		})

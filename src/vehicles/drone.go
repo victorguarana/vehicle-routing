@@ -4,9 +4,9 @@ import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 )
 
-var defaultDroneRange = 150.0
-var defaultDroneSpeed = 25.0
-var defaultDroneStorage = 10.0
+const DroneRange = 150.0
+const DroneSpeed = 25.0
+const DroneStorage = 10.0
 
 type IDrone interface {
 	ActualPoint() gps.Point
@@ -39,11 +39,11 @@ func newDrone(params DroneParams) *drone {
 	return &drone{
 		car:             params.car,
 		name:            params.Name,
-		speed:           defaultDroneSpeed,
-		remaningRange:   defaultDroneRange,
-		remaningStorage: defaultDroneStorage,
-		totalRange:      defaultDroneRange,
-		totalStorage:    defaultDroneStorage,
+		speed:           DroneSpeed,
+		remaningRange:   DroneRange,
+		remaningStorage: DroneStorage,
+		totalRange:      DroneRange,
+		totalStorage:    DroneStorage,
 	}
 }
 

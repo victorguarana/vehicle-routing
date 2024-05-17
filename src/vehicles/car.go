@@ -4,7 +4,7 @@ import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
 )
 
-var defaultCarSpeed = 10.0
+const CarSpeed = 10.0
 
 type ICar interface {
 	ActualPoint() gps.Point
@@ -28,7 +28,7 @@ func NewCar(name string, startingPoint gps.Point) ICar {
 		actualPoint: startingPoint,
 		drones:      []*drone{},
 		name:        name,
-		speed:       defaultCarSpeed,
+		speed:       CarSpeed,
 	}
 }
 
