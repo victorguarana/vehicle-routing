@@ -13,7 +13,6 @@ import (
 	reflect "reflect"
 
 	gps "github.com/victorguarana/go-vehicle-route/src/gps"
-	routes "github.com/victorguarana/go-vehicle-route/src/routes"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -40,6 +39,20 @@ func (m *MockIDrone) EXPECT() *MockIDroneMockRecorder {
 	return m.recorder
 }
 
+// ActualPoint mocks base method.
+func (m *MockIDrone) ActualPoint() gps.Point {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ActualPoint")
+	ret0, _ := ret[0].(gps.Point)
+	return ret0
+}
+
+// ActualPoint indicates an expected call of ActualPoint.
+func (mr *MockIDroneMockRecorder) ActualPoint() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActualPoint", reflect.TypeOf((*MockIDrone)(nil).ActualPoint))
+}
+
 // CanReach mocks base method.
 func (m *MockIDrone) CanReach(arg0 ...gps.Point) bool {
 	m.ctrl.T.Helper()
@@ -58,48 +71,20 @@ func (mr *MockIDroneMockRecorder) CanReach(arg0 ...any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CanReach", reflect.TypeOf((*MockIDrone)(nil).CanReach), arg0...)
 }
 
-// Flight mocks base method.
-func (m *MockIDrone) Flight() routes.ISubRoute {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Flight")
-	ret0, _ := ret[0].(routes.ISubRoute)
-	return ret0
-}
-
-// Flight indicates an expected call of Flight.
-func (mr *MockIDroneMockRecorder) Flight() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Flight", reflect.TypeOf((*MockIDrone)(nil).Flight))
-}
-
-// IsFlying mocks base method.
-func (m *MockIDrone) IsFlying() bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IsFlying")
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// IsFlying indicates an expected call of IsFlying.
-func (mr *MockIDroneMockRecorder) IsFlying() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsFlying", reflect.TypeOf((*MockIDrone)(nil).IsFlying))
-}
-
 // Land mocks base method.
-func (m *MockIDrone) Land(landingPoint routes.IMainStop) {
+func (m *MockIDrone) Land(destination gps.Point) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Land", landingPoint)
+	m.ctrl.Call(m, "Land", destination)
 }
 
 // Land indicates an expected call of Land.
-func (mr *MockIDroneMockRecorder) Land(landingPoint any) *gomock.Call {
+func (mr *MockIDroneMockRecorder) Land(destination any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Land", reflect.TypeOf((*MockIDrone)(nil).Land), landingPoint)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Land", reflect.TypeOf((*MockIDrone)(nil).Land), destination)
 }
 
 // Move mocks base method.
-func (m *MockIDrone) Move(destination routes.ISubStop) {
+func (m *MockIDrone) Move(destination gps.Point) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "Move", destination)
 }

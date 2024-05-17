@@ -2,46 +2,38 @@ package vehicles
 
 import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/routes"
 )
 
-var defaultCarSpeed = 10.0
+const CarSpeed = 10.0
 
 type ICar interface {
 	ActualPoint() gps.Point
 	Drones() []IDrone
-	Move(destination routes.IMainStop)
+	Move(destination gps.Point)
 	Name() string
 	NewDrone(params DroneParams)
-	Route() routes.IMainRoute
 	Speed() float64
 	Support(...gps.Point) bool
 }
 
 type car struct {
-	drones []*drone
-	name   string
-	route  routes.IMainRoute
-	speed  float64
+	actualPoint gps.Point
+	drones      []*drone
+	name        string
+	speed       float64
 }
 
-type CarParams struct {
-	Name          string
-	StartingPoint routes.IMainStop
-	RouteFactory  func(routes.IMainStop) routes.IMainRoute
-}
-
-func NewCar(params CarParams) ICar {
+func NewCar(name string, startingPoint gps.Point) ICar {
 	return &car{
-		drones: []*drone{},
-		name:   params.Name,
-		route:  params.RouteFactory(params.StartingPoint),
-		speed:  defaultCarSpeed,
+		actualPoint: startingPoint,
+		drones:      []*drone{},
+		name:        name,
+		speed:       CarSpeed,
 	}
 }
 
 func (c *car) ActualPoint() gps.Point {
-	return c.route.Last().Point()
+	return c.actualPoint
 }
 
 func (c *car) Drones() []IDrone {
@@ -52,8 +44,9 @@ func (c *car) Drones() []IDrone {
 	return drones
 }
 
-func (c *car) Move(destination routes.IMainStop) {
-	c.route.Append(destination)
+func (c *car) Move(destination gps.Point) {
+	c.actualPoint = destination
+	c.moveDockedDrones(destination)
 }
 
 func (c *car) Name() string {
@@ -66,14 +59,18 @@ func (c *car) NewDrone(params DroneParams) {
 	c.drones = append(c.drones, d)
 }
 
-func (c *car) Route() routes.IMainRoute {
-	return c.route
-}
-
 func (c *car) Speed() float64 {
 	return c.speed
 }
 
 func (c *car) Support(destination ...gps.Point) bool {
 	return true
+}
+
+func (c *car) moveDockedDrones(destination gps.Point) {
+	for _, d := range c.drones {
+		if !d.isFlying {
+			d.actualPoint = destination
+		}
+	}
 }

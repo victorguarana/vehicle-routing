@@ -2,10 +2,6 @@ package vehicles
 
 import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/routes"
-	mockRoutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
-
-	"go.uber.org/mock/gomock"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -13,35 +9,14 @@ import (
 
 var _ = Describe("NewCar", func() {
 	Context("when car can be created", func() {
-		var mockCtrl *gomock.Controller
-		var mockedInitialStop *mockRoutes.MockIMainStop
-		var mockedRoute *mockRoutes.MockIMainRoute
-		var mockedRoutesFactory func(routes.IMainStop) routes.IMainRoute
-
-		BeforeEach(func() {
-			mockCtrl = gomock.NewController(GinkgoT())
-			mockedInitialStop = mockRoutes.NewMockIMainStop(mockCtrl)
-			mockedRoute = mockRoutes.NewMockIMainRoute(mockCtrl)
-			mockedRoutesFactory = func(routes.IMainStop) routes.IMainRoute { return mockedRoute }
-		})
-
-		AfterEach(func() {
-			defer mockCtrl.Finish()
-		})
-
+		var initialPoint = gps.Point{Latitude: 1, Longitude: 2, PackageSize: 3, Name: "initialPoint"}
 		It("should create car with correct params", func() {
-			carParams := CarParams{
-				Name:          "car1",
-				StartingPoint: mockedInitialStop,
-				RouteFactory:  mockedRoutesFactory,
-			}
-
-			receivedCar := NewCar(carParams)
+			receivedCar := NewCar("car1", initialPoint)
 			expectedCar := car{
-				drones: []*drone{},
-				name:   "car1",
-				route:  mockedRoute,
-				speed:  defaultCarSpeed,
+				actualPoint: initialPoint,
+				drones:      []*drone{},
+				name:        "car1",
+				speed:       CarSpeed,
 			}
 
 			Expect(receivedCar).To(Equal(&expectedCar))
@@ -51,29 +26,13 @@ var _ = Describe("NewCar", func() {
 
 var _ = Describe("car{}", func() {
 	Describe("ActualPoint", func() {
-		var sut *car
-		var mockCtrl *gomock.Controller
-		var mockedCarStop *mockRoutes.MockIMainStop
-		var mockedRoute *mockRoutes.MockIMainRoute
+		var actualPoint = gps.Point{Latitude: 1, Longitude: 2, PackageSize: 3, Name: "initialPoint"}
+		var sut = &car{
+			actualPoint: actualPoint,
+		}
 
-		BeforeEach(func() {
-			mockCtrl = gomock.NewController(GinkgoT())
-			mockedCarStop = mockRoutes.NewMockIMainStop(mockCtrl)
-			mockedRoute = mockRoutes.NewMockIMainRoute(mockCtrl)
-
-			sut = &car{
-				route: mockedRoute,
-			}
-		})
-
-		AfterEach(func() {
-			defer mockCtrl.Finish()
-		})
-
-		It("should return last stop from route", func() {
-			mockedRoute.EXPECT().Last().Return(mockedCarStop)
-			mockedCarStop.EXPECT().Point().Return(gps.Point{})
-			sut.ActualPoint()
+		It("should return actual point", func() {
+			Expect(sut.ActualPoint()).To(Equal(actualPoint))
 		})
 	})
 
@@ -90,28 +49,22 @@ var _ = Describe("car{}", func() {
 	})
 
 	Describe("Move", func() {
-		var sut *car
-		var mockCtrl *gomock.Controller
-		var mockedCarStop *mockRoutes.MockIMainStop
-		var mockedRoute *mockRoutes.MockIMainRoute
+		var initialPoint = gps.Point{Latitude: 1, Longitude: 2, PackageSize: 3, Name: "initialPoint"}
+		var destination = gps.Point{Latitude: 4, Longitude: 5, PackageSize: 6, Name: "destination"}
+		var dockedDrone = drone{actualPoint: initialPoint, isFlying: false, remaningRange: DroneRange}
+		var flyingDrone = drone{actualPoint: gps.Point{}, isFlying: true, remaningRange: DroneRange}
+		var sut = &car{
+			actualPoint: initialPoint,
+			drones:      []*drone{&dockedDrone, &flyingDrone},
+		}
 
-		BeforeEach(func() {
-			mockCtrl = gomock.NewController(GinkgoT())
-			mockedCarStop = mockRoutes.NewMockIMainStop(mockCtrl)
-			mockedRoute = mockRoutes.NewMockIMainRoute(mockCtrl)
-
-			sut = &car{
-				route: mockedRoute,
-			}
-		})
-
-		AfterEach(func() {
-			defer mockCtrl.Finish()
-		})
-
-		It("should append stop to route", func() {
-			mockedRoute.EXPECT().Append(mockedCarStop)
-			sut.Move(mockedCarStop)
+		It("should move car and docked drones without decrease range to destination", func() {
+			sut.Move(destination)
+			Expect(sut.actualPoint).To(Equal(destination))
+			Expect(flyingDrone.actualPoint).NotTo(Equal(destination))
+			Expect(flyingDrone.remaningRange).To(Equal(DroneRange))
+			Expect(dockedDrone.actualPoint).To(Equal(destination))
+			Expect(dockedDrone.remaningRange).To(Equal(DroneRange))
 		})
 	})
 
@@ -142,11 +95,11 @@ var _ = Describe("car{}", func() {
 
 	Describe("Speed", func() {
 		var sut = &car{
-			speed: defaultCarSpeed,
+			speed: CarSpeed,
 		}
 
 		It("should return car speed", func() {
-			Expect(sut.Speed()).To(Equal(defaultCarSpeed))
+			Expect(sut.Speed()).To(Equal(CarSpeed))
 		})
 	})
 })

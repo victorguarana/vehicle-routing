@@ -13,7 +13,6 @@ import (
 	reflect "reflect"
 
 	gps "github.com/victorguarana/go-vehicle-route/src/gps"
-	routes "github.com/victorguarana/go-vehicle-route/src/routes"
 	vehicles "github.com/victorguarana/go-vehicle-route/src/vehicles"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -70,7 +69,7 @@ func (mr *MockICarMockRecorder) Drones() *gomock.Call {
 }
 
 // Move mocks base method.
-func (m *MockICar) Move(destination routes.IMainStop) {
+func (m *MockICar) Move(destination gps.Point) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "Move", destination)
 }
@@ -105,20 +104,6 @@ func (m *MockICar) NewDrone(params vehicles.DroneParams) {
 func (mr *MockICarMockRecorder) NewDrone(params any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewDrone", reflect.TypeOf((*MockICar)(nil).NewDrone), params)
-}
-
-// Route mocks base method.
-func (m *MockICar) Route() routes.IMainRoute {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Route")
-	ret0, _ := ret[0].(routes.IMainRoute)
-	return ret0
-}
-
-// Route indicates an expected call of Route.
-func (mr *MockICarMockRecorder) Route() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Route", reflect.TypeOf((*MockICar)(nil).Route))
 }
 
 // Speed mocks base method.

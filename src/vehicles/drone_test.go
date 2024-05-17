@@ -2,10 +2,6 @@ package vehicles
 
 import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/routes"
-	mockRoutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
-
-	"go.uber.org/mock/gomock"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -22,11 +18,11 @@ var _ = Describe("newDrone", func() {
 		expectedDrone := drone{
 			car:             car,
 			name:            droneParams.Name,
-			speed:           defaultDroneSpeed,
-			remaningRange:   defaultDroneRange,
-			remaningStorage: defaultDroneStorage,
-			totalRange:      defaultDroneRange,
-			totalStorage:    defaultDroneStorage,
+			speed:           DroneSpeed,
+			remaningRange:   DroneRange,
+			remaningStorage: DroneStorage,
+			totalRange:      DroneRange,
+			totalStorage:    DroneStorage,
 		}
 		receivedDrone := newDrone(droneParams)
 		Expect(receivedDrone).To(Equal(&expectedDrone))
@@ -34,153 +30,68 @@ var _ = Describe("newDrone", func() {
 })
 
 var _ = Describe("drone{}", func() {
-	Describe("CanReach", func() {
-		var sut drone
-		var mockCtrl *gomock.Controller
-		var mockedCarStop *mockRoutes.MockIMainStop
-		var mockedFlight *mockRoutes.MockISubRoute
+	Describe("ActualPoint", func() {
+		var actualPoint = gps.Point{Latitude: 1}
+		var sut = drone{
+			actualPoint: actualPoint,
+		}
 
-		BeforeEach(func() {
-			mockCtrl = gomock.NewController(GinkgoT())
-			mockedCarStop = mockRoutes.NewMockIMainStop(mockCtrl)
-			mockedFlight = mockRoutes.NewMockISubRoute(mockCtrl)
-
-			sut = drone{
-				isFlying:      true,
-				remaningRange: 10,
-				flight:        mockedFlight,
-			}
-
-			mockedFlight.EXPECT().Last().Return(mockedCarStop)
-			mockedCarStop.EXPECT().Point().Return(gps.Point{})
+		It("should return actual point", func() {
+			Expect(sut.ActualPoint()).To(Equal(actualPoint))
 		})
+	})
+
+	Describe("CanReach", func() {
+		var sut = drone{
+			remaningRange: 10,
+		}
+		var initialPoint = gps.Point{Latitude: 0}
 
 		Context("when drone can reach destination", func() {
 			It("returns true", func() {
 				destination := gps.Point{Latitude: 10}
-				Expect(sut.CanReach(destination)).To(BeTrue())
+				Expect(sut.CanReach(initialPoint, destination)).To(BeTrue())
 			})
 		})
 
 		Context("when drone can not reach destination", func() {
 			It("returns false", func() {
 				destination := gps.Point{Latitude: 11}
-				Expect(sut.CanReach(destination)).To(BeFalse())
+				Expect(sut.CanReach(initialPoint, destination)).To(BeFalse())
 			})
 		})
 	})
 
 	Describe("Land", func() {
-		var sut drone
-		var mockCtrl *gomock.Controller
-		var mockedCarStop *mockRoutes.MockIMainStop
-		var mockedFlight *mockRoutes.MockISubRoute
-
-		BeforeEach(func() {
-			mockCtrl = gomock.NewController(GinkgoT())
-			mockedCarStop = mockRoutes.NewMockIMainStop(mockCtrl)
-			mockedFlight = mockRoutes.NewMockISubRoute(mockCtrl)
-
-			sut = drone{
-				isFlying:     true,
-				totalStorage: 10,
-				totalRange:   100,
-				flight:       mockedFlight,
-			}
-		})
-
-		AfterEach(func() {
-			defer mockCtrl.Finish()
-		})
+		var destination = gps.Point{Latitude: 10}
+		var sut = drone{
+			totalStorage: 10,
+			totalRange:   100,
+		}
 
 		It("should land drone and reset attributes", func() {
-			mockedFlight.EXPECT().Return(mockedCarStop)
-			sut.Land(mockedCarStop)
-			Expect(sut.isFlying).To(BeFalse())
+			sut.Land(destination)
 			Expect(sut.remaningRange).To(Equal(sut.totalRange))
-			Expect(sut.remaningStorage).To(Equal(defaultDroneStorage))
-			Expect(sut.flight).To(BeNil())
+			Expect(sut.remaningStorage).To(Equal(DroneStorage))
+			Expect(sut.isFlying).To(BeFalse())
+			Expect(sut.actualPoint).To(Equal(destination))
 		})
 	})
 
 	var _ = Describe("Move", func() {
 		Context("when drone is not flying", func() {
-			var sut drone
-			var mockCtrl *gomock.Controller
-			var mockedCarStop *mockRoutes.MockIMainStop
-			var mockedDroneStop *mockRoutes.MockISubStop
-			var mockedRoute *mockRoutes.MockIMainRoute
-			var mockedFlight *mockRoutes.MockISubRoute
-			var mockedFlightFactory func(routes.IMainStop) routes.ISubRoute
-
-			BeforeEach(func() {
-				mockCtrl = gomock.NewController(GinkgoT())
-				mockedCarStop = mockRoutes.NewMockIMainStop(mockCtrl)
-				mockedDroneStop = mockRoutes.NewMockISubStop(mockCtrl)
-				mockedRoute = mockRoutes.NewMockIMainRoute(mockCtrl)
-				mockedFlight = mockRoutes.NewMockISubRoute(mockCtrl)
-				mockedFlightFactory = func(routes.IMainStop) routes.ISubRoute { return mockedFlight }
-
-				c := car{
-					route: mockedRoute,
-				}
-				sut = drone{
-					remaningRange: defaultDroneRange,
-					isFlying:      false,
-					car:           &c,
-					flightFactory: mockedFlightFactory,
-				}
-			})
+			var initialPoint = gps.Point{Latitude: 5}
+			var destinationPoint = gps.Point{Latitude: 10}
+			var sut = drone{
+				actualPoint:   initialPoint,
+				remaningRange: DroneRange,
+			}
 
 			It("should create flight and move drone", func() {
-				takeoffPoint := gps.Point{Latitude: 5}
-				destinationPoint := gps.Point{Latitude: 10}
-				distance := gps.DistanceBetweenPoints(takeoffPoint, destinationPoint)
-
-				mockedFlight.EXPECT().Append(mockedDroneStop)
-				mockedRoute.EXPECT().Last().Return(mockedCarStop)
-				mockedCarStop.EXPECT().Point().Return(takeoffPoint)
-				mockedDroneStop.EXPECT().Point().Return(destinationPoint)
-
-				sut.Move(mockedDroneStop)
-				Expect(sut.remaningRange).To(Equal(defaultDroneRange - distance))
+				distance := gps.DistanceBetweenPoints(initialPoint, destinationPoint)
+				sut.Move(destinationPoint)
+				Expect(sut.remaningRange).To(Equal(DroneRange - distance))
 				Expect(sut.isFlying).To(BeTrue())
-				Expect(sut.flight).NotTo(BeNil())
-			})
-		})
-
-		Context("when drone is flying", func() {
-			var sut drone
-			var mockCtrl *gomock.Controller
-			var mockedDestinationDroneStop *mockRoutes.MockISubStop
-			var mockedActualDroneStop *mockRoutes.MockISubStop
-			var mockedFlight *mockRoutes.MockISubRoute
-
-			BeforeEach(func() {
-				mockCtrl = gomock.NewController(GinkgoT())
-				mockedDestinationDroneStop = mockRoutes.NewMockISubStop(mockCtrl)
-				mockedActualDroneStop = mockRoutes.NewMockISubStop(mockCtrl)
-				mockedFlight = mockRoutes.NewMockISubRoute(mockCtrl)
-
-				sut = drone{
-					remaningRange: defaultDroneRange,
-					isFlying:      true,
-					flight:        mockedFlight,
-				}
-			})
-
-			It("should append stop to flight and update remaning range", func() {
-				destinationPoint := gps.Point{Latitude: 10}
-				actualPoint := gps.Point{Latitude: 5}
-				distance := gps.DistanceBetweenPoints(actualPoint, destinationPoint)
-
-				mockedFlight.EXPECT().Last().Return(mockedActualDroneStop)
-				mockedActualDroneStop.EXPECT().Point().Return(actualPoint)
-				mockedDestinationDroneStop.EXPECT().Point().Return(destinationPoint)
-				mockedFlight.EXPECT().Append(mockedDestinationDroneStop)
-
-				sut.Move(mockedDestinationDroneStop)
-				Expect(sut.remaningRange).To(Equal(defaultDroneRange - distance))
 			})
 		})
 	})
@@ -206,23 +117,13 @@ var _ = Describe("drone{}", func() {
 	})
 
 	var _ = Describe("Support", func() {
-		var mockCtrl *gomock.Controller
-		var mockedFlight *mockRoutes.MockISubRoute
 		var sut drone
+		var initialPoint = gps.Point{Latitude: 0}
 
 		BeforeEach(func() {
-			mockCtrl = gomock.NewController(GinkgoT())
-			mockedFlight = mockRoutes.NewMockISubRoute(mockCtrl)
-			mockedDroneStop := mockRoutes.NewMockISubStop(mockCtrl)
-
-			mockedFlight.EXPECT().Last().Return(mockedDroneStop)
-			mockedDroneStop.EXPECT().Point().Return(gps.Point{})
-
 			sut = drone{
 				remaningRange:   10,
 				remaningStorage: 10,
-				isFlying:        true,
-				flight:          mockedFlight,
 			}
 		})
 
@@ -230,7 +131,7 @@ var _ = Describe("drone{}", func() {
 			Context("when drone can support point", func() {
 				It("returns true", func() {
 					destination := gps.Point{Latitude: 10, PackageSize: 10}
-					Expect(sut.Support(destination)).To(BeTrue())
+					Expect(sut.Support(initialPoint, destination)).To(BeTrue())
 				})
 			})
 
@@ -238,7 +139,7 @@ var _ = Describe("drone{}", func() {
 				It("returns false", func() {
 					destination := gps.Point{Latitude: 1}
 					sut.remaningRange = 0
-					Expect(sut.Support(destination)).To(BeFalse())
+					Expect(sut.Support(initialPoint, destination)).To(BeFalse())
 				})
 			})
 
@@ -246,7 +147,7 @@ var _ = Describe("drone{}", func() {
 				It("returns false", func() {
 					destination := gps.Point{Latitude: 1, PackageSize: 1}
 					sut.remaningStorage = 0
-					Expect(sut.Support(destination)).To(BeFalse())
+					Expect(sut.Support(initialPoint, destination)).To(BeFalse())
 				})
 			})
 		})
@@ -256,7 +157,7 @@ var _ = Describe("drone{}", func() {
 				It("returns true", func() {
 					destination1 := gps.Point{Latitude: 5}
 					destination2 := gps.Point{Latitude: 10}
-					Expect(sut.Support(destination1, destination2)).To(BeTrue())
+					Expect(sut.Support(initialPoint, destination1, destination2)).To(BeTrue())
 				})
 			})
 
@@ -264,7 +165,7 @@ var _ = Describe("drone{}", func() {
 				It("returns false", func() {
 					destination1 := gps.Point{Latitude: 15}
 					destination2 := gps.Point{Latitude: 20}
-					Expect(sut.Support(destination1, destination2)).To(BeFalse())
+					Expect(sut.Support(initialPoint, destination1, destination2)).To(BeFalse())
 				})
 			})
 
@@ -272,7 +173,7 @@ var _ = Describe("drone{}", func() {
 				It("returns false", func() {
 					destination1 := gps.Point{Latitude: 5}
 					destination2 := gps.Point{Latitude: 15}
-					Expect(sut.Support(destination1, destination2)).To(BeFalse())
+					Expect(sut.Support(initialPoint, destination1, destination2)).To(BeFalse())
 				})
 			})
 		})
