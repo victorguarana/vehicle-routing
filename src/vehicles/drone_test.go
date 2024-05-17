@@ -34,6 +34,42 @@ var _ = Describe("newDrone", func() {
 })
 
 var _ = Describe("drone{}", func() {
+	Describe("CanReach", func() {
+		var sut drone
+		var mockCtrl *gomock.Controller
+		var mockedCarStop *mockRoutes.MockIMainStop
+		var mockedFlight *mockRoutes.MockISubRoute
+
+		BeforeEach(func() {
+			mockCtrl = gomock.NewController(GinkgoT())
+			mockedCarStop = mockRoutes.NewMockIMainStop(mockCtrl)
+			mockedFlight = mockRoutes.NewMockISubRoute(mockCtrl)
+
+			sut = drone{
+				isFlying:      true,
+				remaningRange: 10,
+				flight:        mockedFlight,
+			}
+
+			mockedFlight.EXPECT().Last().Return(mockedCarStop)
+			mockedCarStop.EXPECT().Point().Return(gps.Point{})
+		})
+
+		Context("when drone can reach destination", func() {
+			It("returns true", func() {
+				destination := gps.Point{Latitude: 10}
+				Expect(sut.CanReach(destination)).To(BeTrue())
+			})
+		})
+
+		Context("when drone can not reach destination", func() {
+			It("returns false", func() {
+				destination := gps.Point{Latitude: 11}
+				Expect(sut.CanReach(destination)).To(BeFalse())
+			})
+		})
+	})
+
 	Describe("Land", func() {
 		var sut drone
 		var mockCtrl *gomock.Controller
