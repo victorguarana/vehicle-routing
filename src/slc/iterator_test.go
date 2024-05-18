@@ -16,77 +16,17 @@ var _ = Describe("Iterator", func() {
 		})
 	})
 
-	Describe("Next", func() {
+	Describe("ForEach", func() {
 		var sut = &iterator[int]{
 			list:  []int{1, 2, 3},
-			index: 1,
+			index: 0,
 		}
-		It("should return next element", func() {
-			Expect(sut.Next()).To(Equal(3))
-		})
-	})
-
-	Describe("Previous", func() {
-		var sut = &iterator[int]{
-			list:  []int{1, 2, 3},
-			index: 1,
-		}
-		It("should return previous element", func() {
-			Expect(sut.Previous()).To(Equal(1))
-		})
-	})
-
-	Describe("Index", func() {
-		var sut = &iterator[int]{
-			list:  []int{1, 2, 3},
-			index: 1,
-		}
-		It("should return index", func() {
-			Expect(sut.Index()).To(Equal(1))
-		})
-	})
-
-	Describe("HasNext", func() {
-		Context("when there is next element", func() {
-			var sut = &iterator[int]{
-				list:  []int{1, 2, 3},
-				index: 1,
-			}
-			It("should return true", func() {
-				Expect(sut.HasNext()).To(BeTrue())
+		var sum = 0
+		It("should iterate over elements", func() {
+			sut.ForEach(func() {
+				sum += sut.Actual()
 			})
-		})
-
-		Context("when there is no next element", func() {
-			var sut = &iterator[int]{
-				list:  []int{1, 2, 3},
-				index: 2,
-			}
-			It("should return false", func() {
-				Expect(sut.HasNext()).To(BeFalse())
-			})
-		})
-	})
-
-	Describe("HasPrevious", func() {
-		Context("when there is previous element", func() {
-			var sut = &iterator[int]{
-				list:  []int{1, 2, 3},
-				index: 1,
-			}
-			It("should return true", func() {
-				Expect(sut.HasPrevious()).To(BeTrue())
-			})
-		})
-
-		Context("when there is no previous element", func() {
-			var sut = &iterator[int]{
-				list:  []int{1, 2, 3},
-				index: 0,
-			}
-			It("should return false", func() {
-				Expect(sut.HasPrevious()).To(BeFalse())
-			})
+			Expect(sum).To(Equal(6))
 		})
 	})
 
@@ -139,17 +79,89 @@ var _ = Describe("Iterator", func() {
 		})
 	})
 
-	Describe("ForEach", func() {
+	Describe("HasNext", func() {
+		Context("when there is next element", func() {
+			var sut = &iterator[int]{
+				list:  []int{1, 2, 3},
+				index: 1,
+			}
+			It("should return true", func() {
+				Expect(sut.HasNext()).To(BeTrue())
+			})
+		})
+
+		Context("when there is no next element", func() {
+			var sut = &iterator[int]{
+				list:  []int{1, 2, 3},
+				index: 2,
+			}
+			It("should return false", func() {
+				Expect(sut.HasNext()).To(BeFalse())
+			})
+		})
+	})
+
+	Describe("HasPrevious", func() {
+		Context("when there is previous element", func() {
+			var sut = &iterator[int]{
+				list:  []int{1, 2, 3},
+				index: 1,
+			}
+			It("should return true", func() {
+				Expect(sut.HasPrevious()).To(BeTrue())
+			})
+		})
+
+		Context("when there is no previous element", func() {
+			var sut = &iterator[int]{
+				list:  []int{1, 2, 3},
+				index: 0,
+			}
+			It("should return false", func() {
+				Expect(sut.HasPrevious()).To(BeFalse())
+			})
+		})
+	})
+
+	Describe("Index", func() {
 		var sut = &iterator[int]{
 			list:  []int{1, 2, 3},
-			index: 0,
+			index: 1,
 		}
-		var sum = 0
-		It("should iterate over elements", func() {
-			sut.ForEach(func() {
-				sum += sut.Actual()
-			})
-			Expect(sum).To(Equal(6))
+		It("should return index", func() {
+			Expect(sut.Index()).To(Equal(1))
+		})
+	})
+
+	Describe("Next", func() {
+		var sut = &iterator[int]{
+			list:  []int{1, 2, 3},
+			index: 1,
+		}
+		It("should return next element", func() {
+			Expect(sut.Next()).To(Equal(3))
+		})
+	})
+
+	Describe("Previous", func() {
+		var sut = &iterator[int]{
+			list:  []int{1, 2, 3},
+			index: 1,
+		}
+		It("should return previous element", func() {
+			Expect(sut.Previous()).To(Equal(1))
+		})
+	})
+
+	Describe("RemoveActualIndex", func() {
+		var sut = &iterator[int]{
+			list:  []int{1, 2, 3},
+			index: 1,
+		}
+		It("should remove actual index and not increment index", func() {
+			sut.RemoveActualIndex()
+			Expect(sut.list).To(Equal([]int{1, 3}))
+			Expect(sut.index).To(Equal(1))
 		})
 	})
 })

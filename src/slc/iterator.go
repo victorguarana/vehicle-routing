@@ -4,14 +4,15 @@ import "log"
 
 type Iterator[T any] interface {
 	Actual() T
+	ForEach(f func())
+	GoToNext()
+	GoToPrevious()
+	HasNext() bool
+	HasPrevious() bool
 	Index() int
 	Next() T
 	Previous() T
-	HasNext() bool
-	HasPrevious() bool
-	GoToNext()
-	GoToPrevious()
-	ForEach(f func())
+	RemoveActualIndex()
 }
 
 type iterator[T any] struct {
@@ -27,32 +28,11 @@ func (i *iterator[T]) Actual() T {
 	return i.list[i.index]
 }
 
-func (i *iterator[T]) Next() T {
-	if !i.HasNext() {
-		log.Panic("Iterator can not get next element\n")
-		return i.Actual()
+func (i *iterator[T]) ForEach(f func()) {
+	for i.index < len(i.list) {
+		f()
+		i.index++
 	}
-	return i.list[i.index+1]
-}
-
-func (i *iterator[T]) Previous() T {
-	if !i.HasPrevious() {
-		log.Panic("Iterator can not get previous element\n")
-		return i.Actual()
-	}
-	return i.list[i.index-1]
-}
-
-func (i *iterator[T]) Index() int {
-	return i.index
-}
-
-func (i *iterator[T]) HasNext() bool {
-	return i.index < len(i.list)-1
-}
-
-func (i *iterator[T]) HasPrevious() bool {
-	return i.index > 0
 }
 
 func (i *iterator[T]) GoToNext() {
@@ -72,9 +52,34 @@ func (i *iterator[T]) GoToPrevious() {
 	i.index--
 }
 
-func (i *iterator[T]) ForEach(f func()) {
-	for i.index < len(i.list) {
-		f()
-		i.index++
+func (i *iterator[T]) HasNext() bool {
+	return i.index < len(i.list)-1
+}
+
+func (i *iterator[T]) HasPrevious() bool {
+	return i.index > 0
+}
+
+func (i *iterator[T]) Index() int {
+	return i.index
+}
+
+func (i *iterator[T]) Next() T {
+	if !i.HasNext() {
+		log.Panic("Iterator can not get next element\n")
+		return i.Actual()
 	}
+	return i.list[i.index+1]
+}
+
+func (i *iterator[T]) Previous() T {
+	if !i.HasPrevious() {
+		log.Panic("Iterator can not get previous element\n")
+		return i.Actual()
+	}
+	return i.list[i.index-1]
+}
+
+func (i *iterator[T]) RemoveActualIndex() {
+	i.list = append(i.list[:i.index], i.list[i.index+1:]...)
 }
