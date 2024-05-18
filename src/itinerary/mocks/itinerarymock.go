@@ -227,3 +227,15 @@ func (mr *MockItineraryMockRecorder) RouteIterator() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RouteIterator", reflect.TypeOf((*MockItinerary)(nil).RouteIterator))
 }
+
+// StartDroneFlight mocks base method.
+func (m *MockItinerary) StartDroneFlight(droneNumber itinerary.DroneNumber, startingPoint routes.IMainStop) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "StartDroneFlight", droneNumber, startingPoint)
+}
+
+// StartDroneFlight indicates an expected call of StartDroneFlight.
+func (mr *MockItineraryMockRecorder) StartDroneFlight(droneNumber, startingPoint any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartDroneFlight", reflect.TypeOf((*MockItinerary)(nil).StartDroneFlight), droneNumber, startingPoint)
+}

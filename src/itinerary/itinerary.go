@@ -1,6 +1,8 @@
 package itinerary
 
 import (
+	"log"
+
 	"github.com/victorguarana/vehicle-routing/src/gps"
 	"github.com/victorguarana/vehicle-routing/src/routes"
 	"github.com/victorguarana/vehicle-routing/src/slc"
@@ -21,6 +23,7 @@ type Itinerary interface {
 	DroneNumbers() []DroneNumber
 	DroneIsFlying(droneNumber DroneNumber) bool
 	DroneSupport(droneNumber DroneNumber, nextPoints ...gps.Point) bool
+	StartDroneFlight(droneNumber DroneNumber, startingPoint routes.IMainStop)
 	LandAllDrones(landingStop routes.IMainStop)
 	LandDrone(droneNumber DroneNumber, destination routes.IMainStop)
 	MoveCar(destination gps.Point)
@@ -83,6 +86,13 @@ func (i itinerary) DroneSupport(droneNumber DroneNumber, nextPoints ...gps.Point
 	return subItn.drone.Support(nextPoints...)
 }
 
+func (i itinerary) StartDroneFlight(droneNumber DroneNumber, startingPoint routes.IMainStop) {
+	subItn := i.dronesAndFlights[droneNumber]
+	subItn.flight = flightFactory(startingPoint)
+	subItn.drone.TakeOff()
+	i.dronesAndFlights[droneNumber] = subItn
+}
+
 func (i itinerary) LandDrone(droneNumber DroneNumber, destination routes.IMainStop) {
 	subItn := i.dronesAndFlights[droneNumber]
 	if flight := subItn.flight; flight != nil {
@@ -115,12 +125,9 @@ func (i itinerary) MoveDrone(droneNumber DroneNumber, destination gps.Point) {
 		flight.Append(routes.NewSubStop(destination))
 		subItn.drone.Move(destination)
 		return
+	} else {
+		log.Panic("Drone is not flying")
 	}
-
-	subItn.flight = flightFactory(i.route.Last())
-	subItn.flight.Append(routes.NewSubStop(destination))
-	subItn.drone.Move(destination)
-	i.dronesAndFlights[droneNumber] = subItn
 }
 
 func (i itinerary) RemoveMainStopFromRoute(index int) {

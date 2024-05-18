@@ -1,6 +1,8 @@
 package vehicles
 
 import (
+	"log"
+
 	"github.com/victorguarana/vehicle-routing/src/gps"
 )
 
@@ -16,6 +18,7 @@ type IDrone interface {
 	Name() string
 	Speed() float64
 	Support(...gps.Point) bool
+	TakeOff()
 }
 
 type drone struct {
@@ -62,8 +65,11 @@ func (d *drone) Land(destination gps.Point) {
 }
 
 func (d *drone) Move(destination gps.Point) {
-	d.isFlying = true
+	if !d.isFlying {
+		log.Printf("Move: Drone %s moving without take off\n", d.name)
+	}
 	d.remaningRange -= gps.DistanceBetweenPoints(d.actualPoint, destination)
+	d.remaningStorage -= destination.PackageSize
 }
 
 func (d *drone) Name() string {
@@ -92,4 +98,8 @@ func (d *drone) Support(route ...gps.Point) bool {
 func (d *drone) resetAttributes() {
 	d.remaningRange = d.totalRange
 	d.remaningStorage = d.totalStorage
+}
+
+func (d *drone) TakeOff() {
+	d.isFlying = true
 }
