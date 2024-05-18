@@ -35,6 +35,9 @@ func deliverNeighborsWithDrones(itn itinerary.Itinerary, neighbors []gps.Point) 
 		actualNeighbor := neighbors[neighborIndex]
 		actualDroneNumber := slc.CircularSelection(droneNumbers, droneIndex)
 		if itn.DroneSupport(actualDroneNumber, actualNeighbor, actualCarPoint) {
+			if !itn.DroneIsFlying(actualDroneNumber) {
+				itn.StartDroneFlight(actualDroneNumber, actualCarStop)
+			}
 			itn.MoveDrone(actualDroneNumber, actualNeighbor)
 			neighborIndex++
 		} else {

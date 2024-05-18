@@ -53,8 +53,12 @@ var _ = Describe("CoveringWithDrones", func() {
 		mockedItinerary1.EXPECT().ActualCarPoint().Return(client2)
 		mockedItinerary1.EXPECT().ActualCarStop().Return(mockedCarStop)
 		mockedItinerary1.EXPECT().DroneSupport(mockedDroneNumber1, client1, client2).Return(true)
+		mockedItinerary1.EXPECT().DroneIsFlying(mockedDroneNumber1).Return(false)
+		mockedItinerary1.EXPECT().StartDroneFlight(mockedDroneNumber1, mockedCarStop)
 		mockedItinerary1.EXPECT().MoveDrone(mockedDroneNumber1, client1)
 		mockedItinerary1.EXPECT().DroneSupport(mockedDroneNumber2, client3, client2).Return(true)
+		mockedItinerary1.EXPECT().DroneIsFlying(mockedDroneNumber2).Return(false)
+		mockedItinerary1.EXPECT().StartDroneFlight(mockedDroneNumber2, mockedCarStop)
 		mockedItinerary1.EXPECT().MoveDrone(mockedDroneNumber2, client3)
 		mockedItinerary1.EXPECT().LandAllDrones(mockedCarStop)
 
@@ -65,8 +69,12 @@ var _ = Describe("CoveringWithDrones", func() {
 		mockedItinerary2.EXPECT().ActualCarPoint().Return(client5)
 		mockedItinerary2.EXPECT().ActualCarStop().Return(mockedCarStop)
 		mockedItinerary2.EXPECT().DroneSupport(mockedDroneNumber1, client4, client5).Return(true)
+		mockedItinerary2.EXPECT().DroneIsFlying(mockedDroneNumber1).Return(false)
+		mockedItinerary2.EXPECT().StartDroneFlight(mockedDroneNumber1, mockedCarStop)
 		mockedItinerary2.EXPECT().MoveDrone(mockedDroneNumber1, client4)
 		mockedItinerary2.EXPECT().DroneSupport(mockedDroneNumber2, client6, client5).Return(true)
+		mockedItinerary2.EXPECT().DroneIsFlying(mockedDroneNumber2).Return(false)
+		mockedItinerary2.EXPECT().StartDroneFlight(mockedDroneNumber2, mockedCarStop)
 		mockedItinerary2.EXPECT().MoveDrone(mockedDroneNumber2, client6)
 		mockedItinerary2.EXPECT().LandAllDrones(mockedCarStop)
 
@@ -113,12 +121,16 @@ var _ = Describe("deliverNeighborsWithDrones", func() {
 		mockedItinerary.EXPECT().ActualCarPoint().Return(actualCarPoint)
 		mockedItinerary.EXPECT().ActualCarStop().Return(mockedCarStop)
 
-		// Drone1 supports client1: Move to client1
+		// Drone1 supports client1: Start flight and move to client1
 		mockedItinerary.EXPECT().DroneSupport(drone1, client1, actualCarPoint).Return(true)
+		mockedItinerary.EXPECT().DroneIsFlying(drone1).Return(false)
+		mockedItinerary.EXPECT().StartDroneFlight(drone1, mockedCarStop)
 		mockedItinerary.EXPECT().MoveDrone(drone1, client1)
 
-		// Drone2 supports client2: Move to client2
+		// Drone2 supports client2: Start flight and move to client2
 		mockedItinerary.EXPECT().DroneSupport(drone2, client2, actualCarPoint).Return(true)
+		mockedItinerary.EXPECT().DroneIsFlying(drone2).Return(false)
+		mockedItinerary.EXPECT().StartDroneFlight(drone2, mockedCarStop)
 		mockedItinerary.EXPECT().MoveDrone(drone2, client2)
 
 		// Drone1 does not support client3: Land drone1
@@ -127,10 +139,13 @@ var _ = Describe("deliverNeighborsWithDrones", func() {
 
 		// Drone2 supports client3: Move to client3
 		mockedItinerary.EXPECT().DroneSupport(drone2, client3, actualCarPoint).Return(true)
+		mockedItinerary.EXPECT().DroneIsFlying(drone2).Return(true)
 		mockedItinerary.EXPECT().MoveDrone(drone2, client3)
 
-		// Drone1 supports client4: Move to client4
+		// Drone1 supports client4: Start flight and move to client4
 		mockedItinerary.EXPECT().DroneSupport(drone1, client4, actualCarPoint).Return(true)
+		mockedItinerary.EXPECT().DroneIsFlying(drone1).Return(false)
+		mockedItinerary.EXPECT().StartDroneFlight(drone1, mockedCarStop)
 		mockedItinerary.EXPECT().MoveDrone(drone1, client4)
 
 		// Land all drones

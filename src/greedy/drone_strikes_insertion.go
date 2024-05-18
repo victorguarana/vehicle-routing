@@ -36,16 +36,17 @@ func DroneStrikesInsertion(itinerary itinerary.Itinerary) {
 
 			updateDroneStrikes(itinerary, droneStrikes, actualStop)
 			if droneNumber, exists := dockedDroneThatCanSupport(itinerary, droneStrikes, actualStop, nextStop); exists {
+				itinerary.StartDroneFlight(droneNumber, routeIterator.Previous())
 				itinerary.MoveDrone(droneNumber, actualStop.Point())
 				itinerary.RemoveMainStopFromRoute(routeIterator.Index())
-				routeIterator.GoToNext()
+				routeIterator.RemoveActualIndex()
 				continue
 			}
 
 			if droneNumber, exists := flyingDroneThatCanSupport(itinerary, droneStrikes, actualStop, nextStop); exists {
 				itinerary.MoveDrone(droneNumber, actualStop.Point())
 				itinerary.RemoveMainStopFromRoute(routeIterator.Index())
-				routeIterator.GoToNext()
+				routeIterator.RemoveActualIndex()
 				continue
 			}
 		}

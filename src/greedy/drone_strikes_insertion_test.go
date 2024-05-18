@@ -313,7 +313,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockRoutes.MockIMainStop
-		var mockedDepositStop *mockRoutes.MockIMainStop
+		var mockedInitialDepositStop *mockRoutes.MockIMainStop
+		var mockedFinalDepositStop *mockRoutes.MockIMainStop
+		var initialPoint = gps.Point{Name: "Initial Point"}
 		var clientPoint = gps.Point{Name: "Client", Latitude: 1}
 		var depositPoint = gps.Point{Name: "Deposit"}
 
@@ -322,8 +324,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
 			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
-			mockedDepositStop = mockDepositStop(mockedCtrl, depositPoint)
-			fillItineraryStops(mockedItinerary, mockedClientStop, mockedDepositStop)
+			mockedFinalDepositStop = mockDepositStop(mockedCtrl, depositPoint)
+			mockedInitialDepositStop = mockDepositStop(mockedCtrl, initialPoint)
+			fillItineraryStops(mockedItinerary, mockedInitialDepositStop, mockedClientStop, mockedFinalDepositStop)
 		})
 
 		AfterEach(func() {
@@ -340,11 +343,12 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			// Search for a docked drone that can support
 			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
 			mockedItinerary.EXPECT().DroneSupport(mockedDrone1, clientPoint, depositPoint).Return(true)
-			// Move drone 1 to the first client and remove the stop from the route
+			// Start drone 1 flight and move to the first client and remove the stop from the route
+			mockedItinerary.EXPECT().StartDroneFlight(mockedDrone1, mockedInitialDepositStop)
 			mockedItinerary.EXPECT().MoveDrone(mockedDrone1, clientPoint)
-			mockedItinerary.EXPECT().RemoveMainStopFromRoute(0)
+			mockedItinerary.EXPECT().RemoveMainStopFromRoute(1)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedDepositStop)
+			mockedItinerary.EXPECT().LandAllDrones(mockedFinalDepositStop)
 
 			DroneStrikesInsertion(mockedItinerary)
 		})
@@ -356,7 +360,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockRoutes.MockIMainStop
-		var mockedDepositStop *mockRoutes.MockIMainStop
+		var mockedInitialDepositStop *mockRoutes.MockIMainStop
+		var mockedFinalDepositStop *mockRoutes.MockIMainStop
+		var initialPoint = gps.Point{Name: "Initial Point"}
 		var clientPoint = gps.Point{Name: "Client", Latitude: 1}
 		var depositPoint = gps.Point{Name: "Deposit"}
 
@@ -365,8 +371,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
 			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
-			mockedDepositStop = mockDepositStop(mockedCtrl, depositPoint)
-			fillItineraryStops(mockedItinerary, mockedClientStop, mockedDepositStop)
+			mockedInitialDepositStop = mockDepositStop(mockedCtrl, initialPoint)
+			mockedFinalDepositStop = mockDepositStop(mockedCtrl, depositPoint)
+			fillItineraryStops(mockedItinerary, mockedInitialDepositStop, mockedClientStop, mockedFinalDepositStop)
 		})
 
 		AfterEach(func() {
@@ -391,9 +398,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary.EXPECT().DroneSupport(mockedDrone1, clientPoint, depositPoint).Return(true)
 			// Move drone 2 to the first client and remove the stop from the route
 			mockedItinerary.EXPECT().MoveDrone(mockedDrone1, clientPoint)
-			mockedItinerary.EXPECT().RemoveMainStopFromRoute(0)
+			mockedItinerary.EXPECT().RemoveMainStopFromRoute(1)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedDepositStop)
+			mockedItinerary.EXPECT().LandAllDrones(mockedFinalDepositStop)
 
 			DroneStrikesInsertion(mockedItinerary)
 		})
@@ -405,7 +412,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockRoutes.MockIMainStop
-		var mockedDepositStop *mockRoutes.MockIMainStop
+		var mockedInitialDepositStop *mockRoutes.MockIMainStop
+		var mockedFinalDepositStop *mockRoutes.MockIMainStop
+		var initialPoint = gps.Point{Name: "Initial Point"}
 		var clientPoint = gps.Point{Name: "Client", Latitude: 1}
 		var depositPoint = gps.Point{Name: "Deposit"}
 
@@ -414,8 +423,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
 			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
-			mockedDepositStop = mockDepositStop(mockedCtrl, depositPoint)
-			fillItineraryStops(mockedItinerary, mockedClientStop, mockedDepositStop)
+			mockedInitialDepositStop = mockDepositStop(mockedCtrl, initialPoint)
+			mockedFinalDepositStop = mockDepositStop(mockedCtrl, depositPoint)
+			fillItineraryStops(mockedItinerary, mockedInitialDepositStop, mockedClientStop, mockedFinalDepositStop)
 		})
 
 		AfterEach(func() {
@@ -435,11 +445,12 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
 			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
 			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, clientPoint, depositPoint).Return(true)
-			// Move drone 2 to the first client and remove the stop from the route
+			// Start drone 2 flight and move to the first client and remove the stop from the route
+			mockedItinerary.EXPECT().StartDroneFlight(mockedDrone2, mockedInitialDepositStop)
 			mockedItinerary.EXPECT().MoveDrone(mockedDrone2, clientPoint)
-			mockedItinerary.EXPECT().RemoveMainStopFromRoute(0)
+			mockedItinerary.EXPECT().RemoveMainStopFromRoute(1)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedDepositStop)
+			mockedItinerary.EXPECT().LandAllDrones(mockedFinalDepositStop)
 
 			DroneStrikesInsertion(mockedItinerary)
 		})
@@ -451,7 +462,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockRoutes.MockIMainStop
-		var mockedDepositStop *mockRoutes.MockIMainStop
+		var mockedInitialDepositStop *mockRoutes.MockIMainStop
+		var mockedFinalDepositStop *mockRoutes.MockIMainStop
+		var initialPoint = gps.Point{Name: "Initial Point"}
 		var clientPoint = gps.Point{Name: "Client", Latitude: 1}
 		var depositPoint = gps.Point{Name: "Deposit"}
 
@@ -460,8 +473,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
 			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
-			mockedDepositStop = mockDepositStop(mockedCtrl, depositPoint)
-			fillItineraryStops(mockedItinerary, mockedClientStop, mockedDepositStop)
+			mockedInitialDepositStop = mockDepositStop(mockedCtrl, initialPoint)
+			mockedFinalDepositStop = mockDepositStop(mockedCtrl, depositPoint)
+			fillItineraryStops(mockedItinerary, mockedInitialDepositStop, mockedClientStop, mockedFinalDepositStop)
 		})
 
 		AfterEach(func() {
@@ -473,9 +487,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
 			mockedItinerary.EXPECT().DroneCanReach(mockedDrone1, depositPoint).Return(false)
 			// Land all drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedDepositStop)
+			mockedItinerary.EXPECT().LandAllDrones(mockedFinalDepositStop)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedDepositStop)
+			mockedItinerary.EXPECT().LandAllDrones(mockedFinalDepositStop)
 
 			DroneStrikesInsertion(mockedItinerary)
 		})
@@ -487,7 +501,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockRoutes.MockIMainStop
-		var mockedDepositStop *mockRoutes.MockIMainStop
+		var mockedInitialDepositStop *mockRoutes.MockIMainStop
+		var mockedFinalDepositStop *mockRoutes.MockIMainStop
+		var initialPoint = gps.Point{Name: "Initial Point"}
 		var clientPoint = gps.Point{Name: "Client", Latitude: 1}
 		var depositPoint = gps.Point{Name: "Deposit"}
 
@@ -496,8 +512,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
 			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
-			mockedDepositStop = mockDepositStop(mockedCtrl, depositPoint)
-			fillItineraryStops(mockedItinerary, mockedClientStop, mockedDepositStop)
+			mockedInitialDepositStop = mockDepositStop(mockedCtrl, initialPoint)
+			mockedFinalDepositStop = mockDepositStop(mockedCtrl, depositPoint)
+			fillItineraryStops(mockedItinerary, mockedInitialDepositStop, mockedClientStop, mockedFinalDepositStop)
 		})
 
 		AfterEach(func() {
@@ -524,7 +541,7 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
 			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, clientPoint).Return(false)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedDepositStop)
+			mockedItinerary.EXPECT().LandAllDrones(mockedFinalDepositStop)
 
 			DroneStrikesInsertion(mockedItinerary)
 		})
@@ -536,7 +553,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockRoutes.MockIMainStop
-		var mockedDepositStop *mockRoutes.MockIMainStop
+		var mockedInitialDepositStop *mockRoutes.MockIMainStop
+		var mockedFinalDepositStop *mockRoutes.MockIMainStop
+		var initialPoint = gps.Point{Name: "Initial Point"}
 		var clientPoint = gps.Point{Name: "Client", Latitude: 1}
 		var depositPoint = gps.Point{Name: "Deposit"}
 
@@ -545,8 +564,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
 			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
-			mockedDepositStop = mockDepositStop(mockedCtrl, depositPoint)
-			fillItineraryStops(mockedItinerary, mockedClientStop, mockedDepositStop)
+			mockedInitialDepositStop = mockDepositStop(mockedCtrl, initialPoint)
+			mockedFinalDepositStop = mockDepositStop(mockedCtrl, depositPoint)
+			fillItineraryStops(mockedItinerary, mockedInitialDepositStop, mockedClientStop, mockedFinalDepositStop)
 		})
 
 		AfterEach(func() {
@@ -574,9 +594,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, clientPoint).Return(true)
 			// Move drone 2 to the first client and remove the stop from the route
 			mockedItinerary.EXPECT().MoveDrone(mockedDrone2, clientPoint)
-			mockedItinerary.EXPECT().RemoveMainStopFromRoute(0)
+			mockedItinerary.EXPECT().RemoveMainStopFromRoute(1)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedDepositStop)
+			mockedItinerary.EXPECT().LandAllDrones(mockedFinalDepositStop)
 
 			DroneStrikesInsertion(mockedItinerary)
 		})
@@ -588,7 +608,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockRoutes.MockIMainStop
-		var mockedDepositStop *mockRoutes.MockIMainStop
+		var mockedInitialDepositStop *mockRoutes.MockIMainStop
+		var mockedFinalDepositStop *mockRoutes.MockIMainStop
+		var initialPoint = gps.Point{Name: "Initial Point"}
 		var clientPoint = gps.Point{Name: "Client", Latitude: 1}
 		var depositPoint = gps.Point{Name: "Deposit"}
 
@@ -597,8 +619,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
 			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
-			mockedDepositStop = mockDepositStop(mockedCtrl, depositPoint)
-			fillItineraryStops(mockedItinerary, mockedClientStop, mockedDepositStop)
+			mockedInitialDepositStop = mockDepositStop(mockedCtrl, initialPoint)
+			mockedFinalDepositStop = mockDepositStop(mockedCtrl, depositPoint)
+			fillItineraryStops(mockedItinerary, mockedInitialDepositStop, mockedClientStop, mockedFinalDepositStop)
 		})
 
 		AfterEach(func() {
@@ -610,9 +633,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
 			mockedItinerary.EXPECT().DroneCanReach(mockedDrone1, depositPoint).Return(false)
 			// Land all drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedDepositStop)
+			mockedItinerary.EXPECT().LandAllDrones(mockedFinalDepositStop)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedDepositStop)
+			mockedItinerary.EXPECT().LandAllDrones(mockedFinalDepositStop)
 
 			DroneStrikesInsertion(mockedItinerary)
 		})
@@ -624,7 +647,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockRoutes.MockIMainStop
-		var mockedDepositStop *mockRoutes.MockIMainStop
+		var mockedInitialDepositStop *mockRoutes.MockIMainStop
+		var mockedFinalDepositStop *mockRoutes.MockIMainStop
+		var initialPoint = gps.Point{Name: "Initial Point"}
 		var clientPoint = gps.Point{Name: "Client", Latitude: 1}
 		var depositPoint = gps.Point{Name: "Deposit"}
 
@@ -633,8 +658,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
 			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
-			mockedDepositStop = mockDepositStop(mockedCtrl, depositPoint)
-			fillItineraryStops(mockedItinerary, mockedClientStop, mockedDepositStop)
+			mockedInitialDepositStop = mockDepositStop(mockedCtrl, initialPoint)
+			mockedFinalDepositStop = mockDepositStop(mockedCtrl, depositPoint)
+			fillItineraryStops(mockedItinerary, mockedInitialDepositStop, mockedClientStop, mockedFinalDepositStop)
 		})
 
 		AfterEach(func() {
@@ -670,8 +696,10 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedItinerary *mockitinerary.MockItinerary
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
-		var mockedClientStop *mockRoutes.MockIMainStop
+		var mockedInitialClientStop *mockRoutes.MockIMainStop
+		var mockedFinalClientStop *mockRoutes.MockIMainStop
 		var mockedDepositStop *mockRoutes.MockIMainStop
+		var initialPoint = gps.Point{Name: "Initial Point"}
 		var clientPoint = gps.Point{Name: "Client", Latitude: 1}
 		var depositPoint = gps.Point{Name: "Deposit"}
 
@@ -679,9 +707,10 @@ var _ = Describe("DroneStrikesInsertion", func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
 			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
-			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
+			mockedInitialClientStop = mockClientStop(mockedCtrl, initialPoint)
+			mockedFinalClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedDepositStop = mockDepositStop(mockedCtrl, depositPoint)
-			fillItineraryStops(mockedItinerary, mockedDepositStop, mockedClientStop)
+			fillItineraryStops(mockedItinerary, mockedInitialClientStop, mockedDepositStop, mockedFinalClientStop)
 		})
 
 		AfterEach(func() {
@@ -690,9 +719,9 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		It("should land all drones", func() {
 			// Land all drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedClientStop)
+			mockedItinerary.EXPECT().LandAllDrones(mockedDepositStop)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedClientStop)
+			mockedItinerary.EXPECT().LandAllDrones(mockedFinalClientStop)
 
 			DroneStrikesInsertion(mockedItinerary)
 		})
@@ -721,5 +750,6 @@ func fillItineraryStops(mockedItinerary *mockitinerary.MockItinerary, stops ...*
 		stopsList = append(stopsList, stop)
 	}
 	routeIterator := slc.NewIterator(stopsList)
+	routeIterator.GoToNext()
 	mockedItinerary.EXPECT().RouteIterator().Return(routeIterator).AnyTimes()
 }
