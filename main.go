@@ -10,8 +10,11 @@ import (
 )
 
 func main() {
+	BestiInsertion()
+	BestiInsertionWithDrones()
 	ClosestNeighbor()
 	ClosestNeighborWithDrones()
+
 	Covering()
 }
 
@@ -20,6 +23,7 @@ func ClosestNeighbor() {
 	car := vehicles.NewCar("car1", initialPoint)
 	itn := itinerary.New(car)
 	greedy.ClosestNeighbor([]itinerary.Itinerary{itn}, gps.GetMap())
+
 	filename := "closest-neighbor.png"
 	output.ToImage(filename, itn)
 }
@@ -28,11 +32,34 @@ func ClosestNeighborWithDrones() {
 	initialPoint := gps.Point{Name: "initialPoint"}
 	car := vehicles.NewCar("car1", initialPoint)
 	car.NewDrone("drone1")
-
 	itn := itinerary.New(car)
 	greedy.ClosestNeighbor([]itinerary.Itinerary{itn}, gps.GetMap())
 	greedy.DroneStrikesInsertion(itn)
+
 	filename := "closest-neighbor-with-drones.png"
+	output.ToImage(filename, itn)
+}
+
+func BestiInsertion() {
+	initialPoint := gps.Point{Name: "initialPoint"}
+	car := vehicles.NewCar("car1", initialPoint)
+	car.NewDrone("drone1")
+	itn := itinerary.New(car)
+	greedy.BestInsertion([]itinerary.Itinerary{itn}, gps.GetMap())
+
+	filename := "best-insertion.png"
+	output.ToImage(filename, itn)
+}
+
+func BestiInsertionWithDrones() {
+	initialPoint := gps.Point{Name: "initialPoint"}
+	car := vehicles.NewCar("car1", initialPoint)
+	car.NewDrone("drone1")
+	itn := itinerary.New(car)
+	greedy.BestInsertion([]itinerary.Itinerary{itn}, gps.GetMap())
+	greedy.DroneStrikesInsertion(itn)
+
+	filename := "best-insertion-with-drones.png"
 	output.ToImage(filename, itn)
 }
 
@@ -43,6 +70,7 @@ func Covering() {
 	itn := itinerary.New(car)
 	neighorhoodDistance := vehicles.DroneRange / 4
 	csp.CoveringWithDrones([]itinerary.Itinerary{itn}, gps.GetMap(), neighorhoodDistance)
+
 	filename := "covering.png"
 	output.ToImage(filename, itn)
 }
