@@ -18,11 +18,6 @@ type IDrone interface {
 	Support(...gps.Point) bool
 }
 
-type DroneParams struct {
-	Name string
-	car  *car
-}
-
 type drone struct {
 	actualPoint     gps.Point
 	car             *car
@@ -35,10 +30,10 @@ type drone struct {
 	totalStorage    float64
 }
 
-func newDrone(params DroneParams) *drone {
+func newDrone(name string, c *car) *drone {
 	return &drone{
-		car:             params.car,
-		name:            params.Name,
+		car:             c,
+		name:            name,
 		speed:           DroneSpeed,
 		remaningRange:   DroneRange,
 		remaningStorage: DroneStorage,

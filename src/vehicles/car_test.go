@@ -85,11 +85,8 @@ var _ = Describe("car{}", func() {
 		}
 
 		It("should create new drone", func() {
-			droneParams := DroneParams{
-				Name: "drone1",
-			}
-			sut.NewDrone(droneParams)
-			Expect(len(sut.Drones())).To(Equal(1))
+			sut.NewDrone("drone1")
+			Expect(len(sut.drones)).To(Equal(1))
 		})
 	})
 

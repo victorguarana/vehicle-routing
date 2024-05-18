@@ -11,7 +11,7 @@ type ICar interface {
 	Drones() []IDrone
 	Move(destination gps.Point)
 	Name() string
-	NewDrone(params DroneParams)
+	NewDrone(name string)
 	Speed() float64
 	Support(...gps.Point) bool
 }
@@ -53,9 +53,8 @@ func (c *car) Name() string {
 	return c.name
 }
 
-func (c *car) NewDrone(params DroneParams) {
-	params.car = c
-	d := newDrone(params)
+func (c *car) NewDrone(name string) {
+	d := newDrone(name, c)
 	c.drones = append(c.drones, d)
 }
 

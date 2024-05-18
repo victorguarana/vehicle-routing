@@ -95,15 +95,15 @@ func (mr *MockICarMockRecorder) Name() *gomock.Call {
 }
 
 // NewDrone mocks base method.
-func (m *MockICar) NewDrone(params vehicles.DroneParams) {
+func (m *MockICar) NewDrone(name string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "NewDrone", params)
+	m.ctrl.Call(m, "NewDrone", name)
 }
 
 // NewDrone indicates an expected call of NewDrone.
-func (mr *MockICarMockRecorder) NewDrone(params any) *gomock.Call {
+func (mr *MockICarMockRecorder) NewDrone(name any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewDrone", reflect.TypeOf((*MockICar)(nil).NewDrone), params)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewDrone", reflect.TypeOf((*MockICar)(nil).NewDrone), name)
 }
 
 // Speed mocks base method.

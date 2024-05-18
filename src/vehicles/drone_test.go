@@ -8,23 +8,20 @@ import (
 )
 
 var _ = Describe("newDrone", func() {
-	var car = &car{}
-	var droneParams = DroneParams{
-		Name: "drone1",
-		car:  car,
-	}
+	var car = &car{name: "car1"}
+	var droneName = "drone1"
 
 	It("should create drone with correct params", func() {
 		expectedDrone := drone{
 			car:             car,
-			name:            droneParams.Name,
+			name:            droneName,
 			speed:           DroneSpeed,
 			remaningRange:   DroneRange,
 			remaningStorage: DroneStorage,
 			totalRange:      DroneRange,
 			totalStorage:    DroneStorage,
 		}
-		receivedDrone := newDrone(droneParams)
+		receivedDrone := newDrone(droneName, car)
 		Expect(receivedDrone).To(Equal(&expectedDrone))
 	})
 })
