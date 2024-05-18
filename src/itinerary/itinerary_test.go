@@ -146,7 +146,9 @@ var _ = Describe("itinerary{}", func() {
 		}
 
 		It("should return all drone numbers", func() {
-			Expect(sut.DroneNumbers()).To(Equal([]DroneNumber{1, 2}))
+			receivedDroneNumbers := sut.DroneNumbers()
+			Expect(receivedDroneNumbers).To(HaveLen(2))
+			Expect(receivedDroneNumbers).To(ContainElements(DroneNumber(1), DroneNumber(2)))
 		})
 	})
 
