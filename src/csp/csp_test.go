@@ -29,6 +29,8 @@ var _ = Describe("CoveringWithDrones", func() {
 	var client6 = gps.Point{Latitude: 60}
 	var client7 = gps.Point{Latitude: 70}
 	var clients = []gps.Point{client1, client2, client3, client4, client5, client6, client7}
+	var Deposit = gps.Point{Latitude: 0}
+	var gpsMap = gps.Map{Clients: clients, Deposits: []gps.Point{Deposit}}
 	var neighborhoodDistance = 10.0
 
 	BeforeEach(func() {
@@ -68,11 +70,17 @@ var _ = Describe("CoveringWithDrones", func() {
 		mockedItinerary2.EXPECT().MoveDrone(mockedDroneNumber2, client6)
 		mockedItinerary2.EXPECT().LandAllDrones(mockedCarStop)
 
-		//Third iteration
+		// Third iteration
 		mockedItinerary1.EXPECT().ActualCarPoint().Return(client6)
 		mockedItinerary1.EXPECT().MoveCar(client7)
 
-		CoveringWithDrones(itineraryList, gps.Map{Clients: clients}, neighborhoodDistance)
+		// Finish routes on closest deposits
+		mockedItinerary1.EXPECT().ActualCarPoint().Return(client7)
+		mockedItinerary1.EXPECT().MoveCar(Deposit)
+		mockedItinerary2.EXPECT().ActualCarPoint().Return(client6)
+		mockedItinerary2.EXPECT().MoveCar(Deposit)
+
+		CoveringWithDrones(itineraryList, gpsMap, neighborhoodDistance)
 	})
 })
 
@@ -159,5 +167,32 @@ var _ = Describe("removeClientAndItsNeighborsFromMap", func() {
 		}
 		removeClientAndItsNeighborsFromMap(client3, neighborhood)
 		Expect(neighborhood).To(Equal(expectedNeighborhood))
+	})
+})
+
+var _ = Describe("finishRoutesOnClosestDeposits", func() {
+	var mockCtrl *gomock.Controller
+	var mockedItinerary *mockitinerary.MockItinerary
+	var itineraryList []itinerary.Itinerary
+	var closestDeposit = gps.Point{Latitude: 1}
+	var actualCarPoint = gps.Point{Latitude: 0}
+	var gpsMap = gps.Map{Deposits: []gps.Point{closestDeposit}}
+
+	BeforeEach(func() {
+		mockCtrl = gomock.NewController(GinkgoT())
+		mockedItinerary = mockitinerary.NewMockItinerary(mockCtrl)
+		itineraryList = []itinerary.Itinerary{mockedItinerary}
+	})
+
+	AfterEach(func() {
+		mockCtrl.Finish()
+	})
+
+	Context("when car can support the route", func() {
+		It("move the car to the closest deposit and append it to the route", func() {
+			mockedItinerary.EXPECT().ActualCarPoint().Return(actualCarPoint)
+			mockedItinerary.EXPECT().MoveCar(closestDeposit)
+			finishItineraryOnClosestDeposits(itineraryList, gpsMap)
+		})
 	})
 })

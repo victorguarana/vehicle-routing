@@ -16,6 +16,8 @@ func CoveringWithDrones(itineraryList []itinerary.Itinerary, m gps.Map, neighbor
 		removeClientAndItsNeighborsFromMap(actualClient, clientsNeighborhood)
 		gps.RemovePointFromNearbyMap(actualClient, clientsNeighborhood)
 	}
+
+	finishItineraryOnClosestDeposits(itineraryList, m)
 }
 
 // TODO: Implement an function similar to this one
@@ -48,4 +50,12 @@ func removeClientAndItsNeighborsFromMap(client gps.Point, clientsNeighborhood gp
 		gps.RemovePointFromNearbyMap(neighbor, clientsNeighborhood)
 	}
 	gps.RemovePointFromNearbyMap(client, clientsNeighborhood)
+}
+
+func finishItineraryOnClosestDeposits(itineraryList []itinerary.Itinerary, m gps.Map) {
+	for _, itinerary := range itineraryList {
+		position := itinerary.ActualCarPoint()
+		closestDeposit := gps.ClosestPoint(position, m.Deposits)
+		itinerary.MoveCar(closestDeposit)
+	}
 }
