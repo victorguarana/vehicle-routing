@@ -27,12 +27,12 @@ func InsertAt[T any](slice []T, element T, index int) []T {
 	return newSlice
 }
 
-func RemoveElement[T comparable](points []T, point T) []T {
-	newPoints := make([]T, 0)
-	for _, p := range points {
-		if p != point {
-			newPoints = append(newPoints, p)
+func RemoveElement[T comparable](slice []T, element T) []T {
+	newSlice := make([]T, 0)
+	for _, e := range slice {
+		if e != element {
+			newSlice = append(newSlice, e)
 		}
 	}
-	return newPoints
+	return newSlice
 }
