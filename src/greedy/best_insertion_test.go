@@ -81,7 +81,7 @@ var _ = Describe("orderClientsByItinerary", func() {
 
 	Context("when clients is empty", func() {
 		It("return empty array", func() {
-			expectedOrderedClients := map[itinerary.Itinerary][]gps.Point{}
+			expectedOrderedClients := map[int][]gps.Point{}
 			receivedOrderedClients := orderClientsByItinerary(itineraryList, []gps.Point{})
 			Expect(receivedOrderedClients).To(Equal(expectedOrderedClients))
 		})
@@ -97,9 +97,9 @@ var _ = Describe("orderClientsByItinerary", func() {
 		var clients = []gps.Point{client5, client2, client4, client6, client1, client3}
 
 		It("return ordered clients", func() {
-			var expectedOrderedClients = map[itinerary.Itinerary][]gps.Point{
-				mockedItinerary1: {client1, client4, client5},
-				mockedItinerary2: {client6, client3, client2},
+			var expectedOrderedClients = map[int][]gps.Point{
+				0: {client1, client4, client5},
+				1: {client6, client3, client2},
 			}
 			receivedOrderedClients := orderClientsByItinerary(itineraryList, clients)
 			Expect(receivedOrderedClients).To(Equal(expectedOrderedClients))

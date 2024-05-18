@@ -8,19 +8,20 @@ import (
 
 func BestInsertion(itineraryList []itinerary.Itinerary, m gps.Map) {
 	orderedClientsListsByRoute := orderClientsByItinerary(itineraryList, m.Clients)
-	for itinerary, orderedClients := range orderedClientsListsByRoute {
-		fillRoute(itinerary, orderedClients, m.Deposits)
+	for index, orderedClients := range orderedClientsListsByRoute {
+		itn := itineraryList[index]
+		fillRoute(itn, orderedClients, m.Deposits)
 	}
 	finishItineraryOnClosestDeposits(itineraryList, m)
 }
 
-func orderClientsByItinerary(itineraryList []itinerary.Itinerary, clients []gps.Point) map[itinerary.Itinerary][]gps.Point {
-	orderedClientsByItinerary := map[itinerary.Itinerary][]gps.Point{}
+func orderClientsByItinerary(itineraryList []itinerary.Itinerary, clients []gps.Point) map[int][]gps.Point {
+	orderedClientsByItinerary := map[int][]gps.Point{}
 	for i, client := range clients {
-		itinerary := slc.CircularSelection(itineraryList, i)
-		initialPoint := itinerary.ActualCarPoint()
-		orderedClients := orderedClientsByItinerary[itinerary]
-		orderedClientsByItinerary[itinerary] = insertInBestPosition(initialPoint, client, orderedClients)
+		itn, itnIndex := slc.CircularSelectionWithIndex(itineraryList, i)
+		initialPoint := itn.ActualCarPoint()
+		orderedClients := orderedClientsByItinerary[itnIndex]
+		orderedClientsByItinerary[itnIndex] = insertInBestPosition(initialPoint, client, orderedClients)
 	}
 	return orderedClientsByItinerary
 }

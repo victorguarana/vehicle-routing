@@ -6,6 +6,11 @@ func CircularSelection[T any](list []T, index int) T {
 	return list[i]
 }
 
+func CircularSelectionWithIndex[T any](list []T, index int) (T, int) {
+	i := index % len(list)
+	return list[i], i
+}
+
 func Copy[T any](slice []T) []T {
 	newSlice := make([]T, len(slice))
 	copy(newSlice, slice)
