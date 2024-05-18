@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/victorguarana/go-vehicle-route/src/gps"
+	"github.com/victorguarana/go-vehicle-route/src/slc"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -45,6 +46,23 @@ var _ = Describe("subRoute{}", func() {
 
 		It("should return first stop", func() {
 			Expect(sut.First()).To(Equal(firstSubStop))
+		})
+	})
+
+	var _ = Describe("Iterator", func() {
+		var subStop1 = subStop{point: gps.Point{Latitude: 1}}
+		var subStop2 = subStop{point: gps.Point{Latitude: 2}}
+		var iSubStop1 ISubStop = &subStop1
+		var iSubStop2 ISubStop = &subStop2
+		var iSubStops = []ISubStop{iSubStop1, iSubStop2}
+		var sut = subRoute{
+			stops: []*subStop{&subStop1, &subStop2},
+		}
+
+		It("should return iterator", func() {
+			expectedIterator := slc.NewIterator(iSubStops)
+			receivedIterator := sut.Iterator()
+			Expect(receivedIterator).To(Equal(expectedIterator))
 		})
 	})
 

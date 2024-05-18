@@ -1,8 +1,11 @@
 package routes
 
+import "github.com/victorguarana/go-vehicle-route/src/slc"
+
 type ISubRoute interface {
 	Append(ISubStop)
 	First() ISubStop
+	Iterator() slc.Iterator[ISubStop]
 	Last() ISubStop
 	Return(IMainStop)
 	ReturningPoint() IMainStop
@@ -31,6 +34,15 @@ func (sr *subRoute) Append(iSubStop ISubStop) {
 
 func (sr *subRoute) First() ISubStop {
 	return sr.stops[0]
+}
+
+func (sr *subRoute) Iterator() slc.Iterator[ISubStop] {
+	iSubStops := make([]ISubStop, len(sr.stops))
+	for i, stop := range sr.stops {
+		iSubStops[i] = stop
+	}
+
+	return slc.NewIterator(iSubStops)
 }
 
 func (sr *subRoute) Last() ISubStop {

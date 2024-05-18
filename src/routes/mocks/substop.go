@@ -39,6 +39,76 @@ func (m *MockISubStop) EXPECT() *MockISubStopMockRecorder {
 	return m.recorder
 }
 
+// IsClient mocks base method.
+func (m *MockISubStop) IsClient() bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsClient")
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsClient indicates an expected call of IsClient.
+func (mr *MockISubStopMockRecorder) IsClient() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsClient", reflect.TypeOf((*MockISubStop)(nil).IsClient))
+}
+
+// IsDeposit mocks base method.
+func (m *MockISubStop) IsDeposit() bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsDeposit")
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsDeposit indicates an expected call of IsDeposit.
+func (mr *MockISubStopMockRecorder) IsDeposit() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsDeposit", reflect.TypeOf((*MockISubStop)(nil).IsDeposit))
+}
+
+// Latitude mocks base method.
+func (m *MockISubStop) Latitude() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Latitude")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Latitude indicates an expected call of Latitude.
+func (mr *MockISubStopMockRecorder) Latitude() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Latitude", reflect.TypeOf((*MockISubStop)(nil).Latitude))
+}
+
+// Longitude mocks base method.
+func (m *MockISubStop) Longitude() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Longitude")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Longitude indicates an expected call of Longitude.
+func (mr *MockISubStopMockRecorder) Longitude() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Longitude", reflect.TypeOf((*MockISubStop)(nil).Longitude))
+}
+
+// Name mocks base method.
+func (m *MockISubStop) Name() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Name")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// Name indicates an expected call of Name.
+func (mr *MockISubStopMockRecorder) Name() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockISubStop)(nil).Name))
+}
+
 // Point mocks base method.
 func (m *MockISubStop) Point() gps.Point {
 	m.ctrl.T.Helper()
