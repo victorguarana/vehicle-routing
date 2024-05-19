@@ -34,7 +34,7 @@ func DroneStrikesInsertion(itinerary itinerary.Itinerary) {
 				continue
 			}
 
-			updateDroneStrikes(itinerary, droneStrikes, actualStop)
+			updateDroneStrikes(itinerary, droneStrikes, actualStop, nextStop)
 			if droneNumber, exists := dockedDroneThatCanSupport(itinerary, droneStrikes, actualStop, nextStop); exists {
 				itinerary.StartDroneFlight(droneNumber, routeIterator.Previous())
 				itinerary.MoveDrone(droneNumber, actualStop.Point())
@@ -80,21 +80,22 @@ func anyDroneWasStriked(dStrks []droneStrikes) bool {
 	return false
 }
 
-func anyDroneNeedToLand(itinerary itinerary.Itinerary, dStrks []droneStrikes, stop routes.IMainStop) bool {
-	point := stop.Point()
+func anyDroneNeedToLand(itinerary itinerary.Itinerary, dStrks []droneStrikes, next routes.IMainStop) bool {
+	nextPoint := next.Point()
 	for _, dStrk := range dStrks {
-		if itinerary.DroneIsFlying(dStrk.droneNumber) && !itinerary.DroneCanReach(dStrk.droneNumber, point) {
+		if itinerary.DroneIsFlying(dStrk.droneNumber) && !itinerary.DroneCanReach(dStrk.droneNumber, nextPoint) {
 			return true
 		}
 	}
 	return false
 }
 
-func updateDroneStrikes(itinerary itinerary.Itinerary, dStrks []droneStrikes, next routes.IMainStop) {
+func updateDroneStrikes(itinerary itinerary.Itinerary, dStrks []droneStrikes, actual routes.IMainStop, next routes.IMainStop) {
+	actualPoint := actual.Point()
 	nextPoint := next.Point()
 	for i, dStrk := range dStrks {
 		if itinerary.DroneIsFlying(dStrk.droneNumber) {
-			if itinerary.DroneSupport(dStrk.droneNumber, nextPoint) {
+			if itinerary.DroneSupport(dStrk.droneNumber, actualPoint, nextPoint) {
 				dStrk.strikes = 0
 			} else {
 				dStrk.strikes++
@@ -107,6 +108,7 @@ func updateDroneStrikes(itinerary itinerary.Itinerary, dStrks []droneStrikes, ne
 func flyingDroneThatCanSupport(itn itinerary.Itinerary, dStrks []droneStrikes, actual routes.IMainStop, next routes.IMainStop) (itinerary.DroneNumber, bool) {
 	actualPoint := actual.Point()
 	nextPoint := next.Point()
+	nextPoint.PackageSize = 0
 	for _, dStrk := range dStrks {
 		if itn.DroneIsFlying(dStrk.droneNumber) && itn.DroneSupport(dStrk.droneNumber, actualPoint, nextPoint) {
 			return dStrk.droneNumber, true
@@ -118,6 +120,7 @@ func flyingDroneThatCanSupport(itn itinerary.Itinerary, dStrks []droneStrikes, a
 func dockedDroneThatCanSupport(itn itinerary.Itinerary, dStrks []droneStrikes, actual routes.IMainStop, next routes.IMainStop) (itinerary.DroneNumber, bool) {
 	actualPoint := actual.Point()
 	nextPoint := next.Point()
+	nextPoint.PackageSize = 0
 	for _, dStrk := range dStrks {
 		if !itn.DroneIsFlying(dStrk.droneNumber) && itn.DroneSupport(dStrk.droneNumber, actualPoint, nextPoint) {
 			return dStrk.droneNumber, true

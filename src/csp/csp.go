@@ -29,8 +29,6 @@ func deliverNeighborsWithDrones(itn itinerary.Itinerary, neighbors []gps.Point) 
 	droneNumbers := itn.DroneNumbers()
 	actualCarPoint := itn.ActualCarPoint()
 	actualCarStop := itn.ActualCarStop()
-	// Need to set PackageSize to 0 to avoid drone support
-	actualCarPoint.PackageSize = 0
 	for neighborIndex, droneIndex := 0, 0; neighborIndex < len(neighbors); droneIndex++ {
 		actualNeighbor := neighbors[neighborIndex]
 		actualDroneNumber := slc.CircularSelection(droneNumbers, droneIndex)

@@ -189,22 +189,17 @@ var _ = Describe("itinerary{}", func() {
 	Describe("DroneSupport", func() {
 		var sut itinerary
 		var mockedCtrl *gomock.Controller
-		var mockedDrone1 *mockvehicles.MockIDrone
-		var mockedDrone2 *mockvehicles.MockIDrone
-		var nextPoints = []gps.Point{
-			{Latitude: 4, Longitude: 5, PackageSize: 6, Name: "destination1"},
-			{Latitude: 7, Longitude: 8, PackageSize: 9, Name: "destination2"},
-		}
+		var mockedDrone *mockvehicles.MockIDrone
+		var deliveryPoint = gps.Point{Latitude: 4, Longitude: 5, PackageSize: 6, Name: "destination1"}
+		var landingPoint = gps.Point{Latitude: 7, Longitude: 8, PackageSize: 9, Name: "destination2"}
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedDrone1 = mockvehicles.NewMockIDrone(mockedCtrl)
-			mockedDrone2 = mockvehicles.NewMockIDrone(mockedCtrl)
+			mockedDrone = mockvehicles.NewMockIDrone(mockedCtrl)
 
 			sut = itinerary{
 				dronesAndFlights: map[DroneNumber]subItinerary{
-					1: {drone: mockedDrone1},
-					2: {drone: mockedDrone2},
+					1: {drone: mockedDrone},
 				},
 			}
 		})
@@ -213,14 +208,27 @@ var _ = Describe("itinerary{}", func() {
 			mockedCtrl.Finish()
 		})
 
-		It("should return true if the drone supports the route", func() {
-			mockedDrone1.EXPECT().Support(nextPoints).Return(true)
-			Expect(sut.DroneSupport(1, nextPoints...)).To(BeTrue())
+		Context("when can delivery point and land at the next", func() {
+			It("should return true", func() {
+				mockedDrone.EXPECT().Support(deliveryPoint).Return(true)
+				mockedDrone.EXPECT().CanReach(deliveryPoint, landingPoint).Return(true)
+				Expect(sut.DroneSupport(1, deliveryPoint, landingPoint)).To(BeTrue())
+			})
 		})
 
-		It("should return false if the drone does not support the route", func() {
-			mockedDrone2.EXPECT().Support(nextPoints).Return(false)
-			Expect(sut.DroneSupport(2, nextPoints...)).To(BeFalse())
+		Context("when can delivery point but can not reach at the next", func() {
+			It("should return false", func() {
+				mockedDrone.EXPECT().Support(deliveryPoint).Return(true)
+				mockedDrone.EXPECT().CanReach(deliveryPoint, landingPoint).Return(false)
+				Expect(sut.DroneSupport(1, deliveryPoint, landingPoint)).To(BeFalse())
+			})
+		})
+
+		Context("when can not delivery point", func() {
+			It("should return false", func() {
+				mockedDrone.EXPECT().Support(deliveryPoint).Return(false)
+				Expect(sut.DroneSupport(1, deliveryPoint, landingPoint)).To(BeFalse())
+			})
 		})
 	})
 
