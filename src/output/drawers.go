@@ -41,7 +41,9 @@ func drawMovement(ggCtx *gg.Context, actual Stop, next Stop, img image.Image, cl
 	ggCtx.Push()
 	defer ggCtx.Pop()
 
-	ggCtx.SetColor(clr)
+	grad := movementGradient(actual, next, clr)
+	ggCtx.SetStrokeStyle(grad)
+
 	ggCtx.DrawLine(
 		axisX(actual), axisY(actual),
 		axisX(next), axisY(next),
@@ -65,4 +67,12 @@ func axisY(stop Stop) float64 {
 
 func applyScale(in float64) float64 {
 	return in * applyScaleValue
+}
+
+func movementGradient(actual Stop, next Stop, initialColor color.Color) gg.Gradient {
+	grad := gg.NewLinearGradient(axisX(actual), axisY(actual), axisX(next), axisY(next))
+	grad.AddColorStop(0, initialColor)
+	grad.AddColorStop(0.7, initialColor)
+	grad.AddColorStop(1, endGradLineColor)
+	return grad
 }

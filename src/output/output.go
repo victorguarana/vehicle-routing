@@ -12,6 +12,7 @@ var textColor = color.Black
 var backgroundColor = color.White
 var flightLineColor = color.RGBA{0, 0, 255, 255}
 var routeLineColor = color.RGBA{0, 255, 0, 255}
+var endGradLineColor = color.RGBA{255, 0, 0, 255}
 
 const imageSize = 550
 const paddingLeft = 50
