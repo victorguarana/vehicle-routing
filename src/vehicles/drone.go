@@ -1,7 +1,7 @@
 package vehicles
 
 import (
-	"github.com/victorguarana/go-vehicle-route/src/gps"
+	"github.com/victorguarana/vehicle-routing/src/gps"
 )
 
 const DroneRange = 150.0

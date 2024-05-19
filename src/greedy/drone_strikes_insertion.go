@@ -1,8 +1,8 @@
 package greedy
 
 import (
-	"github.com/victorguarana/go-vehicle-route/src/itinerary"
-	"github.com/victorguarana/go-vehicle-route/src/routes"
+	"github.com/victorguarana/vehicle-routing/src/itinerary"
+	"github.com/victorguarana/vehicle-routing/src/routes"
 )
 
 const maxStrikes = 3

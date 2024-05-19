@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/victorguarana/go-vehicle-route/src/slc"
+	"github.com/victorguarana/vehicle-routing/src/slc"
 )
 
 type IMainRoute interface {

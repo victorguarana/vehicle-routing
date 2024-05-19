@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/victorguarana/go-vehicle-route/src/csp"
-	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/greedy"
-	"github.com/victorguarana/go-vehicle-route/src/itinerary"
-	"github.com/victorguarana/go-vehicle-route/src/output"
-	"github.com/victorguarana/go-vehicle-route/src/vehicles"
+	"github.com/victorguarana/vehicle-routing/src/csp"
+	"github.com/victorguarana/vehicle-routing/src/gps"
+	"github.com/victorguarana/vehicle-routing/src/greedy"
+	"github.com/victorguarana/vehicle-routing/src/itinerary"
+	"github.com/victorguarana/vehicle-routing/src/output"
+	"github.com/victorguarana/vehicle-routing/src/vehicles"
 )
 
 func main() {

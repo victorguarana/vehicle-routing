@@ -1,10 +1,10 @@
 package itinerary
 
 import (
-	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/routes"
-	"github.com/victorguarana/go-vehicle-route/src/slc"
-	"github.com/victorguarana/go-vehicle-route/src/vehicles"
+	"github.com/victorguarana/vehicle-routing/src/gps"
+	"github.com/victorguarana/vehicle-routing/src/routes"
+	"github.com/victorguarana/vehicle-routing/src/slc"
+	"github.com/victorguarana/vehicle-routing/src/vehicles"
 )
 
 var flightFactory = routes.NewSubRoute

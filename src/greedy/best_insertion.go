@@ -1,9 +1,9 @@
 package greedy
 
 import (
-	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/itinerary"
-	"github.com/victorguarana/go-vehicle-route/src/slc"
+	"github.com/victorguarana/vehicle-routing/src/gps"
+	"github.com/victorguarana/vehicle-routing/src/itinerary"
+	"github.com/victorguarana/vehicle-routing/src/slc"
 )
 
 func BestInsertion(itineraryList []itinerary.Itinerary, m gps.Map) {

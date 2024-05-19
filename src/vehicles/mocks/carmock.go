@@ -12,8 +12,8 @@ package mockvehicles
 import (
 	reflect "reflect"
 
-	gps "github.com/victorguarana/go-vehicle-route/src/gps"
-	vehicles "github.com/victorguarana/go-vehicle-route/src/vehicles"
+	gps "github.com/victorguarana/vehicle-routing/src/gps"
+	vehicles "github.com/victorguarana/vehicle-routing/src/vehicles"
 	gomock "go.uber.org/mock/gomock"
 )
 

@@ -4,8 +4,8 @@ import (
 	"image/color"
 
 	"github.com/fogleman/gg"
-	"github.com/victorguarana/go-vehicle-route/src/itinerary"
-	"github.com/victorguarana/go-vehicle-route/src/routes"
+	"github.com/victorguarana/vehicle-routing/src/itinerary"
+	"github.com/victorguarana/vehicle-routing/src/routes"
 )
 
 var textColor = color.Black

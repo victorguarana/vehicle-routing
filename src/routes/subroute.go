@@ -1,6 +1,6 @@
 package routes
 
-import "github.com/victorguarana/go-vehicle-route/src/slc"
+import "github.com/victorguarana/vehicle-routing/src/slc"
 
 type ISubRoute interface {
 	Append(ISubStop)

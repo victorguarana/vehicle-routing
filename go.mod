@@ -1,4 +1,4 @@
-module github.com/victorguarana/go-vehicle-route
+module github.com/victorguarana/vehicle-routing
 
 go 1.22.2
 

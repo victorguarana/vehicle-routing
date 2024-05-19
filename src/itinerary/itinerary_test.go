@@ -3,12 +3,12 @@ package itinerary
 import (
 	"go.uber.org/mock/gomock"
 
-	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/routes"
-	mockroutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
-	"github.com/victorguarana/go-vehicle-route/src/slc"
-	"github.com/victorguarana/go-vehicle-route/src/vehicles"
-	mockvehicles "github.com/victorguarana/go-vehicle-route/src/vehicles/mocks"
+	"github.com/victorguarana/vehicle-routing/src/gps"
+	"github.com/victorguarana/vehicle-routing/src/routes"
+	mockroutes "github.com/victorguarana/vehicle-routing/src/routes/mocks"
+	"github.com/victorguarana/vehicle-routing/src/slc"
+	"github.com/victorguarana/vehicle-routing/src/vehicles"
+	mockvehicles "github.com/victorguarana/vehicle-routing/src/vehicles/mocks"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"

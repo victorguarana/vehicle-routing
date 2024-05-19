@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/victorguarana/go-vehicle-route/src/gps"
+	"github.com/victorguarana/vehicle-routing/src/gps"
 )
 
 type ISubStop interface {

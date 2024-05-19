@@ -12,8 +12,8 @@ package mockroutes
 import (
 	reflect "reflect"
 
-	routes "github.com/victorguarana/go-vehicle-route/src/routes"
-	slc "github.com/victorguarana/go-vehicle-route/src/slc"
+	routes "github.com/victorguarana/vehicle-routing/src/routes"
+	slc "github.com/victorguarana/vehicle-routing/src/slc"
 	gomock "go.uber.org/mock/gomock"
 )
 

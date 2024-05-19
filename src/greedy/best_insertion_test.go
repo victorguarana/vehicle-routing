@@ -3,9 +3,9 @@ package greedy
 import (
 	"go.uber.org/mock/gomock"
 
-	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/itinerary"
-	mockitinerary "github.com/victorguarana/go-vehicle-route/src/itinerary/mocks"
+	"github.com/victorguarana/vehicle-routing/src/gps"
+	"github.com/victorguarana/vehicle-routing/src/itinerary"
+	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mocks"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"

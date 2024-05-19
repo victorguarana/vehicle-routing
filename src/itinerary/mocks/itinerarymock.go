@@ -12,10 +12,10 @@ package mockitinerary
 import (
 	reflect "reflect"
 
-	gps "github.com/victorguarana/go-vehicle-route/src/gps"
-	itinerary "github.com/victorguarana/go-vehicle-route/src/itinerary"
-	routes "github.com/victorguarana/go-vehicle-route/src/routes"
-	slc "github.com/victorguarana/go-vehicle-route/src/slc"
+	gps "github.com/victorguarana/vehicle-routing/src/gps"
+	itinerary "github.com/victorguarana/vehicle-routing/src/itinerary"
+	routes "github.com/victorguarana/vehicle-routing/src/routes"
+	slc "github.com/victorguarana/vehicle-routing/src/slc"
 	gomock "go.uber.org/mock/gomock"
 )
 

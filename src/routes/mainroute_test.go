@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/slc"
+	"github.com/victorguarana/vehicle-routing/src/gps"
+	"github.com/victorguarana/vehicle-routing/src/slc"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"

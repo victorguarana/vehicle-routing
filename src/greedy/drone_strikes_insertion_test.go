@@ -1,12 +1,12 @@
 package greedy
 
 import (
-	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/itinerary"
-	mockitinerary "github.com/victorguarana/go-vehicle-route/src/itinerary/mocks"
-	"github.com/victorguarana/go-vehicle-route/src/routes"
-	mockRoutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
-	"github.com/victorguarana/go-vehicle-route/src/slc"
+	"github.com/victorguarana/vehicle-routing/src/gps"
+	"github.com/victorguarana/vehicle-routing/src/itinerary"
+	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mocks"
+	"github.com/victorguarana/vehicle-routing/src/routes"
+	mockRoutes "github.com/victorguarana/vehicle-routing/src/routes/mocks"
+	"github.com/victorguarana/vehicle-routing/src/slc"
 
 	"go.uber.org/mock/gomock"
 

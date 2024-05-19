@@ -1,7 +1,7 @@
 package gps
 
 import (
-	"github.com/victorguarana/go-vehicle-route/src/slc"
+	"github.com/victorguarana/vehicle-routing/src/slc"
 )
 
 type Neighborhood map[Point][]Point

@@ -1,8 +1,8 @@
 package greedy
 
 import (
-	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/itinerary"
+	"github.com/victorguarana/vehicle-routing/src/gps"
+	"github.com/victorguarana/vehicle-routing/src/itinerary"
 )
 
 func finishItineraryOnClosestDeposits(itineraryList []itinerary.Itinerary, m gps.Map) {

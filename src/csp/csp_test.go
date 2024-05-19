@@ -1,10 +1,10 @@
 package csp
 
 import (
-	"github.com/victorguarana/go-vehicle-route/src/gps"
-	"github.com/victorguarana/go-vehicle-route/src/itinerary"
-	mockitinerary "github.com/victorguarana/go-vehicle-route/src/itinerary/mocks"
-	mockroutes "github.com/victorguarana/go-vehicle-route/src/routes/mocks"
+	"github.com/victorguarana/vehicle-routing/src/gps"
+	"github.com/victorguarana/vehicle-routing/src/itinerary"
+	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mocks"
+	mockroutes "github.com/victorguarana/vehicle-routing/src/routes/mocks"
 	"go.uber.org/mock/gomock"
 
 	. "github.com/onsi/ginkgo/v2"
