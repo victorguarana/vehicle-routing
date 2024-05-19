@@ -68,6 +68,48 @@ func (mr *MockIMainStopMockRecorder) IsDeposit() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsDeposit", reflect.TypeOf((*MockIMainStop)(nil).IsDeposit))
 }
 
+// Latitude mocks base method.
+func (m *MockIMainStop) Latitude() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Latitude")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Latitude indicates an expected call of Latitude.
+func (mr *MockIMainStopMockRecorder) Latitude() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Latitude", reflect.TypeOf((*MockIMainStop)(nil).Latitude))
+}
+
+// Longitude mocks base method.
+func (m *MockIMainStop) Longitude() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Longitude")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Longitude indicates an expected call of Longitude.
+func (mr *MockIMainStopMockRecorder) Longitude() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Longitude", reflect.TypeOf((*MockIMainStop)(nil).Longitude))
+}
+
+// Name mocks base method.
+func (m *MockIMainStop) Name() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Name")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// Name indicates an expected call of Name.
+func (mr *MockIMainStopMockRecorder) Name() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockIMainStop)(nil).Name))
+}
+
 // Point mocks base method.
 func (m *MockIMainStop) Point() gps.Point {
 	m.ctrl.T.Helper()
@@ -82,16 +124,16 @@ func (mr *MockIMainStopMockRecorder) Point() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Point", reflect.TypeOf((*MockIMainStop)(nil).Point))
 }
 
-// SubRoutes mocks base method.
-func (m *MockIMainStop) SubRoutes() []routes.ISubRoute {
+// StartingSubRoutes mocks base method.
+func (m *MockIMainStop) StartingSubRoutes() []routes.ISubRoute {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SubRoutes")
+	ret := m.ctrl.Call(m, "StartingSubRoutes")
 	ret0, _ := ret[0].([]routes.ISubRoute)
 	return ret0
 }
 
-// SubRoutes indicates an expected call of SubRoutes.
-func (mr *MockIMainStopMockRecorder) SubRoutes() *gomock.Call {
+// StartingSubRoutes indicates an expected call of StartingSubRoutes.
+func (mr *MockIMainStopMockRecorder) StartingSubRoutes() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubRoutes", reflect.TypeOf((*MockIMainStop)(nil).SubRoutes))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartingSubRoutes", reflect.TypeOf((*MockIMainStop)(nil).StartingSubRoutes))
 }

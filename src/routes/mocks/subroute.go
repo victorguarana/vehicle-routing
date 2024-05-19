@@ -13,6 +13,7 @@ import (
 	reflect "reflect"
 
 	routes "github.com/victorguarana/go-vehicle-route/src/routes"
+	slc "github.com/victorguarana/go-vehicle-route/src/slc"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -63,6 +64,20 @@ func (m *MockISubRoute) First() routes.ISubStop {
 func (mr *MockISubRouteMockRecorder) First() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "First", reflect.TypeOf((*MockISubRoute)(nil).First))
+}
+
+// Iterator mocks base method.
+func (m *MockISubRoute) Iterator() slc.Iterator[routes.ISubStop] {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Iterator")
+	ret0, _ := ret[0].(slc.Iterator[routes.ISubStop])
+	return ret0
+}
+
+// Iterator indicates an expected call of Iterator.
+func (mr *MockISubRouteMockRecorder) Iterator() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Iterator", reflect.TypeOf((*MockISubRoute)(nil).Iterator))
 }
 
 // Last mocks base method.

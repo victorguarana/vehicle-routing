@@ -7,7 +7,11 @@ import (
 type IMainStop interface {
 	IsClient() bool
 	IsDeposit() bool
+	Latitude() float64
+	Longitude() float64
+	Name() string
 	Point() gps.Point
+	StartingSubRoutes() []ISubRoute
 }
 
 type mainStop struct {
@@ -32,6 +36,26 @@ func (ms *mainStop) IsDeposit() bool {
 	return ms.point.PackageSize == 0
 }
 
+func (ms *mainStop) Latitude() float64 {
+	return ms.point.Latitude
+}
+
+func (ms *mainStop) Longitude() float64 {
+	return ms.point.Longitude
+}
+
+func (ms *mainStop) Name() string {
+	return ms.point.Name
+}
+
 func (ms *mainStop) Point() gps.Point {
 	return ms.point
+}
+
+func (ms *mainStop) StartingSubRoutes() []ISubRoute {
+	subRoutes := make([]ISubRoute, len(ms.startingSubRoutes))
+	for i, sr := range ms.startingSubRoutes {
+		subRoutes[i] = sr
+	}
+	return subRoutes
 }
