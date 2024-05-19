@@ -70,6 +70,7 @@ func (d *drone) Move(destination gps.Point) {
 	}
 	d.remaningRange -= gps.DistanceBetweenPoints(d.actualPoint, destination)
 	d.remaningStorage -= destination.PackageSize
+	d.actualPoint = destination
 }
 
 func (d *drone) Name() string {

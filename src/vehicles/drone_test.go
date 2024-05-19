@@ -90,6 +90,7 @@ var _ = Describe("drone{}", func() {
 			sut.Move(destinationPoint)
 			Expect(sut.remaningRange).To(Equal(DroneRange - distance))
 			Expect(sut.remaningStorage).To(Equal(DroneStorage - destinationPoint.PackageSize))
+			Expect(sut.actualPoint).To(Equal(destinationPoint))
 		})
 	})
 
