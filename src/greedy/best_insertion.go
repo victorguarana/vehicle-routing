@@ -36,16 +36,16 @@ func insertInBestPosition(initialPoint gps.Point, client gps.Point, orderedClien
 
 func findBestPosition(initialPoint gps.Point, client gps.Point, orderedClients []gps.Point) int {
 	var bestIndex int
-	shortestAdditionalDistance := calcAdditionalDistance(initialPoint, client, orderedClients[0])
+	shortestAdditionalDistance := gps.AdditionalDistancePassingThrough(initialPoint, client, orderedClients[0])
 	for i := 1; i < len(orderedClients); i++ {
-		addictionalDistance := calcAdditionalDistance(orderedClients[i-1], client, orderedClients[i])
+		addictionalDistance := gps.AdditionalDistancePassingThrough(orderedClients[i-1], client, orderedClients[i])
 		if addictionalDistance < shortestAdditionalDistance {
 			bestIndex = i
 			shortestAdditionalDistance = addictionalDistance
 		}
 	}
 
-	addictionalDistance := calcAdditionalDistance(orderedClients[len(orderedClients)-1], client, initialPoint)
+	addictionalDistance := gps.AdditionalDistancePassingThrough(orderedClients[len(orderedClients)-1], client, initialPoint)
 	if addictionalDistance < shortestAdditionalDistance {
 		bestIndex = len(orderedClients)
 	}
@@ -61,9 +61,4 @@ func fillRoute(itinerary itinerary.Itinerary, orderedClients []gps.Point, deposi
 		}
 		itinerary.MoveCar(client)
 	}
-}
-
-// TODO: Move this method to gps package
-func calcAdditionalDistance(from, through, to gps.Point) float64 {
-	return gps.DistanceBetweenPoints(from, through, to) - gps.DistanceBetweenPoints(from, to)
 }
