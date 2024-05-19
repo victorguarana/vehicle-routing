@@ -15,7 +15,7 @@ var routeLineColor = color.RGBA{0, 255, 0, 255}
 
 const imageSize = 550
 const paddingLeft = 50
-const paddingUp = 50
+const paddingUp = 55
 const applyScaleValue = 5
 const mainLineWidth = 0.3
 
