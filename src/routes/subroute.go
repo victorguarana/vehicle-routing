@@ -8,23 +8,23 @@ type ISubRoute interface {
 	Iterator() slc.Iterator[ISubStop]
 	Last() ISubStop
 	Return(IMainStop)
-	ReturningPoint() IMainStop
-	StartingPoint() IMainStop
+	ReturningStop() IMainStop
+	StartingStop() IMainStop
 }
 
 type subRoute struct {
-	returningPoint *mainStop
-	startingPoint  *mainStop
-	stops          []*subStop
+	returningStop *mainStop
+	startingStop  *mainStop
+	stops         []*subStop
 }
 
-func NewSubRoute(iStartingPoint IMainStop) ISubRoute {
-	startingPoint := iStartingPoint.(*mainStop)
+func NewSubRoute(iStartingStop IMainStop) ISubRoute {
+	startingStop := iStartingStop.(*mainStop)
 	sr := &subRoute{
-		startingPoint: startingPoint,
-		stops:         []*subStop{},
+		startingStop: startingStop,
+		stops:        []*subStop{},
 	}
-	startingPoint.startingSubRoutes = append(startingPoint.startingSubRoutes, sr)
+	startingStop.startingSubRoutes = append(startingStop.startingSubRoutes, sr)
 	return sr
 }
 
@@ -50,13 +50,13 @@ func (sr *subRoute) Last() ISubStop {
 }
 
 func (sr *subRoute) Return(iMainStop IMainStop) {
-	sr.returningPoint = iMainStop.(*mainStop)
+	sr.returningStop = iMainStop.(*mainStop)
 }
 
-func (sr *subRoute) ReturningPoint() IMainStop {
-	return sr.returningPoint
+func (sr *subRoute) ReturningStop() IMainStop {
+	return sr.returningStop
 }
 
-func (sr *subRoute) StartingPoint() IMainStop {
-	return sr.startingPoint
+func (sr *subRoute) StartingStop() IMainStop {
+	return sr.startingStop
 }

@@ -9,16 +9,16 @@ import (
 )
 
 var _ = Describe("NewSubRoute", func() {
-	var startingPoint = &mainStop{point: gps.Point{}}
+	var startingStop = &mainStop{point: gps.Point{}}
 
 	It("takes off drone and returns correct struct", func() {
 		expectedSubRoute := &subRoute{
-			startingPoint: startingPoint,
-			stops:         []*subStop{},
+			startingStop: startingStop,
+			stops:        []*subStop{},
 		}
-		receivedSubRoute := NewSubRoute(startingPoint)
+		receivedSubRoute := NewSubRoute(startingStop)
 		Expect(receivedSubRoute).To(Equal(expectedSubRoute))
-		Expect(startingPoint.startingSubRoutes).To(ContainElement(receivedSubRoute))
+		Expect(startingStop.startingSubRoutes).To(ContainElement(receivedSubRoute))
 	})
 })
 
@@ -26,8 +26,8 @@ var _ = Describe("subRoute{}", func() {
 	var _ = Describe("Append", func() {
 		var validPoint = gps.Point{}
 		var sut = subRoute{
-			startingPoint:  &mainStop{point: validPoint},
-			returningPoint: &mainStop{point: validPoint},
+			startingStop:  &mainStop{point: validPoint},
+			returningStop: &mainStop{point: validPoint},
 		}
 
 		It("should append sub stop to sub route", func() {
@@ -80,36 +80,36 @@ var _ = Describe("subRoute{}", func() {
 
 	var _ = Describe("Return", func() {
 		var sut = subRoute{
-			startingPoint:  &mainStop{point: gps.Point{}},
-			returningPoint: &mainStop{point: gps.Point{}},
+			startingStop:  &mainStop{point: gps.Point{}},
+			returningStop: &mainStop{point: gps.Point{}},
 		}
 
 		It("should set returning point", func() {
-			returningPoint := &mainStop{point: gps.Point{}}
-			sut.Return(returningPoint)
-			Expect(sut.returningPoint).To(Equal(returningPoint))
+			returningStop := &mainStop{point: gps.Point{}}
+			sut.Return(returningStop)
+			Expect(sut.returningStop).To(Equal(returningStop))
 		})
 	})
 
-	var _ = Describe("ReturningPoint", func() {
-		var returningPoint = &mainStop{point: gps.Point{}}
+	var _ = Describe("ReturningStop", func() {
+		var returningStop = &mainStop{point: gps.Point{}}
 		var sut = subRoute{
-			returningPoint: returningPoint,
+			returningStop: returningStop,
 		}
 
 		It("should return returning point", func() {
-			Expect(sut.ReturningPoint()).To(Equal(returningPoint))
+			Expect(sut.ReturningStop()).To(Equal(returningStop))
 		})
 	})
 
-	var _ = Describe("StartingPoint", func() {
-		var startingPoint = &mainStop{point: gps.Point{}}
+	var _ = Describe("StartingStop", func() {
+		var startingStop = &mainStop{point: gps.Point{}}
 		var sut = subRoute{
-			startingPoint: startingPoint,
+			startingStop: startingStop,
 		}
 
 		It("should return starting point", func() {
-			Expect(sut.StartingPoint()).To(Equal(startingPoint))
+			Expect(sut.StartingStop()).To(Equal(startingStop))
 		})
 	})
 })

@@ -106,30 +106,30 @@ func (mr *MockISubRouteMockRecorder) Return(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Return", reflect.TypeOf((*MockISubRoute)(nil).Return), arg0)
 }
 
-// ReturningPoint mocks base method.
-func (m *MockISubRoute) ReturningPoint() routes.IMainStop {
+// ReturningStop mocks base method.
+func (m *MockISubRoute) ReturningStop() routes.IMainStop {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ReturningPoint")
+	ret := m.ctrl.Call(m, "ReturningStop")
 	ret0, _ := ret[0].(routes.IMainStop)
 	return ret0
 }
 
-// ReturningPoint indicates an expected call of ReturningPoint.
-func (mr *MockISubRouteMockRecorder) ReturningPoint() *gomock.Call {
+// ReturningStop indicates an expected call of ReturningStop.
+func (mr *MockISubRouteMockRecorder) ReturningStop() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReturningPoint", reflect.TypeOf((*MockISubRoute)(nil).ReturningPoint))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReturningStop", reflect.TypeOf((*MockISubRoute)(nil).ReturningStop))
 }
 
-// StartingPoint mocks base method.
-func (m *MockISubRoute) StartingPoint() routes.IMainStop {
+// StartingStop mocks base method.
+func (m *MockISubRoute) StartingStop() routes.IMainStop {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "StartingPoint")
+	ret := m.ctrl.Call(m, "StartingStop")
 	ret0, _ := ret[0].(routes.IMainStop)
 	return ret0
 }
 
-// StartingPoint indicates an expected call of StartingPoint.
-func (mr *MockISubRouteMockRecorder) StartingPoint() *gomock.Call {
+// StartingStop indicates an expected call of StartingStop.
+func (mr *MockISubRouteMockRecorder) StartingStop() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartingPoint", reflect.TypeOf((*MockISubRoute)(nil).StartingPoint))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartingStop", reflect.TypeOf((*MockISubRoute)(nil).StartingStop))
 }

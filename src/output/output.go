@@ -58,7 +58,7 @@ func itineraryToImage(ggCtx *gg.Context, itn itinerary.Itinerary) {
 
 func flightsToImage(ggCtx *gg.Context, flights []routes.ISubRoute) {
 	for _, flight := range flights {
-		drawMovement(ggCtx, flight.StartingPoint(), flight.First(), loadDroneImage(), flightLineColor)
+		drawMovement(ggCtx, flight.StartingStop(), flight.First(), loadDroneImage(), flightLineColor)
 		iterator := flight.Iterator()
 		for iterator.HasNext() {
 			actual := iterator.Actual()
@@ -67,7 +67,7 @@ func flightsToImage(ggCtx *gg.Context, flights []routes.ISubRoute) {
 			drawStop(ggCtx, actual)
 			iterator.GoToNext()
 		}
-		drawMovement(ggCtx, flight.Last(), flight.ReturningPoint(), loadDroneImage(), flightLineColor)
+		drawMovement(ggCtx, flight.Last(), flight.ReturningStop(), loadDroneImage(), flightLineColor)
 		drawStop(ggCtx, flight.Last())
 	}
 }
