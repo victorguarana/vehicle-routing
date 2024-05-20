@@ -108,20 +108,6 @@ func (mr *MockIMainRouteMockRecorder) Last() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Last", reflect.TypeOf((*MockIMainRoute)(nil).Last))
 }
 
-// Len mocks base method.
-func (m *MockIMainRoute) Len() int {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Len")
-	ret0, _ := ret[0].(int)
-	return ret0
-}
-
-// Len indicates an expected call of Len.
-func (mr *MockIMainRouteMockRecorder) Len() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Len", reflect.TypeOf((*MockIMainRoute)(nil).Len))
-}
-
 // RemoveMainStop mocks base method.
 func (m *MockIMainRoute) RemoveMainStop(index int) {
 	m.ctrl.T.Helper()
@@ -132,18 +118,4 @@ func (m *MockIMainRoute) RemoveMainStop(index int) {
 func (mr *MockIMainRouteMockRecorder) RemoveMainStop(index any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveMainStop", reflect.TypeOf((*MockIMainRoute)(nil).RemoveMainStop), index)
-}
-
-// String mocks base method.
-func (m *MockIMainRoute) String() string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "String")
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// String indicates an expected call of String.
-func (mr *MockIMainRouteMockRecorder) String() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "String", reflect.TypeOf((*MockIMainRoute)(nil).String))
 }

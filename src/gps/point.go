@@ -1,7 +1,6 @@
 package gps
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -10,10 +9,6 @@ type Point struct {
 	Longitude   float64
 	PackageSize float64
 	Name        string
-}
-
-func (p Point) String() string {
-	return fmt.Sprintf("Name: '%s', Lat: %f, Long: %f, PackageSize: %f", p.Name, p.Latitude, p.Longitude, p.PackageSize)
 }
 
 // Euclidean distance between two points
