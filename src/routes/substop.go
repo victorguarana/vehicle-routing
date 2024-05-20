@@ -6,7 +6,7 @@ import (
 
 type ISubStop interface {
 	IsClient() bool
-	IsDeposit() bool
+	IsWarehouse() bool
 	Latitude() float64
 	Longitude() float64
 	Name() string
@@ -25,7 +25,7 @@ func (ss *subStop) IsClient() bool {
 	return ss.point.PackageSize != 0
 }
 
-func (ss *subStop) IsDeposit() bool {
+func (ss *subStop) IsWarehouse() bool {
 	return ss.point.PackageSize == 0
 }
 

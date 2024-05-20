@@ -23,6 +23,26 @@ var _ = Describe("CircularSelection", func() {
 	})
 })
 
+var _ = Describe("CircularSelectionWithIndex", func() {
+	Context("when index is less than the length of the list", func() {
+		It("return the element at the index and the index", func() {
+			list := []int{1, 2, 3}
+			receivedElement, receivedIndex := CircularSelectionWithIndex(list, 1)
+			Expect(receivedElement).To(Equal(2))
+			Expect(receivedIndex).To(Equal(1))
+		})
+	})
+
+	Context("when index is greater than the length of the list", func() {
+		It("return the element at the index modulo the length of the list and the index", func() {
+			list := []int{1, 2, 3}
+			receivedElement, receivedIndex := CircularSelectionWithIndex(list, 4)
+			Expect(receivedElement).To(Equal(2))
+			Expect(receivedIndex).To(Equal(1))
+		})
+	})
+})
+
 var _ = Describe("Copy", func() {
 	Context("when slice is empty", func() {
 		It("return a new empty slice", func() {

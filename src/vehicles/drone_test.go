@@ -76,20 +76,21 @@ var _ = Describe("drone{}", func() {
 	})
 
 	var _ = Describe("Move", func() {
-		Context("when drone is not flying", func() {
-			var initialPoint = gps.Point{Latitude: 5}
-			var destinationPoint = gps.Point{Latitude: 10}
-			var sut = drone{
-				actualPoint:   initialPoint,
-				remaningRange: DroneRange,
-			}
+		var initialPoint = gps.Point{Latitude: 5}
+		var destinationPoint = gps.Point{Latitude: 10, PackageSize: 1}
+		var sut = drone{
+			isFlying:        true,
+			actualPoint:     initialPoint,
+			remaningRange:   DroneRange,
+			remaningStorage: DroneStorage,
+		}
 
-			It("should create flight and move drone", func() {
-				distance := gps.DistanceBetweenPoints(initialPoint, destinationPoint)
-				sut.Move(destinationPoint)
-				Expect(sut.remaningRange).To(Equal(DroneRange - distance))
-				Expect(sut.isFlying).To(BeTrue())
-			})
+		It("should move drone and decrease range and package storage", func() {
+			distance := gps.DistanceBetweenPoints(initialPoint, destinationPoint)
+			sut.Move(destinationPoint)
+			Expect(sut.remaningRange).To(Equal(DroneRange - distance))
+			Expect(sut.remaningStorage).To(Equal(DroneStorage - destinationPoint.PackageSize))
+			Expect(sut.actualPoint).To(Equal(destinationPoint))
 		})
 	})
 
@@ -175,4 +176,16 @@ var _ = Describe("drone{}", func() {
 			})
 		})
 	})
+
+	Describe("TakeOff", func() {
+		var sut = drone{
+			isFlying: false,
+		}
+
+		It("should take off drone", func() {
+			sut.TakeOff()
+			Expect(sut.isFlying).To(BeTrue())
+		})
+	})
+
 })

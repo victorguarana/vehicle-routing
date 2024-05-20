@@ -17,7 +17,7 @@ func CoveringWithDrones(itineraryList []itinerary.Itinerary, m gps.Map, neighbor
 		gps.RemovePointFromNearbyMap(actualClient, clientsNeighborhood)
 	}
 
-	finishItineraryOnClosestDeposits(itineraryList, m)
+	finishItineraryOnClosestWarehouses(itineraryList, m)
 }
 
 // TODO: Implement an function similar to this one
@@ -29,12 +29,13 @@ func deliverNeighborsWithDrones(itn itinerary.Itinerary, neighbors []gps.Point) 
 	droneNumbers := itn.DroneNumbers()
 	actualCarPoint := itn.ActualCarPoint()
 	actualCarStop := itn.ActualCarStop()
-	// Need to set PackageSize to 0 to avoid drone support
-	actualCarPoint.PackageSize = 0
 	for neighborIndex, droneIndex := 0, 0; neighborIndex < len(neighbors); droneIndex++ {
 		actualNeighbor := neighbors[neighborIndex]
 		actualDroneNumber := slc.CircularSelection(droneNumbers, droneIndex)
 		if itn.DroneSupport(actualDroneNumber, actualNeighbor, actualCarPoint) {
+			if !itn.DroneIsFlying(actualDroneNumber) {
+				itn.StartDroneFlight(actualDroneNumber, actualCarStop)
+			}
 			itn.MoveDrone(actualDroneNumber, actualNeighbor)
 			neighborIndex++
 		} else {
@@ -52,10 +53,10 @@ func removeClientAndItsNeighborsFromMap(client gps.Point, clientsNeighborhood gp
 	gps.RemovePointFromNearbyMap(client, clientsNeighborhood)
 }
 
-func finishItineraryOnClosestDeposits(itineraryList []itinerary.Itinerary, m gps.Map) {
+func finishItineraryOnClosestWarehouses(itineraryList []itinerary.Itinerary, m gps.Map) {
 	for _, itinerary := range itineraryList {
 		position := itinerary.ActualCarPoint()
-		closestDeposit := gps.ClosestPoint(position, m.Deposits)
-		itinerary.MoveCar(closestDeposit)
+		closestWarehouse := gps.ClosestPoint(position, m.Warehouses)
+		itinerary.MoveCar(closestWarehouse)
 	}
 }

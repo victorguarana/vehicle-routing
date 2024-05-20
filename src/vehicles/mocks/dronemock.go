@@ -140,3 +140,15 @@ func (mr *MockIDroneMockRecorder) Support(arg0 ...any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Support", reflect.TypeOf((*MockIDrone)(nil).Support), arg0...)
 }
+
+// TakeOff mocks base method.
+func (m *MockIDrone) TakeOff() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "TakeOff")
+}
+
+// TakeOff indicates an expected call of TakeOff.
+func (mr *MockIDroneMockRecorder) TakeOff() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TakeOff", reflect.TypeOf((*MockIDrone)(nil).TakeOff))
+}

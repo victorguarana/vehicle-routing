@@ -27,3 +27,5 @@ go.work
 *.png
 !assets/*
 
+# Report files from ginkgo
+*.report

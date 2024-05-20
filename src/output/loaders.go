@@ -31,7 +31,7 @@ func loadStopImage(stop Stop) image.Image {
 		return im
 	}
 
-	if stop.IsDeposit() {
+	if stop.IsWarehouse() {
 		im, err := gg.LoadPNG("assets/warehouse.png")
 		if err != nil {
 			panic(err)

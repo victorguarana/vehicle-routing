@@ -12,17 +12,17 @@ func ClosestNeighbor(itineraryList []itinerary.Itinerary, m gps.Map) {
 		itinerary := slc.CircularSelection(itineraryList, i)
 		itineraryActualPosition := itinerary.ActualCarPoint()
 		closestClient := gps.ClosestPoint(itineraryActualPosition, remaningClients)
-		closestDepositFromClosestClient := gps.ClosestPoint(closestClient, m.Deposits)
+		closestWarehouseFromClosestClient := gps.ClosestPoint(closestClient, m.Warehouses)
 
-		if itinerary.CarSupport(closestClient, closestDepositFromClosestClient) {
+		if itinerary.CarSupport(closestClient, closestWarehouseFromClosestClient) {
 			itinerary.MoveCar(closestClient)
 			remaningClients = slc.RemoveElement(remaningClients, closestClient)
 			continue
 		}
 
-		closestDepositFromActualPosition := gps.ClosestPoint(itineraryActualPosition, m.Deposits)
-		itinerary.MoveCar(closestDepositFromActualPosition)
+		closestWarehouseFromActualPosition := gps.ClosestPoint(itineraryActualPosition, m.Warehouses)
+		itinerary.MoveCar(closestWarehouseFromActualPosition)
 	}
 
-	finishItineraryOnClosestDeposits(itineraryList, m)
+	finishItineraryOnClosestWarehouses(itineraryList, m)
 }

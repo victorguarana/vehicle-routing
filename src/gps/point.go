@@ -20,6 +20,7 @@ func DistanceBetweenPoints(points ...Point) float64 {
 	return totalDistance
 }
 
+// Returns the closest candidate point to the origin point
 func ClosestPoint(originPoint Point, candidatePoints []Point) Point {
 	var closestPoint Point
 	closestDistance := -1.0
@@ -30,4 +31,9 @@ func ClosestPoint(originPoint Point, candidatePoints []Point) Point {
 		}
 	}
 	return closestPoint
+}
+
+// Returns the distance that is added when passing through the middle point
+func AdditionalDistancePassingThrough(from, through, to Point) float64 {
+	return DistanceBetweenPoints(from, through, to) - DistanceBetweenPoints(from, to)
 }
