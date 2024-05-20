@@ -124,6 +124,20 @@ func (mr *MockIMainStopMockRecorder) Point() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Point", reflect.TypeOf((*MockIMainStop)(nil).Point))
 }
 
+// ReturningSubRoutes mocks base method.
+func (m *MockIMainStop) ReturningSubRoutes() []routes.ISubRoute {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReturningSubRoutes")
+	ret0, _ := ret[0].([]routes.ISubRoute)
+	return ret0
+}
+
+// ReturningSubRoutes indicates an expected call of ReturningSubRoutes.
+func (mr *MockIMainStopMockRecorder) ReturningSubRoutes() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReturningSubRoutes", reflect.TypeOf((*MockIMainStop)(nil).ReturningSubRoutes))
+}
+
 // StartingSubRoutes mocks base method.
 func (m *MockIMainStop) StartingSubRoutes() []routes.ISubRoute {
 	m.ctrl.T.Helper()
