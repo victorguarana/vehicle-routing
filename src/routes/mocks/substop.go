@@ -53,18 +53,18 @@ func (mr *MockISubStopMockRecorder) IsClient() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsClient", reflect.TypeOf((*MockISubStop)(nil).IsClient))
 }
 
-// IsDeposit mocks base method.
-func (m *MockISubStop) IsDeposit() bool {
+// IsWarehouse mocks base method.
+func (m *MockISubStop) IsWarehouse() bool {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IsDeposit")
+	ret := m.ctrl.Call(m, "IsWarehouse")
 	ret0, _ := ret[0].(bool)
 	return ret0
 }
 
-// IsDeposit indicates an expected call of IsDeposit.
-func (mr *MockISubStopMockRecorder) IsDeposit() *gomock.Call {
+// IsWarehouse indicates an expected call of IsWarehouse.
+func (mr *MockISubStopMockRecorder) IsWarehouse() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsDeposit", reflect.TypeOf((*MockISubStop)(nil).IsDeposit))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsWarehouse", reflect.TypeOf((*MockISubStop)(nil).IsWarehouse))
 }
 
 // Latitude mocks base method.

@@ -19,7 +19,7 @@ func DroneStrikesInsertion(itinerary itinerary.Itinerary) {
 	for routeIterator.HasNext() {
 		actualStop := routeIterator.Actual()
 		nextStop := routeIterator.Next()
-		if actualStop.IsDeposit() {
+		if actualStop.IsWarehouse() {
 			itinerary.LandAllDrones(actualStop)
 			resetDroneStrikes(droneStrikes)
 			routeIterator.GoToNext()

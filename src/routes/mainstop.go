@@ -6,7 +6,7 @@ import (
 
 type IMainStop interface {
 	IsClient() bool
-	IsDeposit() bool
+	IsWarehouse() bool
 	Latitude() float64
 	Longitude() float64
 	Name() string
@@ -32,7 +32,7 @@ func (ms *mainStop) IsClient() bool {
 	return ms.point.PackageSize != 0
 }
 
-func (ms *mainStop) IsDeposit() bool {
+func (ms *mainStop) IsWarehouse() bool {
 	return ms.point.PackageSize == 0
 }
 

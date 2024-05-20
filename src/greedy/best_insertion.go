@@ -10,9 +10,9 @@ func BestInsertion(itineraryList []itinerary.Itinerary, m gps.Map) {
 	orderedClientsListsByRoute := orderClientsByItinerary(itineraryList, m.Clients)
 	for index, orderedClients := range orderedClientsListsByRoute {
 		itn := itineraryList[index]
-		fillRoute(itn, orderedClients, m.Deposits)
+		fillRoute(itn, orderedClients, m.Warehouses)
 	}
-	finishItineraryOnClosestDeposits(itineraryList, m)
+	finishItineraryOnClosestWarehouses(itineraryList, m)
 }
 
 func orderClientsByItinerary(itineraryList []itinerary.Itinerary, clients []gps.Point) map[int][]gps.Point {
@@ -53,11 +53,11 @@ func findBestPosition(initialPoint gps.Point, client gps.Point, orderedClients [
 	return bestIndex
 }
 
-func fillRoute(itinerary itinerary.Itinerary, orderedClients []gps.Point, deposits []gps.Point) {
+func fillRoute(itinerary itinerary.Itinerary, orderedClients []gps.Point, warehouses []gps.Point) {
 	for _, client := range orderedClients {
-		closestDeposit := gps.ClosestPoint(client, deposits)
-		if !itinerary.CarSupport(client, closestDeposit) {
-			itinerary.MoveCar(closestDeposit)
+		closestWarehouse := gps.ClosestPoint(client, warehouses)
+		if !itinerary.CarSupport(client, closestWarehouse) {
+			itinerary.MoveCar(closestWarehouse)
 		}
 		itinerary.MoveCar(client)
 	}

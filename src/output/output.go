@@ -22,7 +22,7 @@ const mainLineWidth = 0.3
 
 type Stop interface {
 	IsClient() bool
-	IsDeposit() bool
+	IsWarehouse() bool
 	Latitude() float64
 	Longitude() float64
 	Name() string
