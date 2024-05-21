@@ -18,10 +18,12 @@ type DroneNumber int
 type Itinerary interface {
 	ActualCarPoint() gps.Point
 	ActualCarStop() routes.IMainStop
+	CarSpeed() float64
 	CarSupport(nextPoints ...gps.Point) bool
 	DroneCanReach(droneNumber DroneNumber, nextPoints ...gps.Point) bool
-	DroneNumbers() []DroneNumber
 	DroneIsFlying(droneNumber DroneNumber) bool
+	DroneNumbers() []DroneNumber
+	DroneSpeed() float64
 	DroneSupport(droneNumber DroneNumber, deliveryPoint gps.Point, landingPoint gps.Point) bool
 	StartDroneFlight(droneNumber DroneNumber, startingPoint routes.IMainStop)
 	LandAllDrones(landingStop routes.IMainStop)
@@ -59,6 +61,10 @@ func (i itinerary) ActualCarStop() routes.IMainStop {
 	return i.route.Last()
 }
 
+func (i itinerary) CarSpeed() float64 {
+	return vehicles.CarSpeed
+}
+
 func (i itinerary) CarSupport(nextPoints ...gps.Point) bool {
 	return i.car.Support(nextPoints...)
 }
@@ -66,6 +72,11 @@ func (i itinerary) CarSupport(nextPoints ...gps.Point) bool {
 func (i itinerary) DroneCanReach(droneNumber DroneNumber, nextPoints ...gps.Point) bool {
 	drone := i.dronesAndFlights[droneNumber].drone
 	return drone.CanReach(nextPoints...)
+}
+
+func (i itinerary) DroneIsFlying(droneNumber DroneNumber) bool {
+	subItn := i.dronesAndFlights[droneNumber]
+	return subItn.flight != nil
 }
 
 func (i itinerary) DroneNumbers() []DroneNumber {
@@ -76,9 +87,8 @@ func (i itinerary) DroneNumbers() []DroneNumber {
 	return droneNumbers
 }
 
-func (i itinerary) DroneIsFlying(droneNumber DroneNumber) bool {
-	subItn := i.dronesAndFlights[droneNumber]
-	return subItn.flight != nil
+func (i itinerary) DroneSpeed() float64 {
+	return vehicles.DroneSpeed
 }
 
 func (i itinerary) DroneSupport(droneNumber DroneNumber, deliveryPoint gps.Point, landingPoint gps.Point) bool {
