@@ -15,6 +15,7 @@ type IDrone interface {
 	ActualPoint() gps.Point
 	CanReach(...gps.Point) bool
 	Efficiency() float64
+	IsFlying() bool
 	Land(destination gps.Point)
 	Move(destination gps.Point)
 	Name() string
