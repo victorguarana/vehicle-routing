@@ -28,9 +28,10 @@ type Stop interface {
 	Name() string
 }
 
-func ToImage(fileName string, itn itinerary.Itinerary) {
+func ToImage(fileName string, itn itinerary.Itinerary, routeDistance float64, routeTime float64) {
 	ggCtx := gg.NewContext(imageSize, imageSize)
 	drawBackgound(ggCtx)
+	drawInfos(ggCtx, routeDistance, routeTime)
 	setRouteValues(ggCtx)
 	itineraryToImage(ggCtx, itn)
 	err := ggCtx.SavePNG(fileName)

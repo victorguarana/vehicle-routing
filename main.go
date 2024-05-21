@@ -28,11 +28,13 @@ func ClosestNeighbor() {
 	itn := itinerary.New(car)
 	greedy.ClosestNeighbor([]itinerary.Itinerary{itn}, gps.GetMap())
 
-	log.Println("ClosestNeighbor: Total Distance:", cost.CalcDistance(itn))
-	log.Println("ClosestNeighbor: Total Time:", cost.CalcTime(itn))
+	totalDistance := cost.CalcDistance(itn)
+	totalTime := cost.CalcTime(itn)
+	log.Println("ClosestNeighbor: Total Distance:", totalDistance)
+	log.Println("ClosestNeighbor: Total Time:", totalTime)
 
 	filename := "closest-neighbor.png"
-	output.ToImage(filename, itn)
+	output.ToImage(filename, itn, totalDistance, totalTime)
 }
 
 func ClosestNeighborWithDrones() {
@@ -43,11 +45,13 @@ func ClosestNeighborWithDrones() {
 	greedy.ClosestNeighbor([]itinerary.Itinerary{itn}, gps.GetMap())
 	greedy.DroneStrikesInsertion(itn)
 
-	log.Println("ClosestNeighborWithDrones: Total Distance:", cost.CalcDistance(itn))
-	log.Println("ClosestNeighborWithDrones: Total Time:", cost.CalcTime(itn))
+	totalDistance := cost.CalcDistance(itn)
+	totalTime := cost.CalcTime(itn)
+	log.Println("ClosestNeighborWithDrones: Total Distance:", totalDistance)
+	log.Println("ClosestNeighborWithDrones: Total Time:", totalTime)
 
 	filename := "closest-neighbor-with-drones.png"
-	output.ToImage(filename, itn)
+	output.ToImage(filename, itn, totalDistance, totalTime)
 }
 
 func BestInsertion() {
@@ -57,11 +61,13 @@ func BestInsertion() {
 	itn := itinerary.New(car)
 	greedy.BestInsertion([]itinerary.Itinerary{itn}, gps.GetMap())
 
-	log.Println("BestiInsertion: Total Distance:", cost.CalcDistance(itn))
-	log.Println("BestiInsertion: Total Time:", cost.CalcTime(itn))
+	totalDistance := cost.CalcDistance(itn)
+	totalTime := cost.CalcTime(itn)
+	log.Println("BestiInsertion: Total Distance:", totalDistance)
+	log.Println("BestiInsertion: Total Time:", totalTime)
 
 	filename := "best-insertion.png"
-	output.ToImage(filename, itn)
+	output.ToImage(filename, itn, totalDistance, totalTime)
 }
 
 func BestInsertionWithDrones() {
@@ -72,11 +78,13 @@ func BestInsertionWithDrones() {
 	greedy.BestInsertion([]itinerary.Itinerary{itn}, gps.GetMap())
 	greedy.DroneStrikesInsertion(itn)
 
-	log.Println("BestiInsertionWithDrones: Total Distance:", cost.CalcDistance(itn))
-	log.Println("BestiInsertionWithDrones: Total Time:", cost.CalcTime(itn))
+	totalDistance := cost.CalcDistance(itn)
+	totalTime := cost.CalcTime(itn)
+	log.Println("BestiInsertionWithDrones: Total Distance:", totalDistance)
+	log.Println("BestiInsertionWithDrones: Total Time:", totalTime)
 
 	filename := "best-insertion-with-drones.png"
-	output.ToImage(filename, itn)
+	output.ToImage(filename, itn, totalDistance, totalTime)
 }
 
 func Covering() {
@@ -87,9 +95,11 @@ func Covering() {
 	neighorhoodDistance := vehicles.DroneRange / 4
 	csp.CoveringWithDrones([]itinerary.Itinerary{itn}, gps.GetMap(), neighorhoodDistance)
 
-	log.Println("Covering: Total Distance:", cost.CalcDistance(itn))
-	log.Println("Covering: Total Time:", cost.CalcTime(itn))
+	totalDistance := cost.CalcDistance(itn)
+	totalTime := cost.CalcTime(itn)
+	log.Println("Covering: Total Distance:", totalDistance)
+	log.Println("Covering: Total Time:", totalTime)
 
 	filename := "covering.png"
-	output.ToImage(filename, itn)
+	output.ToImage(filename, itn, totalDistance, totalTime)
 }

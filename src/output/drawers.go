@@ -1,6 +1,7 @@
 package output
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 
@@ -54,6 +55,26 @@ func drawMovement(ggCtx *gg.Context, actual Stop, next Stop, img image.Image, cl
 		img,
 		int((axisX(actual)+axisX(next))/2), int((axisY(actual)+axisY(next))/2),
 		centerAxis, centerAxis,
+	)
+}
+
+func drawInfos(ggCtx *gg.Context, routeDistance float64, routeTime float64) {
+	// Pushing and Popping the context to avoid changing color outsite this function
+	ggCtx.Push()
+	defer ggCtx.Pop()
+
+	ggCtx.SetColor(textColor)
+	totalDistanceString := fmt.Sprintf("Total Distance: %.2f", routeDistance)
+	totalTimeString := fmt.Sprintf("Total Time: %.2f", routeTime)
+	_, totalDistanceHeight := ggCtx.MeasureString(totalDistanceString)
+	_, totalTimeHeight := ggCtx.MeasureString(totalTimeString)
+	ggCtx.DrawString(
+		fmt.Sprintln("Total Distance: ", routeDistance),
+		0, totalDistanceHeight,
+	)
+	ggCtx.DrawString(
+		fmt.Sprintln("Total Time: ", routeTime),
+		0, totalDistanceHeight+totalTimeHeight,
 	)
 }
 
