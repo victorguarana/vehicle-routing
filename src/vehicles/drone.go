@@ -9,10 +9,12 @@ import (
 const DroneRange = 150.0
 const DroneSpeed = 25.0
 const DroneStorage = 10.0
+const DroneEfficiency = 30.0
 
 type IDrone interface {
 	ActualPoint() gps.Point
 	CanReach(...gps.Point) bool
+	Efficiency() float64
 	Land(destination gps.Point)
 	Move(destination gps.Point)
 	Name() string
@@ -24,6 +26,7 @@ type IDrone interface {
 type drone struct {
 	actualPoint     gps.Point
 	car             *car
+	efficiency      float64
 	name            string
 	speed           float64
 	isFlying        bool
@@ -36,6 +39,7 @@ type drone struct {
 func newDrone(name string, c *car) *drone {
 	return &drone{
 		car:             c,
+		efficiency:      DroneEfficiency,
 		name:            name,
 		speed:           DroneSpeed,
 		remaningRange:   DroneRange,
@@ -52,6 +56,10 @@ func (d *drone) ActualPoint() gps.Point {
 func (d *drone) CanReach(route ...gps.Point) bool {
 	distance := gps.DistanceBetweenPoints(route...)
 	return distance <= d.remaningRange
+}
+
+func (d *drone) Efficiency() float64 {
+	return d.efficiency
 }
 
 func (d *drone) IsFlying() bool {
