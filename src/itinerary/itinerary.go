@@ -121,13 +121,13 @@ func (i itinerary) MoveCar(destination gps.Point) {
 
 func (i itinerary) MoveDrone(droneNumber DroneNumber, destination gps.Point) {
 	subItn := i.dronesAndFlights[droneNumber]
-	if flight := subItn.flight; flight != nil {
-		flight.Append(routes.NewSubStop(destination))
-		subItn.drone.Move(destination)
-		return
-	} else {
+	flight := subItn.flight
+	if flight == nil {
 		log.Panic("Drone is not flying")
 	}
+
+	flight.Append(routes.NewSubStop(destination))
+	subItn.drone.Move(destination)
 }
 
 func (i itinerary) RemoveMainStopFromRoute(index int) {

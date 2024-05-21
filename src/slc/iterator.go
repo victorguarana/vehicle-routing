@@ -67,7 +67,6 @@ func (i *iterator[T]) Index() int {
 func (i *iterator[T]) Next() T {
 	if !i.HasNext() {
 		log.Panic("Iterator can not get next element\n")
-		return i.Actual()
 	}
 	return i.list[i.index+1]
 }
@@ -75,7 +74,6 @@ func (i *iterator[T]) Next() T {
 func (i *iterator[T]) Previous() T {
 	if !i.HasPrevious() {
 		log.Panic("Iterator can not get previous element\n")
-		return i.Actual()
 	}
 	return i.list[i.index-1]
 }
