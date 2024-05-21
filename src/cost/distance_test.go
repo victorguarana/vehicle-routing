@@ -13,7 +13,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("CalcDistance", func() {
+var _ = Describe("CalcTotalDistanceSpent", func() {
 	Context("when itinerary does not have subroutes", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedItinerary *mockitinerary.MockItinerary
@@ -52,7 +52,9 @@ var _ = Describe("CalcDistance", func() {
 
 			mockedItinerary.EXPECT().RouteIterator().Return(slc.NewIterator([]routes.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
 
-			Expect(CalcDistance(mockedItinerary)).To(Equal(100.0))
+			expectedDistance := 100.0
+			receivedDistance := CalcTotalDistanceSpent(mockedItinerary)
+			Expect(receivedDistance).To(Equal(expectedDistance))
 		})
 	})
 
@@ -125,7 +127,12 @@ var _ = Describe("CalcDistance", func() {
 
 			mockedItinerary.EXPECT().RouteIterator().Return(slc.NewIterator([]routes.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
 
-			Expect(CalcDistance(mockedItinerary)).To(Equal(70.0))
+			firstSubRouteDistance := 20.0
+			secondSubRouteDistance := 30.0
+			mainRouteDistance := 20.0
+			expectedDistance := firstSubRouteDistance + secondSubRouteDistance + mainRouteDistance
+			receivedDistance := CalcTotalDistanceSpent(mockedItinerary)
+			Expect(receivedDistance).To(Equal(expectedDistance))
 		})
 	})
 })

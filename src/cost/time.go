@@ -10,7 +10,7 @@ type subRouteTimes map[routes.ISubRoute]float64
 
 // TODO: How to get the exact drone that made that flight?
 // Actual implementation is considering that the vehicles always have default speed
-func CalcTime(itn itinerary.Itinerary) float64 {
+func CalcTotalTimeSpent(itn itinerary.Itinerary) float64 {
 	var subRoutesFlyingTimes = make(subRouteTimes)
 	var mainRouteTravelTime = make(subRouteTimes)
 	var totalTime float64
@@ -57,15 +57,15 @@ func maxAdditionalTimeWaitingSubRoutes(mainRouteTravelTime subRouteTimes, subRou
 	return maxWaitingTime
 }
 
-func updateMainRouteTravelTimes(mainRouteTravelTime subRouteTimes, travelTime float64) {
-	for subRoute := range mainRouteTravelTime {
-		mainRouteTravelTime[subRoute] += travelTime
-	}
-}
-
 func removeReturningSubRoutes(mainRouteTravelTime subRouteTimes, subRoutesFlyingTimes subRouteTimes, subRoutes []routes.ISubRoute) {
 	for _, subRoute := range subRoutes {
 		delete(mainRouteTravelTime, subRoute)
 		delete(subRoutesFlyingTimes, subRoute)
+	}
+}
+
+func updateMainRouteTravelTimes(mainRouteTravelTime subRouteTimes, travelTime float64) {
+	for subRoute := range mainRouteTravelTime {
+		mainRouteTravelTime[subRoute] += travelTime
 	}
 }

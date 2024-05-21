@@ -28,8 +28,8 @@ func ClosestNeighbor() {
 	itn := itinerary.New(car)
 	greedy.ClosestNeighbor([]itinerary.Itinerary{itn}, gps.GetMap())
 
-	totalDistance := cost.CalcDistance(itn)
-	totalTime := cost.CalcTime(itn)
+	totalDistance := cost.CalcTotalDistanceSpent(itn)
+	totalTime := cost.CalcTotalTimeSpent(itn)
 	log.Println("ClosestNeighbor: Total Distance:", totalDistance)
 	log.Println("ClosestNeighbor: Total Time:", totalTime)
 
@@ -45,8 +45,8 @@ func ClosestNeighborWithDrones() {
 	greedy.ClosestNeighbor([]itinerary.Itinerary{itn}, gps.GetMap())
 	greedy.DroneStrikesInsertion(itn)
 
-	totalDistance := cost.CalcDistance(itn)
-	totalTime := cost.CalcTime(itn)
+	totalDistance := cost.CalcTotalDistanceSpent(itn)
+	totalTime := cost.CalcTotalTimeSpent(itn)
 	log.Println("ClosestNeighborWithDrones: Total Distance:", totalDistance)
 	log.Println("ClosestNeighborWithDrones: Total Time:", totalTime)
 
@@ -61,8 +61,8 @@ func BestInsertion() {
 	itn := itinerary.New(car)
 	greedy.BestInsertion([]itinerary.Itinerary{itn}, gps.GetMap())
 
-	totalDistance := cost.CalcDistance(itn)
-	totalTime := cost.CalcTime(itn)
+	totalDistance := cost.CalcTotalDistanceSpent(itn)
+	totalTime := cost.CalcTotalTimeSpent(itn)
 	log.Println("BestiInsertion: Total Distance:", totalDistance)
 	log.Println("BestiInsertion: Total Time:", totalTime)
 
@@ -78,8 +78,8 @@ func BestInsertionWithDrones() {
 	greedy.BestInsertion([]itinerary.Itinerary{itn}, gps.GetMap())
 	greedy.DroneStrikesInsertion(itn)
 
-	totalDistance := cost.CalcDistance(itn)
-	totalTime := cost.CalcTime(itn)
+	totalDistance := cost.CalcTotalDistanceSpent(itn)
+	totalTime := cost.CalcTotalTimeSpent(itn)
 	log.Println("BestiInsertionWithDrones: Total Distance:", totalDistance)
 	log.Println("BestiInsertionWithDrones: Total Time:", totalTime)
 
@@ -95,8 +95,8 @@ func Covering() {
 	neighorhoodDistance := vehicles.DroneRange / 4
 	csp.CoveringWithDrones([]itinerary.Itinerary{itn}, gps.GetMap(), neighorhoodDistance)
 
-	totalDistance := cost.CalcDistance(itn)
-	totalTime := cost.CalcTime(itn)
+	totalDistance := cost.CalcTotalDistanceSpent(itn)
+	totalTime := cost.CalcTotalTimeSpent(itn)
 	log.Println("Covering: Total Distance:", totalDistance)
 	log.Println("Covering: Total Time:", totalTime)
 

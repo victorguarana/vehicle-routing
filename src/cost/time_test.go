@@ -13,7 +13,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("CalcTime", func() {
+var _ = Describe("CalcTotalTimeSpent", func() {
 	Context("when itinerary does not have subroutes", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedItinerary *mockitinerary.MockItinerary
@@ -64,7 +64,7 @@ var _ = Describe("CalcTime", func() {
 			mockedItinerary.EXPECT().DroneSpeed().Return(droneSpeed)
 
 			expectedTime := 100.0 / carSpeed
-			receivedTime := CalcTime(mockedItinerary)
+			receivedTime := CalcTotalTimeSpent(mockedItinerary)
 			Expect(receivedTime).To(Equal(expectedTime))
 		})
 	})
@@ -149,9 +149,9 @@ var _ = Describe("CalcTime", func() {
 			mockedItinerary.EXPECT().CarSpeed().Return(carSpeed)
 			mockedItinerary.EXPECT().DroneSpeed().Return(droneSpeed)
 
-			secondFlightDifference := (90.0 / droneSpeed) - (10 / carSpeed)
-			expectedTime := (20 / carSpeed) + secondFlightDifference
-			receivedTime := CalcTime(mockedItinerary)
+			secondFlightAddicionalTime := (90.0 / droneSpeed) - (10 / carSpeed)
+			expectedTime := (20 / carSpeed) + secondFlightAddicionalTime
+			receivedTime := CalcTotalTimeSpent(mockedItinerary)
 			Expect(receivedTime).To(Equal(expectedTime))
 		})
 	})

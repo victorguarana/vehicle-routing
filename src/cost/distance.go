@@ -9,7 +9,7 @@ import (
 // TODO: Calc Costs (Ex: Distance / vehicle fuel costs)
 // TODO: Calc
 
-func CalcDistance(itn itinerary.Itinerary) float64 {
+func CalcTotalDistanceSpent(itn itinerary.Itinerary) float64 {
 	iterator := itn.RouteIterator()
 	var totalDistance float64
 	for iterator.HasNext() {
