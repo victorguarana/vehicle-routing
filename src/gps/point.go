@@ -11,7 +11,7 @@ type Point struct {
 	Name        string
 }
 
-// Euclidean distance between two points
+// Manhattan distance between two points
 func DistanceBetweenPoints(points ...Point) float64 {
 	var totalDistance float64
 	for i := 0; i < len(points)-1; i++ {

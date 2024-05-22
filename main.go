@@ -10,8 +10,9 @@ import (
 )
 
 func main() {
-	BestiInsertion()
-	BestiInsertionWithDrones()
+	BestInsertion()
+	BestInsertionWithDrones()
+
 	ClosestNeighbor()
 	ClosestNeighborWithDrones()
 
@@ -40,7 +41,7 @@ func ClosestNeighborWithDrones() {
 	output.ToImage(filename, itn)
 }
 
-func BestiInsertion() {
+func BestInsertion() {
 	initialPoint := gps.Point{Name: "initialPoint"}
 	car := vehicles.NewCar("car1", initialPoint)
 	car.NewDrone("drone1")
@@ -51,7 +52,7 @@ func BestiInsertion() {
 	output.ToImage(filename, itn)
 }
 
-func BestiInsertionWithDrones() {
+func BestInsertionWithDrones() {
 	initialPoint := gps.Point{Name: "initialPoint"}
 	car := vehicles.NewCar("car1", initialPoint)
 	car.NewDrone("drone1")
