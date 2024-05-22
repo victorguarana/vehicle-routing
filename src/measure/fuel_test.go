@@ -1,4 +1,4 @@
-package cost
+package measure
 
 import (
 	"go.uber.org/mock/gomock"
@@ -13,7 +13,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("CalcTotalDistanceSpent", func() {
+var _ = Describe("SpentFuel", func() {
 	Context("when itinerary does not have subroutes", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedItinerary *mockitinerary.MockItinerary
@@ -27,6 +27,8 @@ var _ = Describe("CalcTotalDistanceSpent", func() {
 		var mainPoint3 = gps.Point{Latitude: 10, Name: "MainPoint3"}
 		var mainPoint4 = gps.Point{Latitude: 40, Name: "MainPoint4"}
 		var mainPoint5 = gps.Point{Latitude: 20, Name: "MainPoint5"}
+		var carEfficiency = 10.0
+		var droneEfficiency = 100.0
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
@@ -50,11 +52,13 @@ var _ = Describe("CalcTotalDistanceSpent", func() {
 			mockedMainStop3.EXPECT().StartingSubRoutes().Return(nil)
 			mockedMainStop4.EXPECT().StartingSubRoutes().Return(nil)
 
+			mockedItinerary.EXPECT().CarEfficiency().Return(carEfficiency)
+			mockedItinerary.EXPECT().DroneEfficiency().Return(droneEfficiency)
 			mockedItinerary.EXPECT().RouteIterator().Return(slc.NewIterator([]routes.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
 
-			expectedDistance := 100.0
-			receivedDistance := CalcTotalDistanceSpent(mockedItinerary)
-			Expect(receivedDistance).To(Equal(expectedDistance))
+			expectedFuelSpent := 10.0
+			receivedFuelSpent := SpentFuel(mockedItinerary)
+			Expect(receivedFuelSpent).To(Equal(expectedFuelSpent))
 		})
 	})
 
@@ -81,6 +85,8 @@ var _ = Describe("CalcTotalDistanceSpent", func() {
 		var subPoint2 = gps.Point{Latitude: 15, Name: "SubPoint2"}
 		var subPoint3 = gps.Point{Latitude: 5, Name: "SubPoint3"}
 		var subPoint4 = gps.Point{Latitude: 25, Name: "SubPoint4"}
+		var carEfficiency = 10.0
+		var droneEfficiency = 100.0
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
@@ -125,60 +131,15 @@ var _ = Describe("CalcTotalDistanceSpent", func() {
 			mockedSubRoute2.EXPECT().First().Return(mockedSubStop3)
 			mockedSubRoute2.EXPECT().Iterator().Return(slc.NewIterator([]routes.ISubStop{mockedSubStop3, mockedSubStop4}))
 
+			mockedItinerary.EXPECT().CarEfficiency().Return(carEfficiency)
+			mockedItinerary.EXPECT().DroneEfficiency().Return(droneEfficiency)
 			mockedItinerary.EXPECT().RouteIterator().Return(slc.NewIterator([]routes.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
 
-			firstSubRouteDistance := 20.0
-			secondSubRouteDistance := 30.0
-			mainRouteDistance := 20.0
-			expectedDistance := firstSubRouteDistance + secondSubRouteDistance + mainRouteDistance
-			receivedDistance := CalcTotalDistanceSpent(mockedItinerary)
-			Expect(receivedDistance).To(Equal(expectedDistance))
-		})
-	})
-})
-
-var _ = Describe("calcSubRouteDistance", func() {
-	var mockedCtrl *gomock.Controller
-	var mockedSubRoute *mockroutes.MockISubRoute
-	var mockedStartingStop *mockroutes.MockIMainStop
-	var mockedReturningStop *mockroutes.MockIMainStop
-	var mockedSubStop1 *mockroutes.MockISubStop
-	var mockedSubStop2 *mockroutes.MockISubStop
-	var mockedSubStop3 *mockroutes.MockISubStop
-	var mockedSubStop4 *mockroutes.MockISubStop
-	var startingPoint = gps.Point{Latitude: 0, Name: "StartingPoint"}
-	var point1 = gps.Point{Latitude: 5, Name: "Point1"}
-	var point2 = gps.Point{Latitude: 20, Name: "Point2"}
-	var point3 = gps.Point{Latitude: 10, Name: "Point3"}
-	var point4 = gps.Point{Latitude: 30, Name: "Point4"}
-	var returningPoint = gps.Point{Latitude: 20, Name: "ReturningPoint"}
-
-	BeforeEach(func() {
-		mockedCtrl = gomock.NewController(GinkgoT())
-		mockedSubRoute = mockroutes.NewMockISubRoute(mockedCtrl)
-		mockedStartingStop = mockroutes.NewMockIMainStop(mockedCtrl)
-		mockedReturningStop = mockroutes.NewMockIMainStop(mockedCtrl)
-		mockedSubStop1 = mockroutes.NewMockISubStop(mockedCtrl)
-		mockedSubStop2 = mockroutes.NewMockISubStop(mockedCtrl)
-		mockedSubStop3 = mockroutes.NewMockISubStop(mockedCtrl)
-		mockedSubStop4 = mockroutes.NewMockISubStop(mockedCtrl)
-	})
-
-	Context("when subroute has points", func() {
-		It("should return the total distance of the subroute", func() {
-			mockedSubStop1.EXPECT().Point().Return(point1).AnyTimes()
-			mockedSubStop2.EXPECT().Point().Return(point2).AnyTimes()
-			mockedSubStop3.EXPECT().Point().Return(point3).AnyTimes()
-			mockedSubStop4.EXPECT().Point().Return(point4).AnyTimes()
-
-			mockedSubRoute.EXPECT().First().Return(mockedSubStop1)
-			mockedSubRoute.EXPECT().Iterator().Return(slc.NewIterator([]routes.ISubStop{mockedSubStop1, mockedSubStop2, mockedSubStop3, mockedSubStop4}))
-
-			mockedSubRoute.EXPECT().StartingStop().Return(mockedStartingStop)
-			mockedStartingStop.EXPECT().Point().Return(startingPoint)
-			mockedSubRoute.EXPECT().ReturningStop().Return(mockedReturningStop)
-			mockedReturningStop.EXPECT().Point().Return(returningPoint)
-			Expect(calcSubRouteDistance(mockedSubRoute)).To(Equal(60.0))
+			carFuelSpent := 2.0
+			droneFuelSpent := 0.5
+			expectedFuelSpent := carFuelSpent + droneFuelSpent
+			receivedFuelSpent := SpentFuel(mockedItinerary)
+			Expect(receivedFuelSpent).To(Equal(expectedFuelSpent))
 		})
 	})
 })

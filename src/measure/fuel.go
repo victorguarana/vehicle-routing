@@ -1,11 +1,11 @@
-package cost
+package measure
 
 import (
 	"github.com/victorguarana/vehicle-routing/src/gps"
 	"github.com/victorguarana/vehicle-routing/src/itinerary"
 )
 
-func CalcTotalFuel(itn itinerary.Itinerary) float64 {
+func SpentFuel(itn itinerary.Itinerary) float64 {
 	iterator := itn.RouteIterator()
 	var totalFuelSpent float64
 	carEfficiency := itn.CarEfficiency()

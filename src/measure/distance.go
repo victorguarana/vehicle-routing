@@ -1,4 +1,4 @@
-package cost
+package measure
 
 import (
 	"github.com/victorguarana/vehicle-routing/src/gps"
@@ -6,10 +6,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/routes"
 )
 
-// TODO: Calc Costs (Ex: Distance / vehicle fuel costs)
-// TODO: Calc
-
-func CalcTotalDistanceSpent(itn itinerary.Itinerary) float64 {
+func TotalDistance(itn itinerary.Itinerary) float64 {
 	iterator := itn.RouteIterator()
 	var totalDistance float64
 	for iterator.HasNext() {

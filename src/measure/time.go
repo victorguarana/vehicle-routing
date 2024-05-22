@@ -1,4 +1,4 @@
-package cost
+package measure
 
 import (
 	"github.com/victorguarana/vehicle-routing/src/gps"
@@ -10,7 +10,7 @@ type subRouteTimes map[routes.ISubRoute]float64
 
 // TODO: How to get the exact drone that made that flight?
 // Actual implementation is considering that the vehicles always have default speed
-func CalcTotalTimeSpent(itn itinerary.Itinerary) float64 {
+func TimeSpent(itn itinerary.Itinerary) float64 {
 	var subRoutesFlyingTimes = make(subRouteTimes)
 	var mainRouteTravelTime = make(subRouteTimes)
 	var totalTime float64

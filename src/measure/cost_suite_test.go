@@ -1,4 +1,4 @@
-package cost_test
+package measure_test
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestCost(t *testing.T) {
+func TestMeasure(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Cost Suite")
+	RunSpecs(t, "Measure Suite")
 }
