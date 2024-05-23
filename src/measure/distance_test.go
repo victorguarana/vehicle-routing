@@ -4,7 +4,7 @@ import (
 	"go.uber.org/mock/gomock"
 
 	"github.com/victorguarana/vehicle-routing/src/gps"
-	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mocks"
+	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mock"
 	"github.com/victorguarana/vehicle-routing/src/route"
 	mockroute "github.com/victorguarana/vehicle-routing/src/route/mock"
 	"github.com/victorguarana/vehicle-routing/src/slc"

@@ -3,7 +3,7 @@ package greedy
 import (
 	"github.com/victorguarana/vehicle-routing/src/gps"
 	"github.com/victorguarana/vehicle-routing/src/itinerary"
-	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mocks"
+	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mock"
 
 	"go.uber.org/mock/gomock"
 

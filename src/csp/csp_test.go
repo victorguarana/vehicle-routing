@@ -3,7 +3,7 @@ package csp
 import (
 	"github.com/victorguarana/vehicle-routing/src/gps"
 	"github.com/victorguarana/vehicle-routing/src/itinerary"
-	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mocks"
+	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mock"
 	mockroute "github.com/victorguarana/vehicle-routing/src/route/mock"
 	"go.uber.org/mock/gomock"
 
