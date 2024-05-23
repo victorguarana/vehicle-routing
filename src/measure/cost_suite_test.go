@@ -1,4 +1,4 @@
-package measure_test
+package measure
 
 import (
 	"testing"

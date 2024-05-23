@@ -1,4 +1,4 @@
-package gps_test
+package gps
 
 import (
 	"testing"

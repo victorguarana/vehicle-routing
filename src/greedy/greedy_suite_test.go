@@ -1,4 +1,4 @@
-package greedy_test
+package greedy
 
 import (
 	"testing"
