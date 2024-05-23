@@ -16,7 +16,7 @@ import (
 var _ = Describe("TimeSpent", func() {
 	Context("when itinerary does not have subroutes", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary *mockitinerary.MockItinerary
+		var mockedItineraryInfo *mockitinerary.MockInfo
 		var mockedMainStop1 *mockroute.MockIMainStop
 		var mockedMainStop2 *mockroute.MockIMainStop
 		var mockedMainStop3 *mockroute.MockIMainStop
@@ -32,7 +32,7 @@ var _ = Describe("TimeSpent", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
+			mockedItineraryInfo = mockitinerary.NewMockInfo(mockedCtrl)
 			mockedMainStop1 = mockroute.NewMockIMainStop(mockedCtrl)
 			mockedMainStop2 = mockroute.NewMockIMainStop(mockedCtrl)
 			mockedMainStop3 = mockroute.NewMockIMainStop(mockedCtrl)
@@ -59,19 +59,19 @@ var _ = Describe("TimeSpent", func() {
 			mockedMainStop4.EXPECT().ReturningSubRoutes().Return(nil)
 			mockedMainStop5.EXPECT().ReturningSubRoutes().Return(nil)
 
-			mockedItinerary.EXPECT().RouteIterator().Return(slc.NewIterator([]route.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
-			mockedItinerary.EXPECT().CarSpeed().Return(carSpeed)
-			mockedItinerary.EXPECT().DroneSpeed().Return(droneSpeed)
+			mockedItineraryInfo.EXPECT().RouteIterator().Return(slc.NewIterator([]route.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
+			mockedItineraryInfo.EXPECT().CarSpeed().Return(carSpeed)
+			mockedItineraryInfo.EXPECT().DroneSpeed().Return(droneSpeed)
 
 			expectedTime := 100.0 / carSpeed
-			receivedTime := TimeSpent(mockedItinerary)
+			receivedTime := TimeSpent(mockedItineraryInfo)
 			Expect(receivedTime).To(Equal(expectedTime))
 		})
 	})
 
 	Context("when itinerary has subroutes", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary *mockitinerary.MockItinerary
+		var mockedItineraryInfo *mockitinerary.MockInfo
 		var mockedSubRoute1 *mockroute.MockISubRoute
 		var mockedSubRoute2 *mockroute.MockISubRoute
 		var mockedMainStop1 *mockroute.MockIMainStop
@@ -97,7 +97,7 @@ var _ = Describe("TimeSpent", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
+			mockedItineraryInfo = mockitinerary.NewMockInfo(mockedCtrl)
 			mockedSubRoute1 = mockroute.NewMockISubRoute(mockedCtrl)
 			mockedSubRoute2 = mockroute.NewMockISubRoute(mockedCtrl)
 			mockedMainStop1 = mockroute.NewMockIMainStop(mockedCtrl)
@@ -145,13 +145,13 @@ var _ = Describe("TimeSpent", func() {
 			mockedSubRoute2.EXPECT().First().Return(mockedSubStop3)
 			mockedSubRoute2.EXPECT().Iterator().Return(slc.NewIterator([]route.ISubStop{mockedSubStop3, mockedSubStop4}))
 
-			mockedItinerary.EXPECT().RouteIterator().Return(slc.NewIterator([]route.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
-			mockedItinerary.EXPECT().CarSpeed().Return(carSpeed)
-			mockedItinerary.EXPECT().DroneSpeed().Return(droneSpeed)
+			mockedItineraryInfo.EXPECT().RouteIterator().Return(slc.NewIterator([]route.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
+			mockedItineraryInfo.EXPECT().CarSpeed().Return(carSpeed)
+			mockedItineraryInfo.EXPECT().DroneSpeed().Return(droneSpeed)
 
 			secondSubRouteAddicionalTime := (90.0 / droneSpeed) - (10 / carSpeed)
 			expectedTime := (20 / carSpeed) + secondSubRouteAddicionalTime
-			receivedTime := TimeSpent(mockedItinerary)
+			receivedTime := TimeSpent(mockedItineraryInfo)
 			Expect(receivedTime).To(Equal(expectedTime))
 		})
 	})

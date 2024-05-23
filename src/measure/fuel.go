@@ -5,11 +5,11 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/itinerary"
 )
 
-func SpentFuel(itn itinerary.Itinerary) float64 {
-	iterator := itn.RouteIterator()
+func SpentFuel(itineraryInfo itinerary.Info) float64 {
+	iterator := itineraryInfo.RouteIterator()
 	var totalFuelSpent float64
-	carEfficiency := itn.CarEfficiency()
-	droneEfficiency := itn.DroneEfficiency()
+	carEfficiency := itineraryInfo.CarEfficiency()
+	droneEfficiency := itineraryInfo.DroneEfficiency()
 	for iterator.HasNext() {
 		actual := iterator.Actual()
 		next := iterator.Next()

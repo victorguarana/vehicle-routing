@@ -2,6 +2,7 @@ package route
 
 import (
 	"github.com/victorguarana/vehicle-routing/src/gps"
+	"github.com/victorguarana/vehicle-routing/src/slc"
 )
 
 type IMainStop interface {
@@ -13,6 +14,8 @@ type IMainStop interface {
 	Point() gps.Point
 	ReturningSubRoutes() []ISubRoute
 	StartingSubRoutes() []ISubRoute
+	RemoveStartingSubRoute(subRoute ISubRoute)
+	RemoveReturningSubRoute(subRoute ISubRoute)
 }
 
 type mainStop struct {
@@ -67,4 +70,14 @@ func (ms *mainStop) StartingSubRoutes() []ISubRoute {
 		subRoutes[i] = sr
 	}
 	return subRoutes
+}
+
+func (ms *mainStop) RemoveStartingSubRoute(iSubRoute ISubRoute) {
+	subRoute := iSubRoute.(*subRoute)
+	ms.startingSubRoutes = slc.RemoveElement(ms.startingSubRoutes, subRoute)
+}
+
+func (ms *mainStop) RemoveReturningSubRoute(iSubRoute ISubRoute) {
+	subRoute := iSubRoute.(*subRoute)
+	ms.returningSubRoutes = slc.RemoveElement(ms.returningSubRoutes, subRoute)
 }

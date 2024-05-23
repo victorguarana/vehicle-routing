@@ -16,13 +16,13 @@ import (
 
 var _ = Describe("initDroneStrikes", func() {
 	var mockedCtrl *gomock.Controller
-	var mockedItinerary *mockitinerary.MockItinerary
+	var mockedConstructor *mockitinerary.MockConstructor
 	var mockedDrone1 = itinerary.DroneNumber(1)
 	var mockedDrone2 = itinerary.DroneNumber(2)
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
-		mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
+		mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
 	})
 
 	AfterEach(func() {
@@ -34,8 +34,8 @@ var _ = Describe("initDroneStrikes", func() {
 			{droneNumber: mockedDrone1},
 			{droneNumber: mockedDrone2},
 		}
-		mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
-		receivedDroneStrikes := initDroneStrikes(mockedItinerary)
+		mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+		receivedDroneStrikes := initDroneStrikes(mockedConstructor)
 		Expect(receivedDroneStrikes).To(Equal(expectedDronesStrikes))
 	})
 })
@@ -81,8 +81,8 @@ var _ = Describe("anyDroneWasStriked", func() {
 var _ = Describe("anyDroneNeedToLand", func() {
 	Context("when any drone need to land", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-		var mockedItineraryStop = mockroute.NewMockIMainStop(mockedCtrl)
+		var mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+		var mockedConstructorStop = mockroute.NewMockIMainStop(mockedCtrl)
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedDrone3 = itinerary.DroneNumber(3)
@@ -91,12 +91,12 @@ var _ = Describe("anyDroneNeedToLand", func() {
 			{droneNumber: mockedDrone2},
 			{droneNumber: mockedDrone3},
 		}
-		var mockedItineraryStopPoint = gps.Point{}
+		var mockedConstructorStopPoint = gps.Point{}
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedItineraryStop = mockroute.NewMockIMainStop(mockedCtrl)
+			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+			mockedConstructorStop = mockroute.NewMockIMainStop(mockedCtrl)
 		})
 
 		AfterEach(func() {
@@ -104,32 +104,32 @@ var _ = Describe("anyDroneNeedToLand", func() {
 		})
 
 		It("should return true if any drone need to land", func() {
-			mockedItineraryStop.EXPECT().Point().Return(mockedItineraryStopPoint)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
-			mockedItinerary.EXPECT().DroneCanReach(mockedDrone2, mockedItineraryStopPoint).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone3).Return(true)
-			mockedItinerary.EXPECT().DroneCanReach(mockedDrone3, mockedItineraryStopPoint).Return(false)
-			Expect(anyDroneNeedToLand(mockedItinerary, mockedDroneStrikes, mockedItineraryStop)).To(BeTrue())
+			mockedConstructorStop.EXPECT().Point().Return(mockedConstructorStopPoint)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
+			mockedConstructor.EXPECT().DroneCanReach(mockedDrone2, mockedConstructorStopPoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone3).Return(true)
+			mockedConstructor.EXPECT().DroneCanReach(mockedDrone3, mockedConstructorStopPoint).Return(false)
+			Expect(anyDroneNeedToLand(mockedConstructor, mockedDroneStrikes, mockedConstructorStop)).To(BeTrue())
 		})
 	})
 
 	Context("when no drone need to land", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-		var mockedItineraryStop = mockroute.NewMockIMainStop(mockedCtrl)
+		var mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+		var mockedConstructorStop = mockroute.NewMockIMainStop(mockedCtrl)
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedDroneStrikes = []droneStrikes{
 			{droneNumber: mockedDrone1},
 			{droneNumber: mockedDrone2},
 		}
-		var mockedItineraryStopPoint = gps.Point{}
+		var mockedConstructorStopPoint = gps.Point{}
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedItineraryStop = mockroute.NewMockIMainStop(mockedCtrl)
+			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+			mockedConstructorStop = mockroute.NewMockIMainStop(mockedCtrl)
 		})
 
 		AfterEach(func() {
@@ -137,18 +137,18 @@ var _ = Describe("anyDroneNeedToLand", func() {
 		})
 
 		It("should return false if no drone need to land", func() {
-			mockedItineraryStop.EXPECT().Point().Return(mockedItineraryStopPoint)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
-			mockedItinerary.EXPECT().DroneCanReach(mockedDrone2, mockedItineraryStopPoint).Return(true)
-			Expect(anyDroneNeedToLand(mockedItinerary, mockedDroneStrikes, mockedItineraryStop)).To(BeFalse())
+			mockedConstructorStop.EXPECT().Point().Return(mockedConstructorStopPoint)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
+			mockedConstructor.EXPECT().DroneCanReach(mockedDrone2, mockedConstructorStopPoint).Return(true)
+			Expect(anyDroneNeedToLand(mockedConstructor, mockedDroneStrikes, mockedConstructorStop)).To(BeFalse())
 		})
 	})
 })
 
 var _ = Describe("updateDroneStrikes", func() {
 	var mockedCtrl *gomock.Controller
-	var mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
+	var mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
 	var mockedDeliveryStop = mockroute.NewMockIMainStop(mockedCtrl)
 	var mockedLandingStop = mockroute.NewMockIMainStop(mockedCtrl)
 	var mockedDrone1 = itinerary.DroneNumber(1)
@@ -164,7 +164,7 @@ var _ = Describe("updateDroneStrikes", func() {
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
-		mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
+		mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
 		mockedDeliveryStop = mockroute.NewMockIMainStop(mockedCtrl)
 		mockedLandingStop = mockroute.NewMockIMainStop(mockedCtrl)
 	})
@@ -176,12 +176,12 @@ var _ = Describe("updateDroneStrikes", func() {
 	It("should update drone strikes", func() {
 		mockedDeliveryStop.EXPECT().Point().Return(deliveryPoint)
 		mockedLandingStop.EXPECT().Point().Return(landingPoint)
-		mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-		mockedItinerary.EXPECT().DroneSupport(mockedDrone1, deliveryPoint, landingPoint).Return(true)
-		mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
-		mockedItinerary.EXPECT().DroneSupport(mockedDrone2, deliveryPoint, landingPoint).Return(false)
-		mockedItinerary.EXPECT().DroneIsFlying(mockedDrone3).Return(false)
-		updateDroneStrikes(mockedItinerary, mockedDroneStrikes, mockedDeliveryStop, mockedLandingStop)
+		mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+		mockedConstructor.EXPECT().DroneSupport(mockedDrone1, deliveryPoint, landingPoint).Return(true)
+		mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
+		mockedConstructor.EXPECT().DroneSupport(mockedDrone2, deliveryPoint, landingPoint).Return(false)
+		mockedConstructor.EXPECT().DroneIsFlying(mockedDrone3).Return(false)
+		updateDroneStrikes(mockedConstructor, mockedDroneStrikes, mockedDeliveryStop, mockedLandingStop)
 		Expect(mockedDroneStrikes[0].strikes).To(Equal(0))
 		Expect(mockedDroneStrikes[1].strikes).To(Equal(1))
 		Expect(mockedDroneStrikes[2].strikes).To(Equal(0))
@@ -190,7 +190,7 @@ var _ = Describe("updateDroneStrikes", func() {
 
 var _ = Describe("flyingDroneThatCanSupport", func() {
 	var mockedCtrl *gomock.Controller
-	var mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
+	var mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
 	var mockedActualCarStop = mockroute.NewMockIMainStop(mockedCtrl)
 	var mockedNextCarStop = mockroute.NewMockIMainStop(mockedCtrl)
 	var mockedDrone1 = itinerary.DroneNumber(1)
@@ -208,7 +208,7 @@ var _ = Describe("flyingDroneThatCanSupport", func() {
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
-		mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
+		mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
 		mockedActualCarStop = mockroute.NewMockIMainStop(mockedCtrl)
 		mockedNextCarStop = mockroute.NewMockIMainStop(mockedCtrl)
 	})
@@ -221,13 +221,13 @@ var _ = Describe("flyingDroneThatCanSupport", func() {
 		It("should return false", func() {
 			mockedActualCarStop.EXPECT().Point().Return(mockedActualStopPoint)
 			mockedNextCarStop.EXPECT().Point().Return(mockedNextStopPoint)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, mockedActualStopPoint, mockedNextStopPoint).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone3).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone3, mockedActualStopPoint, mockedNextStopPoint).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone4).Return(false)
-			receivedDroneNumber, receivedExists := flyingDroneThatCanSupport(mockedItinerary, mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone2, mockedActualStopPoint, mockedNextStopPoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone3).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone3, mockedActualStopPoint, mockedNextStopPoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone4).Return(false)
+			receivedDroneNumber, receivedExists := flyingDroneThatCanSupport(mockedConstructor, mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)
 			Expect(receivedDroneNumber).To(Equal(itinerary.DroneNumber(0)))
 			Expect(receivedExists).To(BeFalse())
 		})
@@ -237,12 +237,12 @@ var _ = Describe("flyingDroneThatCanSupport", func() {
 		It("should return first flying drone that can support", func() {
 			mockedActualCarStop.EXPECT().Point().Return(mockedActualStopPoint)
 			mockedNextCarStop.EXPECT().Point().Return(mockedNextStopPoint)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, mockedActualStopPoint, mockedNextStopPoint).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone3).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone3, mockedActualStopPoint, mockedNextStopPoint).Return(true)
-			receivedDroneNumber, receivedExists := flyingDroneThatCanSupport(mockedItinerary, mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone2, mockedActualStopPoint, mockedNextStopPoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone3).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone3, mockedActualStopPoint, mockedNextStopPoint).Return(true)
+			receivedDroneNumber, receivedExists := flyingDroneThatCanSupport(mockedConstructor, mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)
 			Expect(receivedDroneNumber).To(Equal(itinerary.DroneNumber(3)))
 			Expect(receivedExists).To(BeTrue())
 		})
@@ -251,7 +251,7 @@ var _ = Describe("flyingDroneThatCanSupport", func() {
 
 var _ = Describe("dockedDroneThatCanSupport", func() {
 	var mockedCtrl *gomock.Controller
-	var mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
+	var mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
 	var mockedActualCarStop = mockroute.NewMockIMainStop(mockedCtrl)
 	var mockedNextCarStop = mockroute.NewMockIMainStop(mockedCtrl)
 	var mockedDrone1 = itinerary.DroneNumber(1)
@@ -269,7 +269,7 @@ var _ = Describe("dockedDroneThatCanSupport", func() {
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
-		mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
+		mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
 		mockedActualCarStop = mockroute.NewMockIMainStop(mockedCtrl)
 		mockedNextCarStop = mockroute.NewMockIMainStop(mockedCtrl)
 	})
@@ -282,13 +282,13 @@ var _ = Describe("dockedDroneThatCanSupport", func() {
 		It("should return false", func() {
 			mockedActualCarStop.EXPECT().Point().Return(mockedActualStopPoint)
 			mockedNextCarStop.EXPECT().Point().Return(mockedNextStopPoint)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, mockedActualStopPoint, mockedNextStopPoint).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone3).Return(false)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone3, mockedActualStopPoint, mockedNextStopPoint).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone4).Return(true)
-			receivedDroneNumber, receivedExists := dockedDroneThatCanSupport(mockedItinerary, mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone2, mockedActualStopPoint, mockedNextStopPoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone3).Return(false)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone3, mockedActualStopPoint, mockedNextStopPoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone4).Return(true)
+			receivedDroneNumber, receivedExists := dockedDroneThatCanSupport(mockedConstructor, mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)
 			Expect(receivedDroneNumber).To(Equal(itinerary.DroneNumber(0)))
 			Expect(receivedExists).To(BeFalse())
 		})
@@ -298,12 +298,12 @@ var _ = Describe("dockedDroneThatCanSupport", func() {
 		It("should return first docked drone that can support", func() {
 			mockedActualCarStop.EXPECT().Point().Return(mockedActualStopPoint)
 			mockedNextCarStop.EXPECT().Point().Return(mockedNextStopPoint)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, mockedActualStopPoint, mockedNextStopPoint).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone3).Return(false)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone3, mockedActualStopPoint, mockedNextStopPoint).Return(true)
-			receivedDroneNumber, receivedExists := dockedDroneThatCanSupport(mockedItinerary, mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone2, mockedActualStopPoint, mockedNextStopPoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone3).Return(false)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone3, mockedActualStopPoint, mockedNextStopPoint).Return(true)
+			receivedDroneNumber, receivedExists := dockedDroneThatCanSupport(mockedConstructor, mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)
 			Expect(receivedDroneNumber).To(Equal(itinerary.DroneNumber(3)))
 			Expect(receivedExists).To(BeTrue())
 		})
@@ -313,7 +313,8 @@ var _ = Describe("dockedDroneThatCanSupport", func() {
 var _ = Describe("DroneStrikesInsertion", func() {
 	Context("when both drones are docked and can support actual client", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary *mockitinerary.MockItinerary
+		var mockedConstructor *mockitinerary.MockConstructor
+		var mockedModifier *mockitinerary.MockModifier
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockroute.MockIMainStop
@@ -325,12 +326,13 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedFinalWarehouseStop = mockWarehouseStop(mockedCtrl, warehousePoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
-			fillItineraryStops(mockedItinerary, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
+			fillItineraryStops(mockedConstructor, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
 		})
 
 		AfterEach(func() {
@@ -339,28 +341,29 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		It("should move drone 1 to first client", func() {
 			// Checking if any drone need to land
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
 			// Updating drone strikes
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
 			// Search for a docked drone that can support
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(false)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(true)
 			// Start drone 1 flight and move to the first client and remove the stop from the route
-			mockedItinerary.EXPECT().StartDroneFlight(mockedDrone1, mockedInitialWarehouseStop)
-			mockedItinerary.EXPECT().MoveDrone(mockedDrone1, clientPoint)
-			mockedItinerary.EXPECT().RemoveMainStopFromRoute(1)
+			mockedConstructor.EXPECT().StartDroneFlight(mockedDrone1, mockedInitialWarehouseStop)
+			mockedConstructor.EXPECT().MoveDrone(mockedDrone1, clientPoint)
+			mockedModifier.EXPECT().RemoveMainStopFromRoute(1)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
+			mockedConstructor.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
 
-			DroneStrikesInsertion(mockedItinerary)
+			DroneStrikesInsertion(mockedConstructor, mockedModifier)
 		})
 	})
 
 	Context("when drone 1 is flying and only drone 1 can support the actual client", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary *mockitinerary.MockItinerary
+		var mockedConstructor *mockitinerary.MockConstructor
+		var mockedModifier *mockitinerary.MockModifier
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockroute.MockIMainStop
@@ -372,12 +375,13 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
 			mockedFinalWarehouseStop = mockWarehouseStop(mockedCtrl, warehousePoint)
-			fillItineraryStops(mockedItinerary, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
+			fillItineraryStops(mockedConstructor, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
 		})
 
 		AfterEach(func() {
@@ -386,33 +390,34 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		It("should move drone 1 to actual client", func() {
 			// Checking if any drone need to land
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
 			// Updating drone strikes
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
 			// Search for a docked drone that can support
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(false)
 			// Search for a flying drone that can support
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(true)
 			// Move drone 2 to the first client and remove the stop from the route
-			mockedItinerary.EXPECT().MoveDrone(mockedDrone1, clientPoint)
-			mockedItinerary.EXPECT().RemoveMainStopFromRoute(1)
+			mockedConstructor.EXPECT().MoveDrone(mockedDrone1, clientPoint)
+			mockedModifier.EXPECT().RemoveMainStopFromRoute(1)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
+			mockedConstructor.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
 
-			DroneStrikesInsertion(mockedItinerary)
+			DroneStrikesInsertion(mockedConstructor, mockedModifier)
 		})
 	})
 
 	Context("when drone 1 is flying and both drones can support the actual client", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary *mockitinerary.MockItinerary
+		var mockedConstructor *mockitinerary.MockConstructor
+		var mockedModifier *mockitinerary.MockModifier
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockroute.MockIMainStop
@@ -424,12 +429,13 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
 			mockedFinalWarehouseStop = mockWarehouseStop(mockedCtrl, warehousePoint)
-			fillItineraryStops(mockedItinerary, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
+			fillItineraryStops(mockedConstructor, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
 		})
 
 		AfterEach(func() {
@@ -438,31 +444,32 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		It("should move drone 2 to actual client", func() {
 			// Checking if any drone need to land
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
 			// Updating drone strikes
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
 			// Search for a docked drone that can support
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(true)
 			// Start drone 2 flight and move to the first client and remove the stop from the route
-			mockedItinerary.EXPECT().StartDroneFlight(mockedDrone2, mockedInitialWarehouseStop)
-			mockedItinerary.EXPECT().MoveDrone(mockedDrone2, clientPoint)
-			mockedItinerary.EXPECT().RemoveMainStopFromRoute(1)
+			mockedConstructor.EXPECT().StartDroneFlight(mockedDrone2, mockedInitialWarehouseStop)
+			mockedConstructor.EXPECT().MoveDrone(mockedDrone2, clientPoint)
+			mockedModifier.EXPECT().RemoveMainStopFromRoute(1)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
+			mockedConstructor.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
 
-			DroneStrikesInsertion(mockedItinerary)
+			DroneStrikesInsertion(mockedConstructor, mockedModifier)
 		})
 	})
 
 	Context("when both drones are flying and drone 1 can not reach next stop", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary *mockitinerary.MockItinerary
+		var mockedConstructor *mockitinerary.MockConstructor
+		var mockedModifier *mockitinerary.MockModifier
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockroute.MockIMainStop
@@ -474,12 +481,13 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
 			mockedFinalWarehouseStop = mockWarehouseStop(mockedCtrl, warehousePoint)
-			fillItineraryStops(mockedItinerary, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
+			fillItineraryStops(mockedConstructor, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
 		})
 
 		AfterEach(func() {
@@ -488,20 +496,21 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		It("should land all drones", func() {
 			// Checking if any drone need to land
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(false)
 			// Land all drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
+			mockedConstructor.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
+			mockedConstructor.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
 
-			DroneStrikesInsertion(mockedItinerary)
+			DroneStrikesInsertion(mockedConstructor, mockedModifier)
 		})
 	})
 
 	Context("when both drones are flying and none can support the actual client", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary *mockitinerary.MockItinerary
+		var mockedConstructor *mockitinerary.MockConstructor
+		var mockedModifier *mockitinerary.MockModifier
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockroute.MockIMainStop
@@ -513,12 +522,13 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
 			mockedFinalWarehouseStop = mockWarehouseStop(mockedCtrl, warehousePoint)
-			fillItineraryStops(mockedItinerary, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
+			fillItineraryStops(mockedConstructor, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
 		})
 
 		AfterEach(func() {
@@ -527,33 +537,34 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		It("should continue without move drones", func() {
 			// Checking if any drone need to land
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
-			mockedItinerary.EXPECT().DroneCanReach(mockedDrone2, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
+			mockedConstructor.EXPECT().DroneCanReach(mockedDrone2, warehousePoint).Return(true)
 			// Updating drone strikes
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(false)
 			// Search for a docked drone that can support
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
 			// Search for a flying drone that can support
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(false)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
+			mockedConstructor.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
 
-			DroneStrikesInsertion(mockedItinerary)
+			DroneStrikesInsertion(mockedConstructor, mockedModifier)
 		})
 	})
 
 	Context("when both drones are flying and only drone 2 can support the actual client", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary *mockitinerary.MockItinerary
+		var mockedConstructor *mockitinerary.MockConstructor
+		var mockedModifier *mockitinerary.MockModifier
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockroute.MockIMainStop
@@ -565,12 +576,13 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
 			mockedFinalWarehouseStop = mockWarehouseStop(mockedCtrl, warehousePoint)
-			fillItineraryStops(mockedItinerary, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
+			fillItineraryStops(mockedConstructor, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
 		})
 
 		AfterEach(func() {
@@ -579,36 +591,37 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		It("should move drone 2 to actual client", func() {
 			// Checking if any drone need to land
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
-			mockedItinerary.EXPECT().DroneCanReach(mockedDrone2, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
+			mockedConstructor.EXPECT().DroneCanReach(mockedDrone2, warehousePoint).Return(true)
 			// Updating drone strikes
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(true)
 			// Search for a docked drone that can support
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
 			// Search for a flying drone that can support
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(true)
 			// Move drone 2 to the first client and remove the stop from the route
-			mockedItinerary.EXPECT().MoveDrone(mockedDrone2, clientPoint)
-			mockedItinerary.EXPECT().RemoveMainStopFromRoute(1)
+			mockedConstructor.EXPECT().MoveDrone(mockedDrone2, clientPoint)
+			mockedModifier.EXPECT().RemoveMainStopFromRoute(1)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
+			mockedConstructor.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
 
-			DroneStrikesInsertion(mockedItinerary)
+			DroneStrikesInsertion(mockedConstructor, mockedModifier)
 		})
 	})
 
 	Context("when both drones are flying and drone 1 need to land", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary *mockitinerary.MockItinerary
+		var mockedConstructor *mockitinerary.MockConstructor
+		var mockedModifier *mockitinerary.MockModifier
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockroute.MockIMainStop
@@ -620,12 +633,13 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
 			mockedFinalWarehouseStop = mockWarehouseStop(mockedCtrl, warehousePoint)
-			fillItineraryStops(mockedItinerary, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
+			fillItineraryStops(mockedConstructor, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
 		})
 
 		AfterEach(func() {
@@ -634,20 +648,21 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		It("should land both drones", func() {
 			// Checking if any drone need to land
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(false)
 			// Land all drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
+			mockedConstructor.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
+			mockedConstructor.EXPECT().LandAllDrones(mockedFinalWarehouseStop)
 
-			DroneStrikesInsertion(mockedItinerary)
+			DroneStrikesInsertion(mockedConstructor, mockedModifier)
 		})
 	})
 
 	Context("when one drone is flying and other is docked but both can not support the actual client", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary *mockitinerary.MockItinerary
+		var mockedConstructor *mockitinerary.MockConstructor
+		var mockedModifier *mockitinerary.MockModifier
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedClientStop *mockroute.MockIMainStop
@@ -659,12 +674,13 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
 			mockedFinalWarehouseStop = mockWarehouseStop(mockedCtrl, warehousePoint)
-			fillItineraryStops(mockedItinerary, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
+			fillItineraryStops(mockedConstructor, mockedInitialWarehouseStop, mockedClientStop, mockedFinalWarehouseStop)
 		})
 
 		AfterEach(func() {
@@ -673,31 +689,32 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		It("should continue without move drones", func() {
 			// Checking if any drone need to land
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneCanReach(mockedDrone1, warehousePoint).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
 			// Updating drone strikes
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
 			// Search for a docked drone that can support
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone2, clientPoint, warehousePoint).Return(false)
 			// Search for a flying drone that can support
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
-			mockedItinerary.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(false)
-			mockedItinerary.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone1).Return(true)
+			mockedConstructor.EXPECT().DroneSupport(mockedDrone1, clientPoint, warehousePoint).Return(false)
+			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone2).Return(false)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedClientStop)
+			mockedConstructor.EXPECT().LandAllDrones(mockedClientStop)
 
-			DroneStrikesInsertion(mockedItinerary)
+			DroneStrikesInsertion(mockedConstructor, mockedModifier)
 		})
 	})
 
 	Context("when both drones are flying and actual stop is warehouse", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary *mockitinerary.MockItinerary
+		var mockedConstructor *mockitinerary.MockConstructor
+		var mockedModifier *mockitinerary.MockModifier
 		var mockedDrone1 = itinerary.DroneNumber(1)
 		var mockedDrone2 = itinerary.DroneNumber(2)
 		var mockedInitialClientStop *mockroute.MockIMainStop
@@ -709,12 +726,13 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedItinerary.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedInitialClientStop = mockClientStop(mockedCtrl, initialPoint)
 			mockedFinalClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedWarehouseStop = mockWarehouseStop(mockedCtrl, warehousePoint)
-			fillItineraryStops(mockedItinerary, mockedInitialClientStop, mockedWarehouseStop, mockedFinalClientStop)
+			fillItineraryStops(mockedConstructor, mockedInitialClientStop, mockedWarehouseStop, mockedFinalClientStop)
 		})
 
 		AfterEach(func() {
@@ -723,11 +741,11 @@ var _ = Describe("DroneStrikesInsertion", func() {
 
 		It("should land all drones", func() {
 			// Land all drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedWarehouseStop)
+			mockedConstructor.EXPECT().LandAllDrones(mockedWarehouseStop)
 			// Finish landing all flying drones
-			mockedItinerary.EXPECT().LandAllDrones(mockedFinalClientStop)
+			mockedConstructor.EXPECT().LandAllDrones(mockedFinalClientStop)
 
-			DroneStrikesInsertion(mockedItinerary)
+			DroneStrikesInsertion(mockedConstructor, mockedModifier)
 		})
 	})
 })
@@ -748,12 +766,12 @@ func mockWarehouseStop(ctrl *gomock.Controller, point gps.Point) *mockroute.Mock
 	return mockedStop
 }
 
-func fillItineraryStops(mockedItinerary *mockitinerary.MockItinerary, stops ...*mockroute.MockIMainStop) {
+func fillItineraryStops(mockedConstructor *mockitinerary.MockConstructor, stops ...*mockroute.MockIMainStop) {
 	stopsList := []route.IMainStop{}
 	for _, stop := range stops {
 		stopsList = append(stopsList, stop)
 	}
 	routeIterator := slc.NewIterator(stopsList)
 	routeIterator.GoToNext()
-	mockedItinerary.EXPECT().RouteIterator().Return(routeIterator).AnyTimes()
+	mockedConstructor.EXPECT().RouteIterator().Return(routeIterator).AnyTimes()
 }

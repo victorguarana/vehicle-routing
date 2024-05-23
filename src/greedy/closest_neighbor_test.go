@@ -11,10 +11,10 @@ import (
 )
 
 var _ = Describe("ClosestNeighbor", func() {
-	var carsList []itinerary.Itinerary
+	var constructorsList []itinerary.Constructor
 	var mockCtrl *gomock.Controller
-	var mockedItinerary1 *mockitinerary.MockItinerary
-	var mockedItinerary2 *mockitinerary.MockItinerary
+	var mockedConstructor1 *mockitinerary.MockConstructor
+	var mockedConstructor2 *mockitinerary.MockConstructor
 
 	var initialPoint = gps.Point{Latitude: 0, Longitude: 0}
 	var client1 = gps.Point{Latitude: 1, Longitude: 1, PackageSize: 1}
@@ -32,9 +32,9 @@ var _ = Describe("ClosestNeighbor", func() {
 
 	BeforeEach(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
-		mockedItinerary1 = mockitinerary.NewMockItinerary(mockCtrl)
-		mockedItinerary2 = mockitinerary.NewMockItinerary(mockCtrl)
-		carsList = []itinerary.Itinerary{mockedItinerary1, mockedItinerary2}
+		mockedConstructor1 = mockitinerary.NewMockConstructor(mockCtrl)
+		mockedConstructor2 = mockitinerary.NewMockConstructor(mockCtrl)
+		constructorsList = []itinerary.Constructor{mockedConstructor1, mockedConstructor2}
 	})
 
 	AfterEach(func() {
@@ -43,31 +43,31 @@ var _ = Describe("ClosestNeighbor", func() {
 
 	Context("when car supports entire route", func() {
 		It("return a route without warehouses between clients", func() {
-			mockedItinerary1.EXPECT().ActualCarPoint().Return(initialPoint)
-			mockedItinerary1.EXPECT().CarSupport(client1, warehouse1).Return(true)
-			mockedItinerary1.EXPECT().MoveCar(client1)
-			mockedItinerary1.EXPECT().ActualCarPoint().Return(client1)
-			mockedItinerary1.EXPECT().CarSupport(client3, warehouse1).Return(true)
-			mockedItinerary1.EXPECT().MoveCar(client3)
-			mockedItinerary1.EXPECT().ActualCarPoint().Return(initialPoint)
-			mockedItinerary1.EXPECT().CarSupport(client5, warehouse2).Return(true)
-			mockedItinerary1.EXPECT().MoveCar(client5)
-			mockedItinerary1.EXPECT().ActualCarPoint().Return(client5)
-			mockedItinerary1.EXPECT().MoveCar(warehouse2)
+			mockedConstructor1.EXPECT().ActualCarPoint().Return(initialPoint)
+			mockedConstructor1.EXPECT().CarSupport(client1, warehouse1).Return(true)
+			mockedConstructor1.EXPECT().MoveCar(client1)
+			mockedConstructor1.EXPECT().ActualCarPoint().Return(client1)
+			mockedConstructor1.EXPECT().CarSupport(client3, warehouse1).Return(true)
+			mockedConstructor1.EXPECT().MoveCar(client3)
+			mockedConstructor1.EXPECT().ActualCarPoint().Return(initialPoint)
+			mockedConstructor1.EXPECT().CarSupport(client5, warehouse2).Return(true)
+			mockedConstructor1.EXPECT().MoveCar(client5)
+			mockedConstructor1.EXPECT().ActualCarPoint().Return(client5)
+			mockedConstructor1.EXPECT().MoveCar(warehouse2)
 
-			mockedItinerary2.EXPECT().ActualCarPoint().Return(initialPoint)
-			mockedItinerary2.EXPECT().CarSupport(client2, warehouse1).Return(true)
-			mockedItinerary2.EXPECT().MoveCar(client2)
-			mockedItinerary2.EXPECT().ActualCarPoint().Return(initialPoint)
-			mockedItinerary2.EXPECT().CarSupport(client4, warehouse2).Return(true)
-			mockedItinerary2.EXPECT().MoveCar(client4)
-			mockedItinerary2.EXPECT().ActualCarPoint().Return(initialPoint)
-			mockedItinerary2.EXPECT().CarSupport(client6, warehouse2).Return(true)
-			mockedItinerary2.EXPECT().MoveCar(client6)
-			mockedItinerary2.EXPECT().ActualCarPoint().Return(client6)
-			mockedItinerary2.EXPECT().MoveCar(warehouse2)
+			mockedConstructor2.EXPECT().ActualCarPoint().Return(initialPoint)
+			mockedConstructor2.EXPECT().CarSupport(client2, warehouse1).Return(true)
+			mockedConstructor2.EXPECT().MoveCar(client2)
+			mockedConstructor2.EXPECT().ActualCarPoint().Return(initialPoint)
+			mockedConstructor2.EXPECT().CarSupport(client4, warehouse2).Return(true)
+			mockedConstructor2.EXPECT().MoveCar(client4)
+			mockedConstructor2.EXPECT().ActualCarPoint().Return(initialPoint)
+			mockedConstructor2.EXPECT().CarSupport(client6, warehouse2).Return(true)
+			mockedConstructor2.EXPECT().MoveCar(client6)
+			mockedConstructor2.EXPECT().ActualCarPoint().Return(client6)
+			mockedConstructor2.EXPECT().MoveCar(warehouse2)
 
-			ClosestNeighbor(carsList, m)
+			ClosestNeighbor(constructorsList, m)
 		})
 	})
 })

@@ -27,17 +27,19 @@ func ClosestNeighbor() {
 	initialPoint := gps.Point{Name: "initialPoint"}
 	car := vehicle.NewCar("car1", initialPoint)
 	itn := itinerary.New(car)
-	greedy.ClosestNeighbor([]itinerary.Itinerary{itn}, gps.GetMap())
+	constructor := itn.Constructor()
+	greedy.ClosestNeighbor([]itinerary.Constructor{constructor}, gps.GetMap())
 
-	totalDistance := measure.TotalDistance(itn)
-	totalTime := measure.TimeSpent(itn)
-	totalFuelSpent := measure.SpentFuel(itn)
+	itnInfo := itn.Info()
+	totalDistance := measure.TotalDistance(itnInfo)
+	totalTime := measure.TimeSpent(itnInfo)
+	totalFuelSpent := measure.SpentFuel(itnInfo)
 	log.Println("ClosestNeighbor: Total Distance:", totalDistance)
 	log.Println("ClosestNeighbor: Total Time:", totalTime)
 	log.Println("ClosestNeighbor: Total Fuel Spent:", totalFuelSpent)
 
 	filename := "closest-neighbor.png"
-	output.ToImage(filename, itn, totalDistance, totalTime)
+	output.ToImage(filename, itnInfo, totalDistance, totalTime)
 }
 
 func ClosestNeighborWithDrones() {
@@ -45,18 +47,21 @@ func ClosestNeighborWithDrones() {
 	car := vehicle.NewCar("car1", initialPoint)
 	car.NewDrone("drone1")
 	itn := itinerary.New(car)
-	greedy.ClosestNeighbor([]itinerary.Itinerary{itn}, gps.GetMap())
-	greedy.DroneStrikesInsertion(itn)
+	constructor := itn.Constructor()
+	modifier := itn.Modifier()
+	greedy.ClosestNeighbor([]itinerary.Constructor{constructor}, gps.GetMap())
+	greedy.DroneStrikesInsertion(constructor, modifier)
 
-	totalDistance := measure.TotalDistance(itn)
-	totalTime := measure.TimeSpent(itn)
-	totalFuelSpent := measure.SpentFuel(itn)
+	itnInfo := itn.Info()
+	totalDistance := measure.TotalDistance(itnInfo)
+	totalTime := measure.TimeSpent(itnInfo)
+	totalFuelSpent := measure.SpentFuel(itnInfo)
 	log.Println("ClosestNeighborWithDrones: Total Distance:", totalDistance)
 	log.Println("ClosestNeighborWithDrones: Total Time:", totalTime)
 	log.Println("ClosestNeighborWithDrones: Total Fuel Spent:", totalFuelSpent)
 
 	filename := "closest-neighbor-with-drones.png"
-	output.ToImage(filename, itn, totalDistance, totalTime)
+	output.ToImage(filename, itnInfo, totalDistance, totalTime)
 }
 
 func BestInsertion() {
@@ -64,17 +69,19 @@ func BestInsertion() {
 	car := vehicle.NewCar("car1", initialPoint)
 	car.NewDrone("drone1")
 	itn := itinerary.New(car)
-	greedy.BestInsertion([]itinerary.Itinerary{itn}, gps.GetMap())
+	constructor := itn.Constructor()
+	greedy.BestInsertion([]itinerary.Constructor{constructor}, gps.GetMap())
 
-	totalDistance := measure.TotalDistance(itn)
-	totalTime := measure.TimeSpent(itn)
-	totalFuelSpent := measure.SpentFuel(itn)
-	log.Println("BestiInsertion: Total Distance:", totalDistance)
-	log.Println("BestiInsertion: Total Time:", totalTime)
-	log.Println("BestiInsertion: Total Fuel Spent:", totalFuelSpent)
+	itnInfo := itn.Info()
+	totalDistance := measure.TotalDistance(itnInfo)
+	totalTime := measure.TimeSpent(itnInfo)
+	totalFuelSpent := measure.SpentFuel(itnInfo)
+	log.Println("BestInsertion: Total Distance:", totalDistance)
+	log.Println("BestInsertion: Total Time:", totalTime)
+	log.Println("BestInsertion: Total Fuel Spent:", totalFuelSpent)
 
 	filename := "best-insertion.png"
-	output.ToImage(filename, itn, totalDistance, totalTime)
+	output.ToImage(filename, itnInfo, totalDistance, totalTime)
 }
 
 func BestInsertionWithDrones() {
@@ -82,18 +89,21 @@ func BestInsertionWithDrones() {
 	car := vehicle.NewCar("car1", initialPoint)
 	car.NewDrone("drone1")
 	itn := itinerary.New(car)
-	greedy.BestInsertion([]itinerary.Itinerary{itn}, gps.GetMap())
-	greedy.DroneStrikesInsertion(itn)
+	constructor := itn.Constructor()
+	modifier := itn.Modifier()
+	greedy.BestInsertion([]itinerary.Constructor{constructor}, gps.GetMap())
+	greedy.DroneStrikesInsertion(constructor, modifier)
 
-	totalDistance := measure.TotalDistance(itn)
-	totalTime := measure.TimeSpent(itn)
-	totalFuelSpent := measure.SpentFuel(itn)
-	log.Println("BestiInsertionWithDrones: Total Distance:", totalDistance)
-	log.Println("BestiInsertionWithDrones: Total Time:", totalTime)
-	log.Println("BestiInsertionWithDrones: Total Fuel Spent:", totalFuelSpent)
+	itnInfo := itn.Info()
+	totalDistance := measure.TotalDistance(itnInfo)
+	totalTime := measure.TimeSpent(itnInfo)
+	totalFuelSpent := measure.SpentFuel(itnInfo)
+	log.Println("BestInsertionWithDrones: Total Distance:", totalDistance)
+	log.Println("BestInsertionWithDrones: Total Time:", totalTime)
+	log.Println("BestInsertionWithDrones: Total Fuel Spent:", totalFuelSpent)
 
 	filename := "best-insertion-with-drones.png"
-	output.ToImage(filename, itn, totalDistance, totalTime)
+	output.ToImage(filename, itnInfo, totalDistance, totalTime)
 }
 
 func Covering() {
@@ -102,17 +112,19 @@ func Covering() {
 	car.NewDrone("drone1")
 	itn := itinerary.New(car)
 	neighorhoodDistance := vehicle.DroneRange / 4
-	csp.CoveringWithDrones([]itinerary.Itinerary{itn}, gps.GetMap(), neighorhoodDistance)
+	constructor := itn.Constructor()
+	csp.CoveringWithDrones([]itinerary.Constructor{constructor}, gps.GetMap(), neighorhoodDistance)
 
-	totalDistance := measure.TotalDistance(itn)
-	totalTime := measure.TimeSpent(itn)
-	totalFuelSpent := measure.SpentFuel(itn)
+	itnInfo := itn.Info()
+	totalDistance := measure.TotalDistance(itnInfo)
+	totalTime := measure.TimeSpent(itnInfo)
+	totalFuelSpent := measure.SpentFuel(itnInfo)
 	log.Println("Covering: Total Distance:", totalDistance)
 	log.Println("Covering: Total Time:", totalTime)
 	log.Println("Covering: Total Fuel Spent:", totalFuelSpent)
 
 	filename := "covering.png"
-	output.ToImage(filename, itn, totalDistance, totalTime)
+	output.ToImage(filename, itnInfo, totalDistance, totalTime)
 }
 
 func CoveringMaxDrones() {
@@ -121,15 +133,17 @@ func CoveringMaxDrones() {
 	car.NewDrone("drone1")
 	itn := itinerary.New(car)
 	neighorhoodDistance := vehicle.DroneRange / 2
-	csp.CoveringWithDrones([]itinerary.Itinerary{itn}, gps.GetMap(), neighorhoodDistance)
+	constructor := itn.Constructor()
+	csp.CoveringWithDrones([]itinerary.Constructor{constructor}, gps.GetMap(), neighorhoodDistance)
 
-	totalDistance := measure.TotalDistance(itn)
-	totalTime := measure.TimeSpent(itn)
-	totalFuelSpent := measure.SpentFuel(itn)
+	itnInfo := itn.Info()
+	totalDistance := measure.TotalDistance(itnInfo)
+	totalTime := measure.TimeSpent(itnInfo)
+	totalFuelSpent := measure.SpentFuel(itnInfo)
 	log.Println("CoveringMaxDrones: Total Distance:", totalDistance)
 	log.Println("CoveringMaxDrones: Total Time:", totalTime)
 	log.Println("CoveringMaxDrones: Total Fuel Spent:", totalFuelSpent)
 
 	filename := "covering-max-drones.png"
-	output.ToImage(filename, itn, totalDistance, totalTime)
+	output.ToImage(filename, itnInfo, totalDistance, totalTime)
 }

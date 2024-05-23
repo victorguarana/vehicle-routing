@@ -6,43 +6,43 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/slc"
 )
 
-func CoveringWithDrones(itineraryList []itinerary.Itinerary, m gps.Map, neighborhoodDistance float64) {
+func CoveringWithDrones(constructorList []itinerary.Constructor, m gps.Map, neighborhoodDistance float64) {
 	clientsNeighborhood := gps.MapNeighborhood(m.Clients, neighborhoodDistance)
-	for itineraryIndex := 0; len(clientsNeighborhood) > 0; itineraryIndex++ {
-		itn := slc.CircularSelection(itineraryList, itineraryIndex)
-		actualClient := gps.ClosestPointWithMostNeighbors(itn.ActualCarPoint(), clientsNeighborhood)
-		itn.MoveCar(actualClient)
-		deliverNeighborsWithDrones(itn, clientsNeighborhood[actualClient])
+	for i := 0; len(clientsNeighborhood) > 0; i++ {
+		constructor := slc.CircularSelection(constructorList, i)
+		actualClient := gps.ClosestPointWithMostNeighbors(constructor.ActualCarPoint(), clientsNeighborhood)
+		constructor.MoveCar(actualClient)
+		deliverNeighborsWithDrones(constructor, clientsNeighborhood[actualClient])
 		removeClientAndItsNeighborsFromMap(actualClient, clientsNeighborhood)
 		gps.RemovePointFromNearbyMap(actualClient, clientsNeighborhood)
 	}
 
-	finishItineraryOnClosestWarehouses(itineraryList, m)
+	finishOnClosestWarehouses(constructorList, m)
 }
 
 // TODO: Implement an function similar to this one
 // but finish when drone can not support next client
-func deliverNeighborsWithDrones(itn itinerary.Itinerary, neighbors []gps.Point) {
+func deliverNeighborsWithDrones(constructor itinerary.Constructor, neighbors []gps.Point) {
 	if len(neighbors) <= 0 {
 		return
 	}
-	droneNumbers := itn.DroneNumbers()
-	actualCarPoint := itn.ActualCarPoint()
-	actualCarStop := itn.ActualCarStop()
+	droneNumbers := constructor.DroneNumbers()
+	actualCarPoint := constructor.ActualCarPoint()
+	actualCarStop := constructor.ActualCarStop()
 	for neighborIndex, droneIndex := 0, 0; neighborIndex < len(neighbors); droneIndex++ {
 		actualNeighbor := neighbors[neighborIndex]
 		actualDroneNumber := slc.CircularSelection(droneNumbers, droneIndex)
-		if itn.DroneSupport(actualDroneNumber, actualNeighbor, actualCarPoint) {
-			if !itn.DroneIsFlying(actualDroneNumber) {
-				itn.StartDroneFlight(actualDroneNumber, actualCarStop)
+		if constructor.DroneSupport(actualDroneNumber, actualNeighbor, actualCarPoint) {
+			if !constructor.DroneIsFlying(actualDroneNumber) {
+				constructor.StartDroneFlight(actualDroneNumber, actualCarStop)
 			}
-			itn.MoveDrone(actualDroneNumber, actualNeighbor)
+			constructor.MoveDrone(actualDroneNumber, actualNeighbor)
 			neighborIndex++
 		} else {
-			itn.LandDrone(actualDroneNumber, actualCarStop)
+			constructor.LandDrone(actualDroneNumber, actualCarStop)
 		}
 	}
-	itn.LandAllDrones(actualCarStop)
+	constructor.LandAllDrones(actualCarStop)
 }
 
 func removeClientAndItsNeighborsFromMap(client gps.Point, clientsNeighborhood gps.Neighborhood) {
@@ -53,10 +53,10 @@ func removeClientAndItsNeighborsFromMap(client gps.Point, clientsNeighborhood gp
 	gps.RemovePointFromNearbyMap(client, clientsNeighborhood)
 }
 
-func finishItineraryOnClosestWarehouses(itineraryList []itinerary.Itinerary, m gps.Map) {
-	for _, itinerary := range itineraryList {
-		position := itinerary.ActualCarPoint()
+func finishOnClosestWarehouses(constructorList []itinerary.Constructor, m gps.Map) {
+	for _, constructor := range constructorList {
+		position := constructor.ActualCarPoint()
 		closestWarehouse := gps.ClosestPoint(position, m.Warehouses)
-		itinerary.MoveCar(closestWarehouse)
+		constructor.MoveCar(closestWarehouse)
 	}
 }

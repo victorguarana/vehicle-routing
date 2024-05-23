@@ -49,6 +49,40 @@ var _ = Describe("subRoute{}", func() {
 		})
 	})
 
+	var _ = Describe("InsertAt", func() {
+		var sut subRoute
+		var newStop = &subStop{gps.Point{}}
+		var stop1 = &subStop{point: gps.Point{Latitude: 1}}
+		var stop2 = &subStop{point: gps.Point{Latitude: 2}}
+		var stop3 = &subStop{point: gps.Point{Latitude: 3}}
+		BeforeEach(func() {
+			sut = subRoute{
+				stops: []*subStop{stop1, stop2, stop3},
+			}
+		})
+
+		It("should insert sub stop at index when it is inside length", func() {
+			expectedStops := []*subStop{stop1, newStop, stop2, stop3}
+			sut.InsertAt(1, newStop)
+			Expect(sut.stops).To(Equal(expectedStops))
+		})
+
+		It("should append sub stop when index is equal length", func() {
+			sut.InsertAt(len(sut.stops), newStop)
+			Expect(sut.stops).To(Equal([]*subStop{stop1, stop2, stop3, newStop}))
+		})
+
+		It("should not insert sub stop at index out of range", func() {
+			sut.InsertAt(4, newStop)
+			Expect(sut.stops).To(Equal([]*subStop{stop1, stop2, stop3}))
+		})
+
+		It("should not insert sub stop at negative index", func() {
+			sut.InsertAt(-1, newStop)
+			Expect(sut.stops).To(Equal([]*subStop{stop1, stop2, stop3}))
+		})
+	})
+
 	var _ = Describe("Iterator", func() {
 		var subStop1 = subStop{point: gps.Point{Latitude: 1}}
 		var subStop2 = subStop{point: gps.Point{Latitude: 2}}
@@ -75,6 +109,19 @@ var _ = Describe("subRoute{}", func() {
 
 		It("should return last stop", func() {
 			Expect(sut.Last()).To(Equal(secondSubStop))
+		})
+	})
+
+	var _ = Describe("Length", func() {
+		var sut = subRoute{
+			stops: []*subStop{
+				{point: gps.Point{Latitude: 1}},
+				{point: gps.Point{Latitude: 2}},
+			},
+		}
+
+		It("should return length of stops", func() {
+			Expect(sut.Length()).To(Equal(2))
 		})
 	})
 
@@ -110,6 +157,34 @@ var _ = Describe("subRoute{}", func() {
 
 		It("should return starting point", func() {
 			Expect(sut.StartingStop()).To(Equal(startingStop))
+		})
+	})
+
+	var _ = Describe("RemoveSubStop", func() {
+		var sut subRoute
+		var stop1 = &subStop{point: gps.Point{Latitude: 1}}
+		var stop2 = &subStop{point: gps.Point{Latitude: 2}}
+		var stop3 = &subStop{point: gps.Point{Latitude: 3}}
+		BeforeEach(func() {
+			sut = subRoute{
+				stops: []*subStop{stop1, stop2, stop3},
+			}
+		})
+
+		It("should remove sub stop at index when it is inside length", func() {
+			expectedStops := []*subStop{stop1, stop3}
+			sut.RemoveSubStop(1)
+			Expect(sut.stops).To(Equal(expectedStops))
+		})
+
+		It("should not remove sub stop at index out of range", func() {
+			sut.RemoveSubStop(3)
+			Expect(sut.stops).To(Equal([]*subStop{stop1, stop2, stop3}))
+		})
+
+		It("should not remove sub stop at negative index", func() {
+			sut.RemoveSubStop(-1)
+			Expect(sut.stops).To(Equal([]*subStop{stop1, stop2, stop3}))
 		})
 	})
 })
