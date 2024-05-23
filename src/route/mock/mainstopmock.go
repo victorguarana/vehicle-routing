@@ -124,6 +124,30 @@ func (mr *MockIMainStopMockRecorder) Point() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Point", reflect.TypeOf((*MockIMainStop)(nil).Point))
 }
 
+// RemoveReturningSubRoute mocks base method.
+func (m *MockIMainStop) RemoveReturningSubRoute(subRoute route.ISubRoute) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RemoveReturningSubRoute", subRoute)
+}
+
+// RemoveReturningSubRoute indicates an expected call of RemoveReturningSubRoute.
+func (mr *MockIMainStopMockRecorder) RemoveReturningSubRoute(subRoute any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveReturningSubRoute", reflect.TypeOf((*MockIMainStop)(nil).RemoveReturningSubRoute), subRoute)
+}
+
+// RemoveStartingSubRoute mocks base method.
+func (m *MockIMainStop) RemoveStartingSubRoute(subRoute route.ISubRoute) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RemoveStartingSubRoute", subRoute)
+}
+
+// RemoveStartingSubRoute indicates an expected call of RemoveStartingSubRoute.
+func (mr *MockIMainStopMockRecorder) RemoveStartingSubRoute(subRoute any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveStartingSubRoute", reflect.TypeOf((*MockIMainStop)(nil).RemoveStartingSubRoute), subRoute)
+}
+
 // ReturningSubRoutes mocks base method.
 func (m *MockIMainStop) ReturningSubRoutes() []route.ISubRoute {
 	m.ctrl.T.Helper()

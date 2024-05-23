@@ -10,8 +10,10 @@ type IMainRoute interface {
 	Append(mainStop IMainStop)
 	AtIndex(index int) IMainStop
 	First() IMainStop
+	InserAt(index int, mainStop IMainStop)
 	Iterator() slc.Iterator[IMainStop]
 	Last() IMainStop
+	Length() int
 	RemoveMainStop(index int)
 }
 
@@ -43,17 +45,29 @@ func (r *mainRoute) First() IMainStop {
 	return r.mainStops[0]
 }
 
+func (r *mainRoute) InserAt(index int, iMainStop IMainStop) {
+	if index < 0 || index > len(r.mainStops) {
+		log.Printf("InserAt: index (%d) out of range\n", index)
+		return
+	}
+	ms := iMainStop.(*mainStop)
+	r.mainStops = slc.InsertAt(r.mainStops, ms, index)
+}
+
 func (r *mainRoute) Iterator() slc.Iterator[IMainStop] {
 	iMainStops := make([]IMainStop, len(r.mainStops))
 	for i, ms := range r.mainStops {
 		iMainStops[i] = ms
 	}
-
 	return slc.NewIterator(iMainStops)
 }
 
 func (r *mainRoute) Last() IMainStop {
 	return r.mainStops[len(r.mainStops)-1]
+}
+
+func (r *mainRoute) Length() int {
+	return len(r.mainStops)
 }
 
 func (r *mainRoute) RemoveMainStop(index int) {

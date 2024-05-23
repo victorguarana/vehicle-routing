@@ -16,7 +16,7 @@ import (
 var _ = Describe("TotalDistance", func() {
 	Context("when itinerary does not have subroutes", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary *mockitinerary.MockItinerary
+		var mockedItineraryInfo *mockitinerary.MockInfo
 		var mockedMainStop1 *mockroute.MockIMainStop
 		var mockedMainStop2 *mockroute.MockIMainStop
 		var mockedMainStop3 *mockroute.MockIMainStop
@@ -30,7 +30,7 @@ var _ = Describe("TotalDistance", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
+			mockedItineraryInfo = mockitinerary.NewMockInfo(mockedCtrl)
 			mockedMainStop1 = mockroute.NewMockIMainStop(mockedCtrl)
 			mockedMainStop2 = mockroute.NewMockIMainStop(mockedCtrl)
 			mockedMainStop3 = mockroute.NewMockIMainStop(mockedCtrl)
@@ -50,17 +50,17 @@ var _ = Describe("TotalDistance", func() {
 			mockedMainStop3.EXPECT().StartingSubRoutes().Return(nil)
 			mockedMainStop4.EXPECT().StartingSubRoutes().Return(nil)
 
-			mockedItinerary.EXPECT().RouteIterator().Return(slc.NewIterator([]route.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
+			mockedItineraryInfo.EXPECT().RouteIterator().Return(slc.NewIterator([]route.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
 
 			expectedDistance := 100.0
-			receivedDistance := TotalDistance(mockedItinerary)
+			receivedDistance := TotalDistance(mockedItineraryInfo)
 			Expect(receivedDistance).To(Equal(expectedDistance))
 		})
 	})
 
 	Context("when itinerary has subroutes", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedItinerary *mockitinerary.MockItinerary
+		var mockedItineraryInfo *mockitinerary.MockInfo
 		var mockedSubRoute1 *mockroute.MockISubRoute
 		var mockedSubRoute2 *mockroute.MockISubRoute
 		var mockedMainStop1 *mockroute.MockIMainStop
@@ -84,7 +84,7 @@ var _ = Describe("TotalDistance", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
+			mockedItineraryInfo = mockitinerary.NewMockInfo(mockedCtrl)
 			mockedSubRoute1 = mockroute.NewMockISubRoute(mockedCtrl)
 			mockedSubRoute2 = mockroute.NewMockISubRoute(mockedCtrl)
 			mockedMainStop1 = mockroute.NewMockIMainStop(mockedCtrl)
@@ -125,13 +125,13 @@ var _ = Describe("TotalDistance", func() {
 			mockedSubRoute2.EXPECT().First().Return(mockedSubStop3)
 			mockedSubRoute2.EXPECT().Iterator().Return(slc.NewIterator([]route.ISubStop{mockedSubStop3, mockedSubStop4}))
 
-			mockedItinerary.EXPECT().RouteIterator().Return(slc.NewIterator([]route.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
+			mockedItineraryInfo.EXPECT().RouteIterator().Return(slc.NewIterator([]route.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
 
 			firstSubRouteDistance := 20.0
 			secondSubRouteDistance := 30.0
 			mainRouteDistance := 20.0
 			expectedDistance := firstSubRouteDistance + secondSubRouteDistance + mainRouteDistance
-			receivedDistance := TotalDistance(mockedItinerary)
+			receivedDistance := TotalDistance(mockedItineraryInfo)
 			Expect(receivedDistance).To(Equal(expectedDistance))
 		})
 	})

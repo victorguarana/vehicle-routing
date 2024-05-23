@@ -28,12 +28,12 @@ type Stop interface {
 	Name() string
 }
 
-func ToImage(fileName string, itn itinerary.Itinerary, routeDistance float64, routeTime float64) {
+func ToImage(fileName string, itineraryInfo itinerary.Info, routeDistance float64, routeTime float64) {
 	ggCtx := gg.NewContext(imageSize, imageSize)
 	drawBackgound(ggCtx)
 	drawInfos(ggCtx, routeDistance, routeTime)
 	setRouteValues(ggCtx)
-	itineraryToImage(ggCtx, itn)
+	itineraryToImage(ggCtx, itineraryInfo)
 	err := ggCtx.SavePNG(fileName)
 	if err != nil {
 		panic(err)
@@ -44,8 +44,8 @@ func setRouteValues(ggCtx *gg.Context) {
 	ggCtx.SetLineWidth(applyScale(mainLineWidth))
 }
 
-func itineraryToImage(ggCtx *gg.Context, itn itinerary.Itinerary) {
-	iterator := itn.RouteIterator()
+func itineraryToImage(ggCtx *gg.Context, itineraryInfo itinerary.Info) {
+	iterator := itineraryInfo.RouteIterator()
 	for iterator.HasNext() {
 		actual := iterator.Actual()
 		next := iterator.Next()

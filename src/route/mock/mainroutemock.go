@@ -80,6 +80,18 @@ func (mr *MockIMainRouteMockRecorder) First() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "First", reflect.TypeOf((*MockIMainRoute)(nil).First))
 }
 
+// InserAt mocks base method.
+func (m *MockIMainRoute) InserAt(index int, mainStop route.IMainStop) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "InserAt", index, mainStop)
+}
+
+// InserAt indicates an expected call of InserAt.
+func (mr *MockIMainRouteMockRecorder) InserAt(index, mainStop any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InserAt", reflect.TypeOf((*MockIMainRoute)(nil).InserAt), index, mainStop)
+}
+
 // Iterator mocks base method.
 func (m *MockIMainRoute) Iterator() slc.Iterator[route.IMainStop] {
 	m.ctrl.T.Helper()
@@ -106,6 +118,20 @@ func (m *MockIMainRoute) Last() route.IMainStop {
 func (mr *MockIMainRouteMockRecorder) Last() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Last", reflect.TypeOf((*MockIMainRoute)(nil).Last))
+}
+
+// Length mocks base method.
+func (m *MockIMainRoute) Length() int {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Length")
+	ret0, _ := ret[0].(int)
+	return ret0
+}
+
+// Length indicates an expected call of Length.
+func (mr *MockIMainRouteMockRecorder) Length() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Length", reflect.TypeOf((*MockIMainRoute)(nil).Length))
 }
 
 // RemoveMainStop mocks base method.

@@ -6,23 +6,23 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/slc"
 )
 
-func ClosestNeighbor(itineraryList []itinerary.Itinerary, m gps.Map) {
+func ClosestNeighbor(constructorList []itinerary.Constructor, m gps.Map) {
 	remaningClients := slc.Copy(m.Clients)
 	for i := 0; len(remaningClients) > 0; i++ {
-		itinerary := slc.CircularSelection(itineraryList, i)
-		itineraryActualPosition := itinerary.ActualCarPoint()
-		closestClient := gps.ClosestPoint(itineraryActualPosition, remaningClients)
+		constructor := slc.CircularSelection(constructorList, i)
+		carActualPoint := constructor.ActualCarPoint()
+		closestClient := gps.ClosestPoint(carActualPoint, remaningClients)
 		closestWarehouseFromClosestClient := gps.ClosestPoint(closestClient, m.Warehouses)
 
-		if itinerary.CarSupport(closestClient, closestWarehouseFromClosestClient) {
-			itinerary.MoveCar(closestClient)
+		if constructor.CarSupport(closestClient, closestWarehouseFromClosestClient) {
+			constructor.MoveCar(closestClient)
 			remaningClients = slc.RemoveElement(remaningClients, closestClient)
 			continue
 		}
 
-		closestWarehouseFromActualPosition := gps.ClosestPoint(itineraryActualPosition, m.Warehouses)
-		itinerary.MoveCar(closestWarehouseFromActualPosition)
+		closestWarehouseFromActualPosition := gps.ClosestPoint(carActualPoint, m.Warehouses)
+		constructor.MoveCar(closestWarehouseFromActualPosition)
 	}
 
-	finishItineraryOnClosestWarehouses(itineraryList, m)
+	finishOnClosestWarehouses(constructorList, m)
 }

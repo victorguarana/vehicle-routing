@@ -6,22 +6,22 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/slc"
 )
 
-func BestInsertion(itineraryList []itinerary.Itinerary, m gps.Map) {
-	orderedClientsListsByRoute := orderClientsByItinerary(itineraryList, m.Clients)
+func BestInsertion(constructorList []itinerary.Constructor, m gps.Map) {
+	orderedClientsListsByRoute := orderClientsByItinerary(constructorList, m.Clients)
 	for index, orderedClients := range orderedClientsListsByRoute {
-		itn := itineraryList[index]
-		fillRoute(itn, orderedClients, m.Warehouses)
+		constructor := constructorList[index]
+		fillRoute(constructor, orderedClients, m.Warehouses)
 	}
-	finishItineraryOnClosestWarehouses(itineraryList, m)
+	finishOnClosestWarehouses(constructorList, m)
 }
 
-func orderClientsByItinerary(itineraryList []itinerary.Itinerary, clients []gps.Point) map[int][]gps.Point {
+func orderClientsByItinerary(constructorList []itinerary.Constructor, clients []gps.Point) map[int][]gps.Point {
 	orderedClientsByItinerary := map[int][]gps.Point{}
 	for i, client := range clients {
-		itn, itnIndex := slc.CircularSelectionWithIndex(itineraryList, i)
-		initialPoint := itn.ActualCarPoint()
-		orderedClients := orderedClientsByItinerary[itnIndex]
-		orderedClientsByItinerary[itnIndex] = insertInBestPosition(initialPoint, client, orderedClients)
+		constructor, constructorIndex := slc.CircularSelectionWithIndex(constructorList, i)
+		initialPoint := constructor.ActualCarPoint()
+		orderedClients := orderedClientsByItinerary[constructorIndex]
+		orderedClientsByItinerary[constructorIndex] = insertInBestPosition(initialPoint, client, orderedClients)
 	}
 	return orderedClientsByItinerary
 }
@@ -53,12 +53,12 @@ func findBestPosition(initialPoint gps.Point, client gps.Point, orderedClients [
 	return bestIndex
 }
 
-func fillRoute(itinerary itinerary.Itinerary, orderedClients []gps.Point, warehouses []gps.Point) {
+func fillRoute(constructor itinerary.Constructor, orderedClients []gps.Point, warehouses []gps.Point) {
 	for _, client := range orderedClients {
 		closestWarehouse := gps.ClosestPoint(client, warehouses)
-		if !itinerary.CarSupport(client, closestWarehouse) {
-			itinerary.MoveCar(closestWarehouse)
+		if !constructor.CarSupport(client, closestWarehouse) {
+			constructor.MoveCar(closestWarehouse)
 		}
-		itinerary.MoveCar(client)
+		constructor.MoveCar(client)
 	}
 }

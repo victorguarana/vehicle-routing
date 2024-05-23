@@ -5,10 +5,10 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/itinerary"
 )
 
-func finishItineraryOnClosestWarehouses(itineraryList []itinerary.Itinerary, m gps.Map) {
-	for _, itinerary := range itineraryList {
-		position := itinerary.ActualCarPoint()
+func finishOnClosestWarehouses(constructorList []itinerary.Constructor, m gps.Map) {
+	for _, constructor := range constructorList {
+		position := constructor.ActualCarPoint()
 		closestWarehouse := gps.ClosestPoint(position, m.Warehouses)
-		itinerary.MoveCar(closestWarehouse)
+		constructor.MoveCar(closestWarehouse)
 	}
 }

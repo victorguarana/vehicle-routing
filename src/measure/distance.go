@@ -6,8 +6,8 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/route"
 )
 
-func TotalDistance(itn itinerary.Itinerary) float64 {
-	iterator := itn.RouteIterator()
+func TotalDistance(itineraryInfo itinerary.Info) float64 {
+	iterator := itineraryInfo.RouteIterator()
 	var totalDistance float64
 	for iterator.HasNext() {
 		actual := iterator.Actual()

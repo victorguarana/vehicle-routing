@@ -71,6 +71,40 @@ var _ = Describe("mainRoute{}", func() {
 		})
 	})
 
+	Describe("InserAt", func() {
+		var sut mainRoute
+		var newStop = &mainStop{point: gps.Point{}}
+		var stop1 = &mainStop{point: gps.Point{Latitude: 1}}
+		var stop2 = &mainStop{point: gps.Point{Latitude: 2}}
+		var stop3 = &mainStop{point: gps.Point{Latitude: 3}}
+
+		BeforeEach(func() {
+			sut = mainRoute{
+				mainStops: []*mainStop{stop1, stop2, stop3},
+			}
+		})
+
+		It("should insert car stop at index when it is inside length", func() {
+			sut.InserAt(1, newStop)
+			Expect(sut.mainStops).To(Equal([]*mainStop{stop1, newStop, stop2, stop3}))
+		})
+
+		It("should append car stop at index when it is equal length", func() {
+			sut.InserAt(len(sut.mainStops), newStop)
+			Expect(sut.mainStops).To(Equal([]*mainStop{stop1, stop2, stop3, newStop}))
+		})
+
+		It("should not insert car stop at index out of range", func() {
+			sut.InserAt(4, newStop)
+			Expect(sut.mainStops).To(Equal([]*mainStop{stop1, stop2, stop3}))
+		})
+
+		It("should not insert car stop at negative index", func() {
+			sut.InserAt(-1, newStop)
+			Expect(sut.mainStops).To(Equal([]*mainStop{stop1, stop2, stop3}))
+		})
+	})
+
 	var _ = Describe("Iterator", func() {
 		var mainStop1 = mainStop{point: gps.Point{Latitude: 1}}
 		var mainStop2 = mainStop{point: gps.Point{Latitude: 2}}
@@ -98,6 +132,19 @@ var _ = Describe("mainRoute{}", func() {
 		It("should return last car stop", func() {
 			receivedStop := sut.Last()
 			Expect(receivedStop).To(Equal(secondMainStop))
+		})
+	})
+
+	Describe("Length", func() {
+		var sut = mainRoute{
+			mainStops: []*mainStop{
+				{point: gps.Point{Latitude: 1}},
+				{point: gps.Point{Latitude: 2}},
+			},
+		}
+
+		It("should return length of car stops", func() {
+			Expect(sut.Length()).To(Equal(2))
 		})
 	})
 

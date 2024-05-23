@@ -1,8 +1,6 @@
 package itinerary
 
 import (
-	"log"
-
 	"github.com/victorguarana/vehicle-routing/src/gps"
 	"github.com/victorguarana/vehicle-routing/src/route"
 	"github.com/victorguarana/vehicle-routing/src/slc"
@@ -16,35 +14,20 @@ var flightFactory = route.NewSubRoute
 type DroneNumber int
 
 type Itinerary interface {
-	ActualCarPoint() gps.Point
-	ActualCarStop() route.IMainStop
-	CarEfficiency() float64
-	CarSpeed() float64
-	CarSupport(nextPoints ...gps.Point) bool
-	DroneCanReach(droneNumber DroneNumber, nextPoints ...gps.Point) bool
-	DroneEfficiency() float64
-	DroneIsFlying(droneNumber DroneNumber) bool
-	DroneNumbers() []DroneNumber
-	DroneSpeed() float64
-	DroneSupport(droneNumber DroneNumber, deliveryPoint gps.Point, landingPoint gps.Point) bool
-	LandAllDrones(landingStop route.IMainStop)
-	LandDrone(droneNumber DroneNumber, destination route.IMainStop)
-	MoveCar(destination gps.Point)
-	MoveDrone(droneNumber DroneNumber, destination gps.Point)
-	RemoveMainStopFromRoute(index int)
-	RouteIterator() slc.Iterator[route.IMainStop]
-	StartDroneFlight(droneNumber DroneNumber, startingPoint route.IMainStop)
+	Info() Info
+	Constructor() Constructor
+	Modifier() Modifier
 }
 
-type subItinerary struct {
-	drone  vehicle.IDrone
-	flight route.ISubRoute
+type SubItinerary struct {
+	Drone  vehicle.IDrone
+	Flight route.ISubRoute
 }
 
 type itinerary struct {
 	activeFlights             map[DroneNumber]route.ISubRoute
 	car                       vehicle.ICar
-	completedSubItineraryList []subItinerary
+	completedSubItineraryList []SubItinerary
 	droneNumbersMap           map[DroneNumber]vehicle.IDrone
 	route                     route.IMainRoute
 }
@@ -53,10 +36,14 @@ func New(car vehicle.ICar) Itinerary {
 	return &itinerary{
 		activeFlights:             map[DroneNumber]route.ISubRoute{},
 		car:                       car,
-		completedSubItineraryList: []subItinerary{},
+		completedSubItineraryList: []SubItinerary{},
 		droneNumbersMap:           generateDroneNumbersMap(car.Drones()),
 		route:                     route.NewMainRoute(route.NewMainStop(car.ActualPoint())),
 	}
+}
+
+func (i *itinerary) Info() Info {
+	return info{i}
 }
 
 func (i *itinerary) ActualCarPoint() gps.Point {
@@ -77,6 +64,10 @@ func (i *itinerary) CarSpeed() float64 {
 
 func (i *itinerary) CarSupport(nextPoints ...gps.Point) bool {
 	return i.car.Support(nextPoints...)
+}
+
+func (i *itinerary) Constructor() Constructor {
+	return constructor{info: &info{i}}
 }
 
 func (i *itinerary) DroneCanReach(droneNumber DroneNumber, nextPoints ...gps.Point) bool {
@@ -110,81 +101,20 @@ func (i *itinerary) DroneSupport(droneNumber DroneNumber, deliveryPoint gps.Poin
 	return drone.Support(deliveryPoint) && drone.CanReach(deliveryPoint, landingPoint)
 }
 
-func (i *itinerary) StartDroneFlight(droneNumber DroneNumber, startingPoint route.IMainStop) {
-	drone := i.droneByNumber(droneNumber)
-	drone.TakeOff()
-	flight := flightFactory(startingPoint)
-	i.saveActiveFlight(droneNumber, flight)
-}
-
-func (i *itinerary) LandDrone(droneNumber DroneNumber, destination route.IMainStop) {
-	flight := i.activeFlightByNumber(droneNumber)
-	if flight == nil {
-		log.Panic("Drone is not flying")
-	}
-
-	flight.Return(destination)
-	drone := i.droneByNumber(droneNumber)
-	drone.Land(destination.Point())
-	i.achiveFlight(droneNumber, flight)
-}
-
-func (i *itinerary) LandAllDrones(landingStop route.IMainStop) {
-	for droneNumber, flight := range i.activeFlights {
-		if flight == nil {
-			continue
-		}
-
-		flight.Return(landingStop)
-		drone := i.droneByNumber(droneNumber)
-		drone.Land(landingStop.Point())
-		i.achiveFlight(droneNumber, flight)
-	}
-}
-
-func (i *itinerary) MoveCar(destination gps.Point) {
-	i.route.Append(route.NewMainStop(destination))
-	i.car.Move(destination)
-}
-
-func (i *itinerary) MoveDrone(droneNumber DroneNumber, destination gps.Point) {
-	flight := i.activeFlightByNumber(droneNumber)
-	if flight == nil {
-		log.Panic("Drone is not flying")
-	}
-
-	flight.Append(route.NewSubStop(destination))
-	drone := i.droneByNumber(droneNumber)
-	drone.Move(destination)
-}
-
-func (i *itinerary) RemoveMainStopFromRoute(index int) {
-	i.route.RemoveMainStop(index)
+func (i *itinerary) Modifier() Modifier {
+	return modifier{info: &info{i}}
 }
 
 func (i *itinerary) RouteIterator() slc.Iterator[route.IMainStop] {
 	return i.route.Iterator()
 }
 
-func (i *itinerary) achiveFlight(droneNumber DroneNumber, flight route.ISubRoute) {
-	i.saveActiveFlight(droneNumber, nil)
-	subItn := subItinerary{
-		drone:  i.droneByNumber(droneNumber),
-		flight: flight,
-	}
-	i.completedSubItineraryList = append(i.completedSubItineraryList, subItn)
+func (i *itinerary) SubItineraryList() []SubItinerary {
+	return i.completedSubItineraryList
 }
 
 func (i *itinerary) droneByNumber(droneNumber DroneNumber) vehicle.IDrone {
 	return i.droneNumbersMap[droneNumber]
-}
-
-func (i *itinerary) activeFlightByNumber(droneNumber DroneNumber) route.ISubRoute {
-	return i.activeFlights[droneNumber]
-}
-
-func (i *itinerary) saveActiveFlight(droneNumber DroneNumber, flight route.ISubRoute) {
-	i.activeFlights[droneNumber] = flight
 }
 
 func generateDroneNumbersMap(drones []vehicle.IDrone) map[DroneNumber]vehicle.IDrone {

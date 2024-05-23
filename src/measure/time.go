@@ -10,13 +10,13 @@ type subRouteTimes map[route.ISubRoute]float64
 
 // TODO: How to get the exact drone that made that flight?
 // Actual implementation is considering that the vehicles always have default speed
-func TimeSpent(itn itinerary.Itinerary) float64 {
+func TimeSpent(itineraryInfo itinerary.Info) float64 {
 	var subRoutesFlyingTimes = make(subRouteTimes)
 	var mainRouteTravelTime = make(subRouteTimes)
 	var totalTime float64
-	carSpeed := itn.CarSpeed()
-	droneSpeed := itn.DroneSpeed()
-	iterator := itn.RouteIterator()
+	carSpeed := itineraryInfo.CarSpeed()
+	droneSpeed := itineraryInfo.DroneSpeed()
+	iterator := itineraryInfo.RouteIterator()
 	for {
 		actual := iterator.Actual()
 		if subRoutes := actual.StartingSubRoutes(); len(subRoutes) > 0 {
