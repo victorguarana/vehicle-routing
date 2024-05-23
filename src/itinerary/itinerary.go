@@ -6,7 +6,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/gps"
 	"github.com/victorguarana/vehicle-routing/src/route"
 	"github.com/victorguarana/vehicle-routing/src/slc"
-	"github.com/victorguarana/vehicle-routing/src/vehicles"
+	"github.com/victorguarana/vehicle-routing/src/vehicle"
 )
 
 var flightFactory = route.NewSubRoute
@@ -37,19 +37,19 @@ type Itinerary interface {
 }
 
 type subItinerary struct {
-	drone  vehicles.IDrone
+	drone  vehicle.IDrone
 	flight route.ISubRoute
 }
 
 type itinerary struct {
 	activeFlights             map[DroneNumber]route.ISubRoute
-	car                       vehicles.ICar
+	car                       vehicle.ICar
 	completedSubItineraryList []subItinerary
-	droneNumbersMap           map[DroneNumber]vehicles.IDrone
+	droneNumbersMap           map[DroneNumber]vehicle.IDrone
 	route                     route.IMainRoute
 }
 
-func New(car vehicles.ICar) Itinerary {
+func New(car vehicle.ICar) Itinerary {
 	return &itinerary{
 		activeFlights:             map[DroneNumber]route.ISubRoute{},
 		car:                       car,
@@ -68,11 +68,11 @@ func (i *itinerary) ActualCarStop() route.IMainStop {
 }
 
 func (i *itinerary) CarEfficiency() float64 {
-	return vehicles.CarEfficiency
+	return vehicle.CarEfficiency
 }
 
 func (i *itinerary) CarSpeed() float64 {
-	return vehicles.CarSpeed
+	return vehicle.CarSpeed
 }
 
 func (i *itinerary) CarSupport(nextPoints ...gps.Point) bool {
@@ -85,7 +85,7 @@ func (i *itinerary) DroneCanReach(droneNumber DroneNumber, nextPoints ...gps.Poi
 }
 
 func (i *itinerary) DroneEfficiency() float64 {
-	return vehicles.DroneEfficiency
+	return vehicle.DroneEfficiency
 }
 
 func (i *itinerary) DroneIsFlying(droneNumber DroneNumber) bool {
@@ -102,7 +102,7 @@ func (i *itinerary) DroneNumbers() []DroneNumber {
 }
 
 func (i *itinerary) DroneSpeed() float64 {
-	return vehicles.DroneSpeed
+	return vehicle.DroneSpeed
 }
 
 func (i *itinerary) DroneSupport(droneNumber DroneNumber, deliveryPoint gps.Point, landingPoint gps.Point) bool {
@@ -175,7 +175,7 @@ func (i *itinerary) achiveFlight(droneNumber DroneNumber, flight route.ISubRoute
 	i.completedSubItineraryList = append(i.completedSubItineraryList, subItn)
 }
 
-func (i *itinerary) droneByNumber(droneNumber DroneNumber) vehicles.IDrone {
+func (i *itinerary) droneByNumber(droneNumber DroneNumber) vehicle.IDrone {
 	return i.droneNumbersMap[droneNumber]
 }
 
@@ -187,8 +187,8 @@ func (i *itinerary) saveActiveFlight(droneNumber DroneNumber, flight route.ISubR
 	i.activeFlights[droneNumber] = flight
 }
 
-func generateDroneNumbersMap(drones []vehicles.IDrone) map[DroneNumber]vehicles.IDrone {
-	activeSubitineraryMap := make(map[DroneNumber]vehicles.IDrone)
+func generateDroneNumbersMap(drones []vehicle.IDrone) map[DroneNumber]vehicle.IDrone {
+	activeSubitineraryMap := make(map[DroneNumber]vehicle.IDrone)
 	for i, drone := range drones {
 		activeSubitineraryMap[DroneNumber(i+1)] = drone
 	}

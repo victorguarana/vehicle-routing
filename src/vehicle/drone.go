@@ -1,4 +1,4 @@
-package vehicles
+package vehicle
 
 import (
 	"log"

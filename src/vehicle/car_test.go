@@ -1,4 +1,4 @@
-package vehicles
+package vehicle
 
 import (
 	"github.com/victorguarana/vehicle-routing/src/gps"
