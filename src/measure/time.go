@@ -3,10 +3,10 @@ package measure
 import (
 	"github.com/victorguarana/vehicle-routing/src/gps"
 	"github.com/victorguarana/vehicle-routing/src/itinerary"
-	"github.com/victorguarana/vehicle-routing/src/routes"
+	"github.com/victorguarana/vehicle-routing/src/route"
 )
 
-type subRouteTimes map[routes.ISubRoute]float64
+type subRouteTimes map[route.ISubRoute]float64
 
 // TODO: How to get the exact drone that made that flight?
 // Actual implementation is considering that the vehicles always have default speed
@@ -39,14 +39,14 @@ func TimeSpent(itn itinerary.Itinerary) float64 {
 	return totalTime
 }
 
-func calcSubRouteTimes(mainRouteTravelTime subRouteTimes, subRouteFlyingTimes subRouteTimes, subRoutes []routes.ISubRoute, droneSpeed float64) {
+func calcSubRouteTimes(mainRouteTravelTime subRouteTimes, subRouteFlyingTimes subRouteTimes, subRoutes []route.ISubRoute, droneSpeed float64) {
 	for _, subRoute := range subRoutes {
 		mainRouteTravelTime[subRoute] = 0
 		subRouteFlyingTimes[subRoute] = calcSubRouteDistance(subRoute) / droneSpeed
 	}
 }
 
-func maxAdditionalTimeWaitingSubRoutes(mainRouteTravelTime subRouteTimes, subRoutesFlyingTimes subRouteTimes, subRoutes []routes.ISubRoute) float64 {
+func maxAdditionalTimeWaitingSubRoutes(mainRouteTravelTime subRouteTimes, subRoutesFlyingTimes subRouteTimes, subRoutes []route.ISubRoute) float64 {
 	var maxWaitingTime float64
 	for _, subRoute := range subRoutes {
 		timeDifference := subRoutesFlyingTimes[subRoute] - mainRouteTravelTime[subRoute]
@@ -57,7 +57,7 @@ func maxAdditionalTimeWaitingSubRoutes(mainRouteTravelTime subRouteTimes, subRou
 	return maxWaitingTime
 }
 
-func removeReturningSubRoutes(mainRouteTravelTime subRouteTimes, subRoutesFlyingTimes subRouteTimes, subRoutes []routes.ISubRoute) {
+func removeReturningSubRoutes(mainRouteTravelTime subRouteTimes, subRoutesFlyingTimes subRouteTimes, subRoutes []route.ISubRoute) {
 	for _, subRoute := range subRoutes {
 		delete(mainRouteTravelTime, subRoute)
 		delete(subRoutesFlyingTimes, subRoute)

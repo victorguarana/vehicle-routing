@@ -14,7 +14,7 @@ import (
 
 	gps "github.com/victorguarana/vehicle-routing/src/gps"
 	itinerary "github.com/victorguarana/vehicle-routing/src/itinerary"
-	routes "github.com/victorguarana/vehicle-routing/src/routes"
+	"github.com/victorguarana/vehicle-routing/src/route"
 	slc "github.com/victorguarana/vehicle-routing/src/slc"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -57,10 +57,10 @@ func (mr *MockItineraryMockRecorder) ActualCarPoint() *gomock.Call {
 }
 
 // ActualCarStop mocks base method.
-func (m *MockItinerary) ActualCarStop() routes.IMainStop {
+func (m *MockItinerary) ActualCarStop() route.IMainStop {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ActualCarStop")
-	ret0, _ := ret[0].(routes.IMainStop)
+	ret0, _ := ret[0].(route.IMainStop)
 	return ret0
 }
 
@@ -206,7 +206,7 @@ func (mr *MockItineraryMockRecorder) DroneSupport(droneNumber, deliveryPoint, la
 }
 
 // LandAllDrones mocks base method.
-func (m *MockItinerary) LandAllDrones(landingStop routes.IMainStop) {
+func (m *MockItinerary) LandAllDrones(landingStop route.IMainStop) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "LandAllDrones", landingStop)
 }
@@ -218,7 +218,7 @@ func (mr *MockItineraryMockRecorder) LandAllDrones(landingStop any) *gomock.Call
 }
 
 // LandDrone mocks base method.
-func (m *MockItinerary) LandDrone(droneNumber itinerary.DroneNumber, destination routes.IMainStop) {
+func (m *MockItinerary) LandDrone(droneNumber itinerary.DroneNumber, destination route.IMainStop) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "LandDrone", droneNumber, destination)
 }
@@ -266,10 +266,10 @@ func (mr *MockItineraryMockRecorder) RemoveMainStopFromRoute(index any) *gomock.
 }
 
 // RouteIterator mocks base method.
-func (m *MockItinerary) RouteIterator() slc.Iterator[routes.IMainStop] {
+func (m *MockItinerary) RouteIterator() slc.Iterator[route.IMainStop] {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RouteIterator")
-	ret0, _ := ret[0].(slc.Iterator[routes.IMainStop])
+	ret0, _ := ret[0].(slc.Iterator[route.IMainStop])
 	return ret0
 }
 
@@ -280,7 +280,7 @@ func (mr *MockItineraryMockRecorder) RouteIterator() *gomock.Call {
 }
 
 // StartDroneFlight mocks base method.
-func (m *MockItinerary) StartDroneFlight(droneNumber itinerary.DroneNumber, startingPoint routes.IMainStop) {
+func (m *MockItinerary) StartDroneFlight(droneNumber itinerary.DroneNumber, startingPoint route.IMainStop) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "StartDroneFlight", droneNumber, startingPoint)
 }

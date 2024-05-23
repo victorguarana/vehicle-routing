@@ -3,7 +3,7 @@ package measure
 import (
 	"github.com/victorguarana/vehicle-routing/src/gps"
 	"github.com/victorguarana/vehicle-routing/src/itinerary"
-	"github.com/victorguarana/vehicle-routing/src/routes"
+	"github.com/victorguarana/vehicle-routing/src/route"
 )
 
 func TotalDistance(itn itinerary.Itinerary) float64 {
@@ -23,7 +23,7 @@ func TotalDistance(itn itinerary.Itinerary) float64 {
 	return totalDistance
 }
 
-func calcSubRouteDistance(subRoute routes.ISubRoute) float64 {
+func calcSubRouteDistance(subRoute route.ISubRoute) float64 {
 	var totalSubRouteDistance float64
 	iterator := subRoute.Iterator()
 	actualPoint := subRoute.StartingStop().Point()
