@@ -68,6 +68,20 @@ func (mr *MockICarMockRecorder) Drones() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Drones", reflect.TypeOf((*MockICar)(nil).Drones))
 }
 
+// Efficiency mocks base method.
+func (m *MockICar) Efficiency() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Efficiency")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Efficiency indicates an expected call of Efficiency.
+func (mr *MockICarMockRecorder) Efficiency() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Efficiency", reflect.TypeOf((*MockICar)(nil).Efficiency))
+}
+
 // Move mocks base method.
 func (m *MockICar) Move(destination gps.Point) {
 	m.ctrl.T.Helper()

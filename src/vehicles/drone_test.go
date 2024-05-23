@@ -14,6 +14,7 @@ var _ = Describe("newDrone", func() {
 	It("should create drone with correct params", func() {
 		expectedDrone := drone{
 			car:             car,
+			efficiency:      DroneEfficiency,
 			name:            droneName,
 			speed:           DroneSpeed,
 			remaningRange:   DroneRange,

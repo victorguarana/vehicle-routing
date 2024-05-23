@@ -11,6 +11,7 @@ type IMainStop interface {
 	Longitude() float64
 	Name() string
 	Point() gps.Point
+	ReturningSubRoutes() []ISubRoute
 	StartingSubRoutes() []ISubRoute
 }
 
@@ -50,6 +51,14 @@ func (ms *mainStop) Name() string {
 
 func (ms *mainStop) Point() gps.Point {
 	return ms.point
+}
+
+func (ms *mainStop) ReturningSubRoutes() []ISubRoute {
+	subRoutes := make([]ISubRoute, len(ms.returningSubRoutes))
+	for i, sr := range ms.returningSubRoutes {
+		subRoutes[i] = sr
+	}
+	return subRoutes
 }
 
 func (ms *mainStop) StartingSubRoutes() []ISubRoute {

@@ -5,10 +5,12 @@ import (
 )
 
 const CarSpeed = 10.0
+const CarEfficiency = 5.0
 
 type ICar interface {
 	ActualPoint() gps.Point
 	Drones() []IDrone
+	Efficiency() float64
 	Move(destination gps.Point)
 	Name() string
 	NewDrone(name string)
@@ -19,6 +21,7 @@ type ICar interface {
 type car struct {
 	actualPoint gps.Point
 	drones      []*drone
+	efficiency  float64
 	name        string
 	speed       float64
 }
@@ -27,6 +30,7 @@ func NewCar(name string, startingPoint gps.Point) ICar {
 	return &car{
 		actualPoint: startingPoint,
 		drones:      []*drone{},
+		efficiency:  CarEfficiency,
 		name:        name,
 		speed:       CarSpeed,
 	}
@@ -42,6 +46,10 @@ func (c *car) Drones() []IDrone {
 		drones = append(drones, d)
 	}
 	return drones
+}
+
+func (c *car) Efficiency() float64 {
+	return c.efficiency
 }
 
 func (c *car) Move(destination gps.Point) {

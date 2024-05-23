@@ -71,6 +71,34 @@ func (mr *MockIDroneMockRecorder) CanReach(arg0 ...any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CanReach", reflect.TypeOf((*MockIDrone)(nil).CanReach), arg0...)
 }
 
+// Efficiency mocks base method.
+func (m *MockIDrone) Efficiency() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Efficiency")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Efficiency indicates an expected call of Efficiency.
+func (mr *MockIDroneMockRecorder) Efficiency() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Efficiency", reflect.TypeOf((*MockIDrone)(nil).Efficiency))
+}
+
+// IsFlying mocks base method.
+func (m *MockIDrone) IsFlying() bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsFlying")
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsFlying indicates an expected call of IsFlying.
+func (mr *MockIDroneMockRecorder) IsFlying() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsFlying", reflect.TypeOf((*MockIDrone)(nil).IsFlying))
+}
+
 // Land mocks base method.
 func (m *MockIDrone) Land(destination gps.Point) {
 	m.ctrl.T.Helper()

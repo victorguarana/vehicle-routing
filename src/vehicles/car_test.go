@@ -14,6 +14,7 @@ var _ = Describe("NewCar", func() {
 			receivedCar := NewCar("car1", initialPoint)
 			expectedCar := car{
 				actualPoint: initialPoint,
+				efficiency:  CarEfficiency,
 				drones:      []*drone{},
 				name:        "car1",
 				speed:       CarSpeed,

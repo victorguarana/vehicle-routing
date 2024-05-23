@@ -70,6 +70,34 @@ func (mr *MockItineraryMockRecorder) ActualCarStop() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActualCarStop", reflect.TypeOf((*MockItinerary)(nil).ActualCarStop))
 }
 
+// CarEfficiency mocks base method.
+func (m *MockItinerary) CarEfficiency() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CarEfficiency")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// CarEfficiency indicates an expected call of CarEfficiency.
+func (mr *MockItineraryMockRecorder) CarEfficiency() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CarEfficiency", reflect.TypeOf((*MockItinerary)(nil).CarEfficiency))
+}
+
+// CarSpeed mocks base method.
+func (m *MockItinerary) CarSpeed() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CarSpeed")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// CarSpeed indicates an expected call of CarSpeed.
+func (mr *MockItineraryMockRecorder) CarSpeed() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CarSpeed", reflect.TypeOf((*MockItinerary)(nil).CarSpeed))
+}
+
 // CarSupport mocks base method.
 func (m *MockItinerary) CarSupport(nextPoints ...gps.Point) bool {
 	m.ctrl.T.Helper()
@@ -107,6 +135,20 @@ func (mr *MockItineraryMockRecorder) DroneCanReach(droneNumber any, nextPoints .
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DroneCanReach", reflect.TypeOf((*MockItinerary)(nil).DroneCanReach), varargs...)
 }
 
+// DroneEfficiency mocks base method.
+func (m *MockItinerary) DroneEfficiency() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DroneEfficiency")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// DroneEfficiency indicates an expected call of DroneEfficiency.
+func (mr *MockItineraryMockRecorder) DroneEfficiency() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DroneEfficiency", reflect.TypeOf((*MockItinerary)(nil).DroneEfficiency))
+}
+
 // DroneIsFlying mocks base method.
 func (m *MockItinerary) DroneIsFlying(droneNumber itinerary.DroneNumber) bool {
 	m.ctrl.T.Helper()
@@ -133,6 +175,20 @@ func (m *MockItinerary) DroneNumbers() []itinerary.DroneNumber {
 func (mr *MockItineraryMockRecorder) DroneNumbers() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DroneNumbers", reflect.TypeOf((*MockItinerary)(nil).DroneNumbers))
+}
+
+// DroneSpeed mocks base method.
+func (m *MockItinerary) DroneSpeed() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DroneSpeed")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// DroneSpeed indicates an expected call of DroneSpeed.
+func (mr *MockItineraryMockRecorder) DroneSpeed() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DroneSpeed", reflect.TypeOf((*MockItinerary)(nil).DroneSpeed))
 }
 
 // DroneSupport mocks base method.
