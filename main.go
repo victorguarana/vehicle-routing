@@ -9,7 +9,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/itinerary"
 	"github.com/victorguarana/vehicle-routing/src/measure"
 	"github.com/victorguarana/vehicle-routing/src/output"
-	"github.com/victorguarana/vehicle-routing/src/vehicles"
+	"github.com/victorguarana/vehicle-routing/src/vehicle"
 )
 
 func main() {
@@ -24,7 +24,7 @@ func main() {
 
 func ClosestNeighbor() {
 	initialPoint := gps.Point{Name: "initialPoint"}
-	car := vehicles.NewCar("car1", initialPoint)
+	car := vehicle.NewCar("car1", initialPoint)
 	itn := itinerary.New(car)
 	greedy.ClosestNeighbor([]itinerary.Itinerary{itn}, gps.GetMap())
 
@@ -39,7 +39,7 @@ func ClosestNeighbor() {
 
 func ClosestNeighborWithDrones() {
 	initialPoint := gps.Point{Name: "initialPoint"}
-	car := vehicles.NewCar("car1", initialPoint)
+	car := vehicle.NewCar("car1", initialPoint)
 	car.NewDrone("drone1")
 	itn := itinerary.New(car)
 	greedy.ClosestNeighbor([]itinerary.Itinerary{itn}, gps.GetMap())
@@ -56,7 +56,7 @@ func ClosestNeighborWithDrones() {
 
 func BestInsertion() {
 	initialPoint := gps.Point{Name: "initialPoint"}
-	car := vehicles.NewCar("car1", initialPoint)
+	car := vehicle.NewCar("car1", initialPoint)
 	car.NewDrone("drone1")
 	itn := itinerary.New(car)
 	greedy.BestInsertion([]itinerary.Itinerary{itn}, gps.GetMap())
@@ -72,7 +72,7 @@ func BestInsertion() {
 
 func BestInsertionWithDrones() {
 	initialPoint := gps.Point{Name: "initialPoint"}
-	car := vehicles.NewCar("car1", initialPoint)
+	car := vehicle.NewCar("car1", initialPoint)
 	car.NewDrone("drone1")
 	itn := itinerary.New(car)
 	greedy.BestInsertion([]itinerary.Itinerary{itn}, gps.GetMap())
@@ -89,10 +89,10 @@ func BestInsertionWithDrones() {
 
 func Covering() {
 	initialPoint := gps.Point{Name: "initialPoint"}
-	car := vehicles.NewCar("car1", initialPoint)
+	car := vehicle.NewCar("car1", initialPoint)
 	car.NewDrone("drone1")
 	itn := itinerary.New(car)
-	neighorhoodDistance := vehicles.DroneRange / 4
+	neighorhoodDistance := vehicle.DroneRange / 4
 	csp.CoveringWithDrones([]itinerary.Itinerary{itn}, gps.GetMap(), neighorhoodDistance)
 
 	totalDistance := measure.TotalDistance(itn)

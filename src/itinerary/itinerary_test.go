@@ -4,11 +4,11 @@ import (
 	"go.uber.org/mock/gomock"
 
 	"github.com/victorguarana/vehicle-routing/src/gps"
-	"github.com/victorguarana/vehicle-routing/src/routes"
-	mockroutes "github.com/victorguarana/vehicle-routing/src/routes/mocks"
+	"github.com/victorguarana/vehicle-routing/src/route"
+	mockroute "github.com/victorguarana/vehicle-routing/src/route/mock"
 	"github.com/victorguarana/vehicle-routing/src/slc"
-	"github.com/victorguarana/vehicle-routing/src/vehicles"
-	mockvehicles "github.com/victorguarana/vehicle-routing/src/vehicles/mocks"
+	"github.com/victorguarana/vehicle-routing/src/vehicle"
+	mockvehicle "github.com/victorguarana/vehicle-routing/src/vehicle/mock"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -16,27 +16,27 @@ import (
 
 var _ = Describe("New", func() {
 	var mockedCtrl *gomock.Controller
-	var mockedCar *mockvehicles.MockICar
-	var mockedDrone1 *mockvehicles.MockIDrone
-	var mockedDrone2 *mockvehicles.MockIDrone
+	var mockedCar *mockvehicle.MockICar
+	var mockedDrone1 *mockvehicle.MockIDrone
+	var mockedDrone2 *mockvehicle.MockIDrone
 	var initialPoint = gps.Point{Latitude: 1, Longitude: 2, PackageSize: 3, Name: "initialPoint"}
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
-		mockedCar = mockvehicles.NewMockICar(mockedCtrl)
-		mockedDrone1 = mockvehicles.NewMockIDrone(mockedCtrl)
-		mockedDrone2 = mockvehicles.NewMockIDrone(mockedCtrl)
+		mockedCar = mockvehicle.NewMockICar(mockedCtrl)
+		mockedDrone1 = mockvehicle.NewMockIDrone(mockedCtrl)
+		mockedDrone2 = mockvehicle.NewMockIDrone(mockedCtrl)
 	})
 
 	It("should return an itinerary", func() {
-		mockedCar.EXPECT().Drones().Return([]vehicles.IDrone{mockedDrone1, mockedDrone2})
+		mockedCar.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1, mockedDrone2})
 		mockedCar.EXPECT().ActualPoint().Return(initialPoint)
 		expectedItinerary := &itinerary{
-			activeFlights:             map[DroneNumber]routes.ISubRoute{},
-			droneNumbersMap:           map[DroneNumber]vehicles.IDrone{1: mockedDrone1, 2: mockedDrone2},
+			activeFlights:             map[DroneNumber]route.ISubRoute{},
+			droneNumbersMap:           map[DroneNumber]vehicle.IDrone{1: mockedDrone1, 2: mockedDrone2},
 			car:                       mockedCar,
 			completedSubItineraryList: []subItinerary{},
-			route:                     routes.NewMainRoute(routes.NewMainStop(initialPoint)),
+			route:                     route.NewMainRoute(route.NewMainStop(initialPoint)),
 		}
 		receivedItinerary := New(mockedCar)
 		Expect(receivedItinerary).To(Equal(expectedItinerary))
@@ -47,12 +47,12 @@ var _ = Describe("itinerary{}", func() {
 	Describe("ActualCarPoint", func() {
 		var sut itinerary
 		var mockedCtrl *gomock.Controller
-		var mockedCar *mockvehicles.MockICar
+		var mockedCar *mockvehicle.MockICar
 		var initialPoint = gps.Point{Latitude: 1, Longitude: 2, PackageSize: 3, Name: "initialPoint"}
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedCar = mockvehicles.NewMockICar(mockedCtrl)
+			mockedCar = mockvehicle.NewMockICar(mockedCtrl)
 			sut = itinerary{
 				car: mockedCar,
 			}
@@ -71,7 +71,7 @@ var _ = Describe("itinerary{}", func() {
 	Describe("CarSupport", func() {
 		var sut itinerary
 		var mockedCtrl *gomock.Controller
-		var mockedCar *mockvehicles.MockICar
+		var mockedCar *mockvehicle.MockICar
 		var nextPoints = []gps.Point{
 			{Latitude: 4, Longitude: 5, PackageSize: 6, Name: "destination1"},
 			{Latitude: 7, Longitude: 8, PackageSize: 9, Name: "destination2"},
@@ -79,7 +79,7 @@ var _ = Describe("itinerary{}", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedCar = mockvehicles.NewMockICar(mockedCtrl)
+			mockedCar = mockvehicle.NewMockICar(mockedCtrl)
 
 			sut = itinerary{
 				car: mockedCar,
@@ -104,8 +104,8 @@ var _ = Describe("itinerary{}", func() {
 	Describe("DroneCanReach", func() {
 		var sut itinerary
 		var mockedCtrl *gomock.Controller
-		var mockedDrone1 *mockvehicles.MockIDrone
-		var mockedDrone2 *mockvehicles.MockIDrone
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 		var nextPoints = []gps.Point{
 			{Latitude: 4, Longitude: 5, PackageSize: 6, Name: "destination1"},
 			{Latitude: 7, Longitude: 8, PackageSize: 9, Name: "destination2"},
@@ -113,11 +113,11 @@ var _ = Describe("itinerary{}", func() {
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedDrone1 = mockvehicles.NewMockIDrone(mockedCtrl)
-			mockedDrone2 = mockvehicles.NewMockIDrone(mockedCtrl)
+			mockedDrone1 = mockvehicle.NewMockIDrone(mockedCtrl)
+			mockedDrone2 = mockvehicle.NewMockIDrone(mockedCtrl)
 
 			sut = itinerary{
-				droneNumbersMap: map[DroneNumber]vehicles.IDrone{
+				droneNumbersMap: map[DroneNumber]vehicle.IDrone{
 					1: mockedDrone1,
 					2: mockedDrone2,
 				},
@@ -141,7 +141,7 @@ var _ = Describe("itinerary{}", func() {
 
 	Describe("DroneNumbers", func() {
 		var sut = itinerary{
-			droneNumbersMap: map[DroneNumber]vehicles.IDrone{
+			droneNumbersMap: map[DroneNumber]vehicle.IDrone{
 				1: nil,
 				2: nil,
 			},
@@ -157,16 +157,16 @@ var _ = Describe("itinerary{}", func() {
 	Describe("DroneIsFlying", func() {
 		var sut itinerary
 		var mockedCtrl *gomock.Controller
-		var mockedDrone1 *mockvehicles.MockIDrone
-		var mockedDrone2 *mockvehicles.MockIDrone
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedDrone1 = mockvehicles.NewMockIDrone(mockedCtrl)
-			mockedDrone2 = mockvehicles.NewMockIDrone(mockedCtrl)
+			mockedDrone1 = mockvehicle.NewMockIDrone(mockedCtrl)
+			mockedDrone2 = mockvehicle.NewMockIDrone(mockedCtrl)
 
 			sut = itinerary{
-				droneNumbersMap: map[DroneNumber]vehicles.IDrone{
+				droneNumbersMap: map[DroneNumber]vehicle.IDrone{
 					1: mockedDrone1,
 					2: mockedDrone2,
 				},
@@ -191,16 +191,16 @@ var _ = Describe("itinerary{}", func() {
 	Describe("DroneSupport", func() {
 		var sut itinerary
 		var mockedCtrl *gomock.Controller
-		var mockedDrone *mockvehicles.MockIDrone
+		var mockedDrone *mockvehicle.MockIDrone
 		var deliveryPoint = gps.Point{Latitude: 4, Longitude: 5, PackageSize: 6, Name: "destination1"}
 		var landingPoint = gps.Point{Latitude: 7, Longitude: 8, PackageSize: 9, Name: "destination2"}
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedDrone = mockvehicles.NewMockIDrone(mockedCtrl)
+			mockedDrone = mockvehicle.NewMockIDrone(mockedCtrl)
 
 			sut = itinerary{
-				droneNumbersMap: map[DroneNumber]vehicles.IDrone{
+				droneNumbersMap: map[DroneNumber]vehicle.IDrone{
 					1: mockedDrone,
 				},
 			}
@@ -237,23 +237,23 @@ var _ = Describe("itinerary{}", func() {
 	Describe("StartDroneFlight", func() {
 		var sut itinerary
 		var mockedCtrl *gomock.Controller
-		var mockedDrone *mockvehicles.MockIDrone
-		var mockedMainStop *mockroutes.MockIMainStop
-		var mockedSubRoute *mockroutes.MockISubRoute
+		var mockedDrone *mockvehicle.MockIDrone
+		var mockedMainStop *mockroute.MockIMainStop
+		var mockedSubRoute *mockroute.MockISubRoute
 
 		BeforeEach(func() {
-			flightFactory = func(_ routes.IMainStop) routes.ISubRoute { return mockedSubRoute }
+			flightFactory = func(_ route.IMainStop) route.ISubRoute { return mockedSubRoute }
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedDrone = mockvehicles.NewMockIDrone(mockedCtrl)
-			mockedMainStop = mockroutes.NewMockIMainStop(mockedCtrl)
-			mockedSubRoute = mockroutes.NewMockISubRoute(mockedCtrl)
+			mockedDrone = mockvehicle.NewMockIDrone(mockedCtrl)
+			mockedMainStop = mockroute.NewMockIMainStop(mockedCtrl)
+			mockedSubRoute = mockroute.NewMockISubRoute(mockedCtrl)
 
 			sut = itinerary{
-				droneNumbersMap: map[DroneNumber]vehicles.IDrone{
+				droneNumbersMap: map[DroneNumber]vehicle.IDrone{
 					1: nil,
 					2: mockedDrone,
 				},
-				activeFlights: map[DroneNumber]routes.ISubRoute{
+				activeFlights: map[DroneNumber]route.ISubRoute{
 					1: nil,
 					2: nil,
 				},
@@ -276,26 +276,26 @@ var _ = Describe("itinerary{}", func() {
 	Describe("LandDrone", func() {
 		var sut itinerary
 		var mockedCtrl *gomock.Controller
-		var mockedDrone1 *mockvehicles.MockIDrone
-		var mockedDrone2 *mockvehicles.MockIDrone
-		var mockedSubRoute *mockroutes.MockISubRoute
-		var mockedMainStop *mockroutes.MockIMainStop
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
+		var mockedSubRoute *mockroute.MockISubRoute
+		var mockedMainStop *mockroute.MockIMainStop
 		var landingPoint = gps.Point{Latitude: 4, Longitude: 5, PackageSize: 6, Name: "destination"}
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedDrone1 = mockvehicles.NewMockIDrone(mockedCtrl)
-			mockedDrone2 = mockvehicles.NewMockIDrone(mockedCtrl)
-			mockedSubRoute = mockroutes.NewMockISubRoute(mockedCtrl)
-			mockedMainStop = mockroutes.NewMockIMainStop(mockedCtrl)
+			mockedDrone1 = mockvehicle.NewMockIDrone(mockedCtrl)
+			mockedDrone2 = mockvehicle.NewMockIDrone(mockedCtrl)
+			mockedSubRoute = mockroute.NewMockISubRoute(mockedCtrl)
+			mockedMainStop = mockroute.NewMockIMainStop(mockedCtrl)
 
 			sut = itinerary{
-				activeFlights: map[DroneNumber]routes.ISubRoute{
+				activeFlights: map[DroneNumber]route.ISubRoute{
 					1: mockedSubRoute,
 					2: nil,
 				},
 				completedSubItineraryList: []subItinerary{},
-				droneNumbersMap: map[DroneNumber]vehicles.IDrone{
+				droneNumbersMap: map[DroneNumber]vehicle.IDrone{
 					1: mockedDrone1,
 					2: mockedDrone2,
 				},
@@ -321,31 +321,31 @@ var _ = Describe("itinerary{}", func() {
 	Describe("LandAllDrones", func() {
 		var sut itinerary
 		var mockedCtrl *gomock.Controller
-		var mockedDrone1 *mockvehicles.MockIDrone
-		var mockedDrone2 *mockvehicles.MockIDrone
-		var mockedDrone3 *mockvehicles.MockIDrone
-		var mockedSubRoute1 *mockroutes.MockISubRoute
-		var mockedSubRoute3 *mockroutes.MockISubRoute
-		var mockedMainStop *mockroutes.MockIMainStop
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
+		var mockedDrone3 *mockvehicle.MockIDrone
+		var mockedSubRoute1 *mockroute.MockISubRoute
+		var mockedSubRoute3 *mockroute.MockISubRoute
+		var mockedMainStop *mockroute.MockIMainStop
 		var landingPoint = gps.Point{Latitude: 4, Longitude: 5, PackageSize: 6, Name: "destination"}
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedDrone1 = mockvehicles.NewMockIDrone(mockedCtrl)
-			mockedDrone2 = mockvehicles.NewMockIDrone(mockedCtrl)
-			mockedDrone3 = mockvehicles.NewMockIDrone(mockedCtrl)
-			mockedSubRoute1 = mockroutes.NewMockISubRoute(mockedCtrl)
-			mockedSubRoute3 = mockroutes.NewMockISubRoute(mockedCtrl)
-			mockedMainStop = mockroutes.NewMockIMainStop(mockedCtrl)
+			mockedDrone1 = mockvehicle.NewMockIDrone(mockedCtrl)
+			mockedDrone2 = mockvehicle.NewMockIDrone(mockedCtrl)
+			mockedDrone3 = mockvehicle.NewMockIDrone(mockedCtrl)
+			mockedSubRoute1 = mockroute.NewMockISubRoute(mockedCtrl)
+			mockedSubRoute3 = mockroute.NewMockISubRoute(mockedCtrl)
+			mockedMainStop = mockroute.NewMockIMainStop(mockedCtrl)
 
 			sut = itinerary{
-				activeFlights: map[DroneNumber]routes.ISubRoute{
+				activeFlights: map[DroneNumber]route.ISubRoute{
 					1: mockedSubRoute1,
 					2: nil,
 					3: mockedSubRoute3,
 				},
 				completedSubItineraryList: []subItinerary{},
-				droneNumbersMap: map[DroneNumber]vehicles.IDrone{
+				droneNumbersMap: map[DroneNumber]vehicle.IDrone{
 					1: mockedDrone1,
 					2: mockedDrone2,
 					3: mockedDrone3,
@@ -378,14 +378,14 @@ var _ = Describe("itinerary{}", func() {
 	Describe("MoveCar", func() {
 		var sut itinerary
 		var mockedCtrl *gomock.Controller
-		var mockedCar *mockvehicles.MockICar
-		var mockedRoute *mockroutes.MockIMainRoute
+		var mockedCar *mockvehicle.MockICar
+		var mockedRoute *mockroute.MockIMainRoute
 		var destination = gps.Point{Latitude: 4, Longitude: 5, PackageSize: 6, Name: "destination"}
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedCar = mockvehicles.NewMockICar(mockedCtrl)
-			mockedRoute = mockroutes.NewMockIMainRoute(mockedCtrl)
+			mockedCar = mockvehicle.NewMockICar(mockedCtrl)
+			mockedRoute = mockroute.NewMockIMainRoute(mockedCtrl)
 
 			sut = itinerary{
 				car:   mockedCar,
@@ -398,7 +398,7 @@ var _ = Describe("itinerary{}", func() {
 		})
 
 		It("should append stop to route and move car to destination", func() {
-			mockedRoute.EXPECT().Append(routes.NewMainStop(destination))
+			mockedRoute.EXPECT().Append(route.NewMainStop(destination))
 			mockedCar.EXPECT().Move(destination)
 			sut.MoveCar(destination)
 		})
@@ -407,21 +407,21 @@ var _ = Describe("itinerary{}", func() {
 	Describe("MoveDrone", func() {
 		var sut itinerary
 		var mockedCtrl *gomock.Controller
-		var mockedDrone *mockvehicles.MockIDrone
-		var mockedSubRoute *mockroutes.MockISubRoute
+		var mockedDrone *mockvehicle.MockIDrone
+		var mockedSubRoute *mockroute.MockISubRoute
 		var destination = gps.Point{Latitude: 4, Longitude: 5, PackageSize: 6, Name: "destination"}
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedDrone = mockvehicles.NewMockIDrone(mockedCtrl)
-			mockedSubRoute = mockroutes.NewMockISubRoute(mockedCtrl)
+			mockedDrone = mockvehicle.NewMockIDrone(mockedCtrl)
+			mockedSubRoute = mockroute.NewMockISubRoute(mockedCtrl)
 
 			sut = itinerary{
-				activeFlights: map[DroneNumber]routes.ISubRoute{
+				activeFlights: map[DroneNumber]route.ISubRoute{
 					1: mockedSubRoute,
 					2: nil,
 				},
-				droneNumbersMap: map[DroneNumber]vehicles.IDrone{
+				droneNumbersMap: map[DroneNumber]vehicle.IDrone{
 					1: mockedDrone,
 					2: nil,
 				},
@@ -434,7 +434,7 @@ var _ = Describe("itinerary{}", func() {
 
 		Context("when drone has a flight", func() {
 			It("should append destination to flight and move drone to destination", func() {
-				mockedSubRoute.EXPECT().Append(routes.NewSubStop(destination))
+				mockedSubRoute.EXPECT().Append(route.NewSubStop(destination))
 				mockedDrone.EXPECT().Move(destination)
 				sut.MoveDrone(1, destination)
 			})
@@ -444,12 +444,12 @@ var _ = Describe("itinerary{}", func() {
 	Describe("RemoveMainStopFromRoute", func() {
 		var sut itinerary
 		var mockedCtrl *gomock.Controller
-		var mockedRoute *mockroutes.MockIMainRoute
+		var mockedRoute *mockroute.MockIMainRoute
 		var index = 1
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedRoute = mockroutes.NewMockIMainRoute(mockedCtrl)
+			mockedRoute = mockroute.NewMockIMainRoute(mockedCtrl)
 
 			sut = itinerary{
 				route: mockedRoute,
@@ -469,14 +469,14 @@ var _ = Describe("itinerary{}", func() {
 	Describe("RouteIterator", func() {
 		var sut itinerary
 		var mockedCtrl *gomock.Controller
-		var mockedRoute *mockroutes.MockIMainRoute
-		var mockedMainStop1 *mockroutes.MockIMainStop
-		var mockedMainStop2 *mockroutes.MockIMainStop
-		var mockedMainStops = []routes.IMainStop{mockedMainStop1, mockedMainStop2}
+		var mockedRoute *mockroute.MockIMainRoute
+		var mockedMainStop1 *mockroute.MockIMainStop
+		var mockedMainStop2 *mockroute.MockIMainStop
+		var mockedMainStops = []route.IMainStop{mockedMainStop1, mockedMainStop2}
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
-			mockedRoute = mockroutes.NewMockIMainRoute(mockedCtrl)
+			mockedRoute = mockroute.NewMockIMainRoute(mockedCtrl)
 
 			sut = itinerary{
 				route: mockedRoute,
@@ -488,7 +488,7 @@ var _ = Describe("itinerary{}", func() {
 		})
 
 		It("should return an iterator for the route", func() {
-			expectedIterator := slc.NewIterator[routes.IMainStop](mockedMainStops)
+			expectedIterator := slc.NewIterator[route.IMainStop](mockedMainStops)
 			mockedRoute.EXPECT().Iterator().Return(expectedIterator)
 			Expect(sut.RouteIterator()).To(Equal(expectedIterator))
 		})

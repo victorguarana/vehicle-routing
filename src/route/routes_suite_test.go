@@ -1,4 +1,4 @@
-package routes_test
+package route
 
 import (
 	"io"

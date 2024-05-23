@@ -3,8 +3,8 @@ package csp
 import (
 	"github.com/victorguarana/vehicle-routing/src/gps"
 	"github.com/victorguarana/vehicle-routing/src/itinerary"
-	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mocks"
-	mockroutes "github.com/victorguarana/vehicle-routing/src/routes/mocks"
+	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mock"
+	mockroute "github.com/victorguarana/vehicle-routing/src/route/mock"
 	"go.uber.org/mock/gomock"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -15,7 +15,7 @@ var _ = Describe("CoveringWithDrones", func() {
 	var mockedCtrl *gomock.Controller
 	var mockedItinerary1 *mockitinerary.MockItinerary
 	var mockedItinerary2 *mockitinerary.MockItinerary
-	var mockedCarStop *mockroutes.MockIMainStop
+	var mockedCarStop *mockroute.MockIMainStop
 	var itineraryList []itinerary.Itinerary
 	var mockedDroneNumber1 = itinerary.DroneNumber(1)
 	var mockedDroneNumber2 = itinerary.DroneNumber(2)
@@ -37,7 +37,7 @@ var _ = Describe("CoveringWithDrones", func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
 		mockedItinerary1 = mockitinerary.NewMockItinerary(mockedCtrl)
 		mockedItinerary2 = mockitinerary.NewMockItinerary(mockedCtrl)
-		mockedCarStop = mockroutes.NewMockIMainStop(mockedCtrl)
+		mockedCarStop = mockroute.NewMockIMainStop(mockedCtrl)
 		itineraryList = []itinerary.Itinerary{mockedItinerary1, mockedItinerary2}
 	})
 
@@ -95,7 +95,7 @@ var _ = Describe("CoveringWithDrones", func() {
 var _ = Describe("deliverNeighborsWithDrones", func() {
 	var mockedCtrl *gomock.Controller
 	var mockedItinerary *mockitinerary.MockItinerary
-	var mockedCarStop *mockroutes.MockIMainStop
+	var mockedCarStop *mockroute.MockIMainStop
 	var drone1 = itinerary.DroneNumber(1)
 	var drone2 = itinerary.DroneNumber(2)
 	var droneNumbers = []itinerary.DroneNumber{drone1, drone2}
@@ -109,7 +109,7 @@ var _ = Describe("deliverNeighborsWithDrones", func() {
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
 		mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-		mockedCarStop = mockroutes.NewMockIMainStop(mockedCtrl)
+		mockedCarStop = mockroute.NewMockIMainStop(mockedCtrl)
 	})
 
 	AfterEach(func() {

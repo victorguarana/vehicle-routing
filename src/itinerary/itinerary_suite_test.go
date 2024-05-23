@@ -1,4 +1,4 @@
-package itinerary_test
+package itinerary
 
 import (
 	"testing"

@@ -4,9 +4,9 @@ import (
 	"go.uber.org/mock/gomock"
 
 	"github.com/victorguarana/vehicle-routing/src/gps"
-	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mocks"
-	"github.com/victorguarana/vehicle-routing/src/routes"
-	mockroutes "github.com/victorguarana/vehicle-routing/src/routes/mocks"
+	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mock"
+	"github.com/victorguarana/vehicle-routing/src/route"
+	mockroute "github.com/victorguarana/vehicle-routing/src/route/mock"
 	"github.com/victorguarana/vehicle-routing/src/slc"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -17,11 +17,11 @@ var _ = Describe("TimeSpent", func() {
 	Context("when itinerary does not have subroutes", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedItinerary *mockitinerary.MockItinerary
-		var mockedMainStop1 *mockroutes.MockIMainStop
-		var mockedMainStop2 *mockroutes.MockIMainStop
-		var mockedMainStop3 *mockroutes.MockIMainStop
-		var mockedMainStop4 *mockroutes.MockIMainStop
-		var mockedMainStop5 *mockroutes.MockIMainStop
+		var mockedMainStop1 *mockroute.MockIMainStop
+		var mockedMainStop2 *mockroute.MockIMainStop
+		var mockedMainStop3 *mockroute.MockIMainStop
+		var mockedMainStop4 *mockroute.MockIMainStop
+		var mockedMainStop5 *mockroute.MockIMainStop
 		var mainPoint1 = gps.Point{Latitude: 0, Name: "MainPoint1"}
 		var mainPoint2 = gps.Point{Latitude: 30, Name: "MainPoint2"}
 		var mainPoint3 = gps.Point{Latitude: 10, Name: "MainPoint3"}
@@ -33,11 +33,11 @@ var _ = Describe("TimeSpent", func() {
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedMainStop1 = mockroutes.NewMockIMainStop(mockedCtrl)
-			mockedMainStop2 = mockroutes.NewMockIMainStop(mockedCtrl)
-			mockedMainStop3 = mockroutes.NewMockIMainStop(mockedCtrl)
-			mockedMainStop4 = mockroutes.NewMockIMainStop(mockedCtrl)
-			mockedMainStop5 = mockroutes.NewMockIMainStop(mockedCtrl)
+			mockedMainStop1 = mockroute.NewMockIMainStop(mockedCtrl)
+			mockedMainStop2 = mockroute.NewMockIMainStop(mockedCtrl)
+			mockedMainStop3 = mockroute.NewMockIMainStop(mockedCtrl)
+			mockedMainStop4 = mockroute.NewMockIMainStop(mockedCtrl)
+			mockedMainStop5 = mockroute.NewMockIMainStop(mockedCtrl)
 		})
 
 		It("should return the total distance of the route", func() {
@@ -59,7 +59,7 @@ var _ = Describe("TimeSpent", func() {
 			mockedMainStop4.EXPECT().ReturningSubRoutes().Return(nil)
 			mockedMainStop5.EXPECT().ReturningSubRoutes().Return(nil)
 
-			mockedItinerary.EXPECT().RouteIterator().Return(slc.NewIterator([]routes.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
+			mockedItinerary.EXPECT().RouteIterator().Return(slc.NewIterator([]route.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
 			mockedItinerary.EXPECT().CarSpeed().Return(carSpeed)
 			mockedItinerary.EXPECT().DroneSpeed().Return(droneSpeed)
 
@@ -72,17 +72,17 @@ var _ = Describe("TimeSpent", func() {
 	Context("when itinerary has subroutes", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedItinerary *mockitinerary.MockItinerary
-		var mockedSubRoute1 *mockroutes.MockISubRoute
-		var mockedSubRoute2 *mockroutes.MockISubRoute
-		var mockedMainStop1 *mockroutes.MockIMainStop
-		var mockedMainStop2 *mockroutes.MockIMainStop
-		var mockedMainStop3 *mockroutes.MockIMainStop
-		var mockedMainStop4 *mockroutes.MockIMainStop
-		var mockedMainStop5 *mockroutes.MockIMainStop
-		var mockedSubStop1 *mockroutes.MockISubStop
-		var mockedSubStop2 *mockroutes.MockISubStop
-		var mockedSubStop3 *mockroutes.MockISubStop
-		var mockedSubStop4 *mockroutes.MockISubStop
+		var mockedSubRoute1 *mockroute.MockISubRoute
+		var mockedSubRoute2 *mockroute.MockISubRoute
+		var mockedMainStop1 *mockroute.MockIMainStop
+		var mockedMainStop2 *mockroute.MockIMainStop
+		var mockedMainStop3 *mockroute.MockIMainStop
+		var mockedMainStop4 *mockroute.MockIMainStop
+		var mockedMainStop5 *mockroute.MockIMainStop
+		var mockedSubStop1 *mockroute.MockISubStop
+		var mockedSubStop2 *mockroute.MockISubStop
+		var mockedSubStop3 *mockroute.MockISubStop
+		var mockedSubStop4 *mockroute.MockISubStop
 		var mainPoint1 = gps.Point{Latitude: 0, Name: "MainPoint1"}
 		var mainPoint2 = gps.Point{Latitude: 5, Name: "MainPoint2"}
 		var mainPoint3 = gps.Point{Latitude: 10, Name: "MainPoint3"}
@@ -98,17 +98,17 @@ var _ = Describe("TimeSpent", func() {
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedItinerary = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedSubRoute1 = mockroutes.NewMockISubRoute(mockedCtrl)
-			mockedSubRoute2 = mockroutes.NewMockISubRoute(mockedCtrl)
-			mockedMainStop1 = mockroutes.NewMockIMainStop(mockedCtrl)
-			mockedMainStop2 = mockroutes.NewMockIMainStop(mockedCtrl)
-			mockedMainStop3 = mockroutes.NewMockIMainStop(mockedCtrl)
-			mockedMainStop4 = mockroutes.NewMockIMainStop(mockedCtrl)
-			mockedMainStop5 = mockroutes.NewMockIMainStop(mockedCtrl)
-			mockedSubStop1 = mockroutes.NewMockISubStop(mockedCtrl)
-			mockedSubStop2 = mockroutes.NewMockISubStop(mockedCtrl)
-			mockedSubStop3 = mockroutes.NewMockISubStop(mockedCtrl)
-			mockedSubStop4 = mockroutes.NewMockISubStop(mockedCtrl)
+			mockedSubRoute1 = mockroute.NewMockISubRoute(mockedCtrl)
+			mockedSubRoute2 = mockroute.NewMockISubRoute(mockedCtrl)
+			mockedMainStop1 = mockroute.NewMockIMainStop(mockedCtrl)
+			mockedMainStop2 = mockroute.NewMockIMainStop(mockedCtrl)
+			mockedMainStop3 = mockroute.NewMockIMainStop(mockedCtrl)
+			mockedMainStop4 = mockroute.NewMockIMainStop(mockedCtrl)
+			mockedMainStop5 = mockroute.NewMockIMainStop(mockedCtrl)
+			mockedSubStop1 = mockroute.NewMockISubStop(mockedCtrl)
+			mockedSubStop2 = mockroute.NewMockISubStop(mockedCtrl)
+			mockedSubStop3 = mockroute.NewMockISubStop(mockedCtrl)
+			mockedSubStop4 = mockroute.NewMockISubStop(mockedCtrl)
 		})
 
 		It("should return the total distance of the route", func() {
@@ -123,17 +123,17 @@ var _ = Describe("TimeSpent", func() {
 			mockedSubStop3.EXPECT().Point().Return(subPoint3).AnyTimes()
 			mockedSubStop4.EXPECT().Point().Return(subPoint4).AnyTimes()
 
-			mockedMainStop1.EXPECT().StartingSubRoutes().Return([]routes.ISubRoute{mockedSubRoute1})
+			mockedMainStop1.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{mockedSubRoute1})
 			mockedMainStop2.EXPECT().StartingSubRoutes().Return(nil)
-			mockedMainStop3.EXPECT().StartingSubRoutes().Return([]routes.ISubRoute{mockedSubRoute2})
+			mockedMainStop3.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{mockedSubRoute2})
 			mockedMainStop4.EXPECT().StartingSubRoutes().Return(nil)
 			mockedMainStop5.EXPECT().StartingSubRoutes().Return(nil)
 
 			mockedMainStop1.EXPECT().ReturningSubRoutes().Return(nil)
 			mockedMainStop2.EXPECT().ReturningSubRoutes().Return(nil)
-			mockedMainStop3.EXPECT().ReturningSubRoutes().Return([]routes.ISubRoute{mockedSubRoute1})
+			mockedMainStop3.EXPECT().ReturningSubRoutes().Return([]route.ISubRoute{mockedSubRoute1})
 			mockedMainStop4.EXPECT().ReturningSubRoutes().Return(nil)
-			mockedMainStop5.EXPECT().ReturningSubRoutes().Return([]routes.ISubRoute{mockedSubRoute2})
+			mockedMainStop5.EXPECT().ReturningSubRoutes().Return([]route.ISubRoute{mockedSubRoute2})
 
 			mockedSubRoute1.EXPECT().StartingStop().Return(mockedMainStop1)
 			mockedSubRoute1.EXPECT().ReturningStop().Return(mockedMainStop3)
@@ -141,11 +141,11 @@ var _ = Describe("TimeSpent", func() {
 			mockedSubRoute2.EXPECT().ReturningStop().Return(mockedMainStop5)
 
 			mockedSubRoute1.EXPECT().First().Return(mockedSubStop1)
-			mockedSubRoute1.EXPECT().Iterator().Return(slc.NewIterator([]routes.ISubStop{mockedSubStop1, mockedSubStop2}))
+			mockedSubRoute1.EXPECT().Iterator().Return(slc.NewIterator([]route.ISubStop{mockedSubStop1, mockedSubStop2}))
 			mockedSubRoute2.EXPECT().First().Return(mockedSubStop3)
-			mockedSubRoute2.EXPECT().Iterator().Return(slc.NewIterator([]routes.ISubStop{mockedSubStop3, mockedSubStop4}))
+			mockedSubRoute2.EXPECT().Iterator().Return(slc.NewIterator([]route.ISubStop{mockedSubStop3, mockedSubStop4}))
 
-			mockedItinerary.EXPECT().RouteIterator().Return(slc.NewIterator([]routes.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
+			mockedItinerary.EXPECT().RouteIterator().Return(slc.NewIterator([]route.IMainStop{mockedMainStop1, mockedMainStop2, mockedMainStop3, mockedMainStop4, mockedMainStop5}))
 			mockedItinerary.EXPECT().CarSpeed().Return(carSpeed)
 			mockedItinerary.EXPECT().DroneSpeed().Return(droneSpeed)
 
@@ -159,14 +159,14 @@ var _ = Describe("TimeSpent", func() {
 
 var _ = Describe("calcSubRouteTimes", func() {
 	var mockedCtrl *gomock.Controller
-	var mockedSubRoute1 *mockroutes.MockISubRoute
-	var mockedSubRoute2 *mockroutes.MockISubRoute
-	var mockedStartingStop *mockroutes.MockIMainStop
-	var mockedReturningStop *mockroutes.MockIMainStop
-	var mockedSubStop1 *mockroutes.MockISubStop
-	var mockedSubStop2 *mockroutes.MockISubStop
-	var mockedSubStop3 *mockroutes.MockISubStop
-	var mockedSubStop4 *mockroutes.MockISubStop
+	var mockedSubRoute1 *mockroute.MockISubRoute
+	var mockedSubRoute2 *mockroute.MockISubRoute
+	var mockedStartingStop *mockroute.MockIMainStop
+	var mockedReturningStop *mockroute.MockIMainStop
+	var mockedSubStop1 *mockroute.MockISubStop
+	var mockedSubStop2 *mockroute.MockISubStop
+	var mockedSubStop3 *mockroute.MockISubStop
+	var mockedSubStop4 *mockroute.MockISubStop
 	var startingPoint = gps.Point{Latitude: 0, Name: "StartingPoint1"}
 	var returningPoint = gps.Point{Latitude: 20, Name: "ReturningPoint"}
 	var point1 = gps.Point{Latitude: 5, Name: "Point1"}
@@ -177,14 +177,14 @@ var _ = Describe("calcSubRouteTimes", func() {
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
-		mockedSubRoute1 = mockroutes.NewMockISubRoute(mockedCtrl)
-		mockedSubRoute2 = mockroutes.NewMockISubRoute(mockedCtrl)
-		mockedStartingStop = mockroutes.NewMockIMainStop(mockedCtrl)
-		mockedReturningStop = mockroutes.NewMockIMainStop(mockedCtrl)
-		mockedSubStop1 = mockroutes.NewMockISubStop(mockedCtrl)
-		mockedSubStop2 = mockroutes.NewMockISubStop(mockedCtrl)
-		mockedSubStop3 = mockroutes.NewMockISubStop(mockedCtrl)
-		mockedSubStop4 = mockroutes.NewMockISubStop(mockedCtrl)
+		mockedSubRoute1 = mockroute.NewMockISubRoute(mockedCtrl)
+		mockedSubRoute2 = mockroute.NewMockISubRoute(mockedCtrl)
+		mockedStartingStop = mockroute.NewMockIMainStop(mockedCtrl)
+		mockedReturningStop = mockroute.NewMockIMainStop(mockedCtrl)
+		mockedSubStop1 = mockroute.NewMockISubStop(mockedCtrl)
+		mockedSubStop2 = mockroute.NewMockISubStop(mockedCtrl)
+		mockedSubStop3 = mockroute.NewMockISubStop(mockedCtrl)
+		mockedSubStop4 = mockroute.NewMockISubStop(mockedCtrl)
 	})
 
 	Context("when subroute has points", func() {
@@ -195,9 +195,9 @@ var _ = Describe("calcSubRouteTimes", func() {
 			mockedSubStop4.EXPECT().Point().Return(point4).AnyTimes()
 
 			mockedSubRoute1.EXPECT().First().Return(mockedSubStop1)
-			mockedSubRoute1.EXPECT().Iterator().Return(slc.NewIterator([]routes.ISubStop{mockedSubStop1, mockedSubStop2}))
+			mockedSubRoute1.EXPECT().Iterator().Return(slc.NewIterator([]route.ISubStop{mockedSubStop1, mockedSubStop2}))
 			mockedSubRoute2.EXPECT().First().Return(mockedSubStop3)
-			mockedSubRoute2.EXPECT().Iterator().Return(slc.NewIterator([]routes.ISubStop{mockedSubStop3, mockedSubStop4}))
+			mockedSubRoute2.EXPECT().Iterator().Return(slc.NewIterator([]route.ISubStop{mockedSubStop3, mockedSubStop4}))
 
 			mockedSubRoute1.EXPECT().StartingStop().Return(mockedStartingStop)
 			mockedSubRoute2.EXPECT().StartingStop().Return(mockedStartingStop)
@@ -206,7 +206,7 @@ var _ = Describe("calcSubRouteTimes", func() {
 			mockedSubRoute2.EXPECT().ReturningStop().Return(mockedReturningStop)
 			mockedReturningStop.EXPECT().Point().Return(returningPoint).Times(2)
 
-			subRoutes := []routes.ISubRoute{mockedSubRoute1, mockedSubRoute2}
+			subRoutes := []route.ISubRoute{mockedSubRoute1, mockedSubRoute2}
 			subRouteFlyingTimes := make(subRouteTimes)
 			mainRouteTravelTime := make(subRouteTimes)
 			expectedSubRoutesFlyingTimes := subRouteTimes{
@@ -224,13 +224,13 @@ var _ = Describe("calcSubRouteTimes", func() {
 
 var _ = Describe("maxAdditionalTimeWaitingSubRoutes", func() {
 	var mockedCtrl *gomock.Controller
-	var mockedSubRoute1 *mockroutes.MockISubRoute
-	var mockedSubRoute2 *mockroutes.MockISubRoute
+	var mockedSubRoute1 *mockroute.MockISubRoute
+	var mockedSubRoute2 *mockroute.MockISubRoute
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
-		mockedSubRoute1 = mockroutes.NewMockISubRoute(mockedCtrl)
-		mockedSubRoute2 = mockroutes.NewMockISubRoute(mockedCtrl)
+		mockedSubRoute1 = mockroute.NewMockISubRoute(mockedCtrl)
+		mockedSubRoute2 = mockroute.NewMockISubRoute(mockedCtrl)
 	})
 
 	Context("when both received subroute are slower than main route", func() {
@@ -243,7 +243,7 @@ var _ = Describe("maxAdditionalTimeWaitingSubRoutes", func() {
 			}
 			receivedAdditionalTime := maxAdditionalTimeWaitingSubRoutes(
 				mainRouteTravelTime, subRouteFlyingTimes,
-				[]routes.ISubRoute{mockedSubRoute1, mockedSubRoute2},
+				[]route.ISubRoute{mockedSubRoute1, mockedSubRoute2},
 			)
 			Expect(receivedAdditionalTime).To(Equal(15.0))
 		})
@@ -259,7 +259,7 @@ var _ = Describe("maxAdditionalTimeWaitingSubRoutes", func() {
 			}
 			receivedAdditionalTime := maxAdditionalTimeWaitingSubRoutes(
 				mainRouteTravelTime, subRouteFlyingTimes,
-				[]routes.ISubRoute{mockedSubRoute2},
+				[]route.ISubRoute{mockedSubRoute2},
 			)
 			Expect(receivedAdditionalTime).To(Equal(5.0))
 		})
@@ -275,7 +275,7 @@ var _ = Describe("maxAdditionalTimeWaitingSubRoutes", func() {
 			}
 			receivedAdditionalTime := maxAdditionalTimeWaitingSubRoutes(
 				mainRouteTravelTime, subRouteFlyingTimes,
-				[]routes.ISubRoute{mockedSubRoute1, mockedSubRoute2},
+				[]route.ISubRoute{mockedSubRoute1, mockedSubRoute2},
 			)
 			Expect(receivedAdditionalTime).To(BeZero())
 		})
@@ -291,7 +291,7 @@ var _ = Describe("maxAdditionalTimeWaitingSubRoutes", func() {
 			}
 			receivedAdditionalTime := maxAdditionalTimeWaitingSubRoutes(
 				mainRouteTravelTime, subRouteFlyingTimes,
-				[]routes.ISubRoute{mockedSubRoute1},
+				[]route.ISubRoute{mockedSubRoute1},
 			)
 			Expect(receivedAdditionalTime).To(BeZero())
 		})

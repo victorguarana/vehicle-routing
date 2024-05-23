@@ -1,4 +1,4 @@
-package slc_test
+package slc
 
 import (
 	"io"

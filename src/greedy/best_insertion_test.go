@@ -5,7 +5,7 @@ import (
 
 	"github.com/victorguarana/vehicle-routing/src/gps"
 	"github.com/victorguarana/vehicle-routing/src/itinerary"
-	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mocks"
+	mockitinerary "github.com/victorguarana/vehicle-routing/src/itinerary/mock"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"

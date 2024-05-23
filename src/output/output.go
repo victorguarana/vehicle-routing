@@ -5,7 +5,7 @@ import (
 
 	"github.com/fogleman/gg"
 	"github.com/victorguarana/vehicle-routing/src/itinerary"
-	"github.com/victorguarana/vehicle-routing/src/routes"
+	"github.com/victorguarana/vehicle-routing/src/route"
 )
 
 var textColor = color.Black
@@ -57,7 +57,7 @@ func itineraryToImage(ggCtx *gg.Context, itn itinerary.Itinerary) {
 	drawStop(ggCtx, iterator.Actual())
 }
 
-func flightsToImage(ggCtx *gg.Context, flights []routes.ISubRoute) {
+func flightsToImage(ggCtx *gg.Context, flights []route.ISubRoute) {
 	for _, flight := range flights {
 		drawMovement(ggCtx, flight.StartingStop(), flight.First(), loadDroneImage(), flightLineColor)
 		iterator := flight.Iterator()

@@ -2,7 +2,7 @@ package greedy
 
 import (
 	"github.com/victorguarana/vehicle-routing/src/itinerary"
-	"github.com/victorguarana/vehicle-routing/src/routes"
+	"github.com/victorguarana/vehicle-routing/src/route"
 )
 
 const maxStrikes = 3
@@ -80,7 +80,7 @@ func anyDroneWasStriked(dStrks []droneStrikes) bool {
 	return false
 }
 
-func anyDroneNeedToLand(itinerary itinerary.Itinerary, dStrks []droneStrikes, next routes.IMainStop) bool {
+func anyDroneNeedToLand(itinerary itinerary.Itinerary, dStrks []droneStrikes, next route.IMainStop) bool {
 	nextPoint := next.Point()
 	for _, dStrk := range dStrks {
 		if itinerary.DroneIsFlying(dStrk.droneNumber) && !itinerary.DroneCanReach(dStrk.droneNumber, nextPoint) {
@@ -90,7 +90,7 @@ func anyDroneNeedToLand(itinerary itinerary.Itinerary, dStrks []droneStrikes, ne
 	return false
 }
 
-func updateDroneStrikes(itinerary itinerary.Itinerary, dStrks []droneStrikes, actual routes.IMainStop, next routes.IMainStop) {
+func updateDroneStrikes(itinerary itinerary.Itinerary, dStrks []droneStrikes, actual route.IMainStop, next route.IMainStop) {
 	actualPoint := actual.Point()
 	nextPoint := next.Point()
 	for i, dStrk := range dStrks {
@@ -105,7 +105,7 @@ func updateDroneStrikes(itinerary itinerary.Itinerary, dStrks []droneStrikes, ac
 	}
 }
 
-func flyingDroneThatCanSupport(itn itinerary.Itinerary, dStrks []droneStrikes, actual routes.IMainStop, next routes.IMainStop) (itinerary.DroneNumber, bool) {
+func flyingDroneThatCanSupport(itn itinerary.Itinerary, dStrks []droneStrikes, actual route.IMainStop, next route.IMainStop) (itinerary.DroneNumber, bool) {
 	actualPoint := actual.Point()
 	nextPoint := next.Point()
 	nextPoint.PackageSize = 0
@@ -117,7 +117,7 @@ func flyingDroneThatCanSupport(itn itinerary.Itinerary, dStrks []droneStrikes, a
 	return 0, false
 }
 
-func dockedDroneThatCanSupport(itn itinerary.Itinerary, dStrks []droneStrikes, actual routes.IMainStop, next routes.IMainStop) (itinerary.DroneNumber, bool) {
+func dockedDroneThatCanSupport(itn itinerary.Itinerary, dStrks []droneStrikes, actual route.IMainStop, next route.IMainStop) (itinerary.DroneNumber, bool) {
 	actualPoint := actual.Point()
 	nextPoint := next.Point()
 	nextPoint.PackageSize = 0

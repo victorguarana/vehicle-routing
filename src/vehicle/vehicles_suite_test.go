@@ -1,4 +1,4 @@
-package vehicles_test
+package vehicle
 
 import (
 	"testing"
