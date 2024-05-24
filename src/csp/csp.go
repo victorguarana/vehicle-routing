@@ -3,6 +3,7 @@ package csp
 import (
 	"github.com/victorguarana/vehicle-routing/src/gps"
 	"github.com/victorguarana/vehicle-routing/src/itinerary"
+	"github.com/victorguarana/vehicle-routing/src/route"
 	"github.com/victorguarana/vehicle-routing/src/slc"
 )
 
@@ -32,17 +33,27 @@ func deliverNeighborsWithDrones(constructor itinerary.Constructor, neighbors []g
 	for neighborIndex, droneIndex := 0, 0; neighborIndex < len(neighbors); droneIndex++ {
 		actualNeighbor := neighbors[neighborIndex]
 		actualDroneNumber := slc.CircularSelection(droneNumbers, droneIndex)
-		if constructor.DroneSupport(actualDroneNumber, actualNeighbor, actualCarPoint) {
-			if !constructor.DroneIsFlying(actualDroneNumber) {
-				constructor.StartDroneFlight(actualDroneNumber, actualCarStop)
-			}
-			constructor.MoveDrone(actualDroneNumber, actualNeighbor)
+		if shouldRetry := tryToDeliver(constructor, actualDroneNumber, actualCarStop, actualCarPoint, actualNeighbor); !shouldRetry {
 			neighborIndex++
-		} else {
-			constructor.LandDrone(actualDroneNumber, actualCarStop)
 		}
 	}
 	constructor.LandAllDrones(actualCarStop)
+}
+
+func tryToDeliver(constructor itinerary.Constructor, droneNumber itinerary.DroneNumber, returningStop route.IMainStop, returningPoint gps.Point, destination gps.Point) bool {
+	if constructor.DroneSupport(droneNumber, destination, returningPoint) {
+		if !constructor.DroneIsFlying(droneNumber) {
+			constructor.StartDroneFlight(droneNumber, returningStop)
+		}
+		constructor.MoveDrone(droneNumber, destination)
+		return false
+	}
+
+	if constructor.DroneIsFlying(droneNumber) {
+		constructor.LandDrone(droneNumber, returningStop)
+		return true
+	}
+	return false
 }
 
 func removeClientAndItsNeighborsFromMap(client gps.Point, clientsNeighborhood gps.Neighborhood) {

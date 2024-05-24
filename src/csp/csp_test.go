@@ -135,6 +135,7 @@ var _ = Describe("deliverNeighborsWithDrones", func() {
 
 		// Drone1 does not support client3: Land drone1
 		mockedConstructor.EXPECT().DroneSupport(drone1, client3, actualCarPoint).Return(false)
+		mockedConstructor.EXPECT().DroneIsFlying(drone1).Return(true)
 		mockedConstructor.EXPECT().LandDrone(drone1, mockedCarStop)
 
 		// Drone2 supports client3: Move to client3
