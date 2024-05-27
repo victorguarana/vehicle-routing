@@ -1,7 +1,6 @@
 package gps
 
 import (
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -15,7 +14,7 @@ type Map struct {
 func LoadMap(filename string) Map {
 	content, err := os.ReadFile(filename)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	completeFile := string(content)
@@ -27,17 +26,17 @@ func fileLineToPoint(line string) Point {
 	fields := strings.Split(line, ";")
 	latitude, err := strconv.ParseFloat(fields[1], 64)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	longitude, err := strconv.ParseFloat(fields[2], 64)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	packageSize, err := strconv.ParseFloat(fields[3], 64)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	return Point{
