@@ -65,7 +65,7 @@ var _ = Describe("DistanceBetweenPoints", func() {
 			Expect(DistanceBetweenPoints(points...)).To(Equal(20.0))
 		})
 	})
-	Context("when points are oposite", func() {
+	Context("when points are opposite", func() {
 		var points = []Point{
 			{Latitude: 10, Longitude: 10},
 			{Latitude: -10, Longitude: -10},
