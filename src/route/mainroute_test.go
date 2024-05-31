@@ -34,43 +34,6 @@ var _ = Describe("mainRoute{}", func() {
 		})
 	})
 
-	Describe("AtIndex", func() {
-		var sut = mainRoute{
-			mainStops: []*mainStop{
-				{point: gps.Point{Latitude: 0, Longitude: 0}},
-				{point: gps.Point{Latitude: 1, Longitude: 1}},
-			},
-		}
-
-		Context("when index is valid", func() {
-			It("should return car stop at index", func() {
-				expectedStop := sut.mainStops[1]
-				receivedStop := sut.AtIndex(1)
-				Expect(receivedStop).To(Equal(expectedStop))
-			})
-		})
-
-		Context("when index is invalid", func() {
-			It("should return nil", func() {
-				receivedStop := sut.AtIndex(2)
-				Expect(receivedStop).To(BeNil())
-			})
-		})
-	})
-
-	Describe("First", func() {
-		var firstMainStop = &mainStop{point: gps.Point{Latitude: 0}}
-		var secondMainStop = &mainStop{point: gps.Point{Latitude: 1}}
-		var sut = mainRoute{
-			mainStops: []*mainStop{firstMainStop, secondMainStop},
-		}
-
-		It("should return first car stop", func() {
-			receivedStop := sut.First()
-			Expect(receivedStop).To(Equal(firstMainStop))
-		})
-	})
-
 	Describe("InserAt", func() {
 		var sut mainRoute
 		var newStop = &mainStop{point: gps.Point{}}
