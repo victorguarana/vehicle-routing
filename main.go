@@ -43,7 +43,7 @@ func ClosestNeighbor(mapFilename string) {
 	log.Println("ClosestNeighbor: Total Time:", totalTime)
 	log.Println("ClosestNeighbor: Total Fuel Spent:", totalFuelSpent)
 
-	filename := fmt.Sprintf("%s-closest-neighbor.png", removeExtentionFromFilename(mapFilename))
+	filename := fmt.Sprintf("%s_closest_neighbor.png", removeExtentionFromFilename(mapFilename))
 	output.ToImage(filename, itnInfo, totalDistance, totalTime)
 }
 
@@ -66,7 +66,7 @@ func ClosestNeighborWithDrones(mapFilename string) {
 	log.Println("ClosestNeighborWithDrones: Total Time:", totalTime)
 	log.Println("ClosestNeighborWithDrones: Total Fuel Spent:", totalFuelSpent)
 
-	filename := fmt.Sprintf("%s-closest-neighbor-with-drones.png", removeExtentionFromFilename(mapFilename))
+	filename := fmt.Sprintf("%s_closest_neighbor_with_drones.png", removeExtentionFromFilename(mapFilename))
 	output.ToImage(filename, itnInfo, totalDistance, totalTime)
 }
 
@@ -87,7 +87,7 @@ func BestInsertion(mapFilename string) {
 	log.Println("BestInsertion: Total Time:", totalTime)
 	log.Println("BestInsertion: Total Fuel Spent:", totalFuelSpent)
 
-	filename := fmt.Sprintf("%s-best-insertion.png", removeExtentionFromFilename(mapFilename))
+	filename := fmt.Sprintf("%s_best_insertion.png", removeExtentionFromFilename(mapFilename))
 	output.ToImage(filename, itnInfo, totalDistance, totalTime)
 }
 
@@ -110,7 +110,7 @@ func BestInsertionWithDrones(mapFilename string) {
 	log.Println("BestInsertionWithDrones: Total Time:", totalTime)
 	log.Println("BestInsertionWithDrones: Total Fuel Spent:", totalFuelSpent)
 
-	filename := fmt.Sprintf("%s-best-insertion-with-drones.png", removeExtentionFromFilename(mapFilename))
+	filename := fmt.Sprintf("%s_best_insertion_with_drones.png", removeExtentionFromFilename(mapFilename))
 	output.ToImage(filename, itnInfo, totalDistance, totalTime)
 }
 
@@ -132,7 +132,7 @@ func Covering(mapFilename string) {
 	log.Println("Covering: Total Time:", totalTime)
 	log.Println("Covering: Total Fuel Spent:", totalFuelSpent)
 
-	filename := fmt.Sprintf("%s-covering.png", removeExtentionFromFilename(mapFilename))
+	filename := fmt.Sprintf("%s_covering.png", removeExtentionFromFilename(mapFilename))
 	output.ToImage(filename, itnInfo, totalDistance, totalTime)
 }
 
@@ -154,7 +154,7 @@ func CoveringMaxDrones(mapFilename string) {
 	log.Println("CoveringMaxDrones: Total Time:", totalTime)
 	log.Println("CoveringMaxDrones: Total Fuel Spent:", totalFuelSpent)
 
-	filename := fmt.Sprintf("%s-covering-max-drones.png", removeExtentionFromFilename(mapFilename))
+	filename := fmt.Sprintf("%s_covering_max_drones.png", removeExtentionFromFilename(mapFilename))
 	output.ToImage(filename, itnInfo, totalDistance, totalTime)
 }
 

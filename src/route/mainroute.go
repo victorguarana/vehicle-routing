@@ -8,8 +8,8 @@ import (
 
 type IMainRoute interface {
 	Append(mainStop IMainStop)
-	AtIndex(index int) IMainStop
-	First() IMainStop
+	// AtIndex(index int) IMainStop
+	// First() IMainStop
 	InserAt(index int, mainStop IMainStop)
 	Iterator() slc.Iterator[IMainStop]
 	Last() IMainStop
@@ -31,18 +31,6 @@ func NewMainRoute(iMainStop IMainStop) IMainRoute {
 func (r *mainRoute) Append(iMainStop IMainStop) {
 	ms := iMainStop.(*mainStop)
 	r.mainStops = append(r.mainStops, ms)
-}
-
-func (r *mainRoute) AtIndex(index int) IMainStop {
-	if index < 0 || index >= len(r.mainStops) {
-		log.Printf("AtIndex: index (%d) out of range\n", index)
-		return nil
-	}
-	return r.mainStops[index]
-}
-
-func (r *mainRoute) First() IMainStop {
-	return r.mainStops[0]
 }
 
 func (r *mainRoute) InserAt(index int, iMainStop IMainStop) {

@@ -65,6 +65,7 @@ var _ = Describe("drone{}", func() {
 		var sut = drone{
 			totalStorage: 10,
 			totalRange:   100,
+			isFlying:     true,
 		}
 
 		It("should land drone and reset attributes", func() {

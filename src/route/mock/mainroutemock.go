@@ -52,34 +52,6 @@ func (mr *MockIMainRouteMockRecorder) Append(mainStop any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Append", reflect.TypeOf((*MockIMainRoute)(nil).Append), mainStop)
 }
 
-// AtIndex mocks base method.
-func (m *MockIMainRoute) AtIndex(index int) route.IMainStop {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AtIndex", index)
-	ret0, _ := ret[0].(route.IMainStop)
-	return ret0
-}
-
-// AtIndex indicates an expected call of AtIndex.
-func (mr *MockIMainRouteMockRecorder) AtIndex(index any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AtIndex", reflect.TypeOf((*MockIMainRoute)(nil).AtIndex), index)
-}
-
-// First mocks base method.
-func (m *MockIMainRoute) First() route.IMainStop {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "First")
-	ret0, _ := ret[0].(route.IMainStop)
-	return ret0
-}
-
-// First indicates an expected call of First.
-func (mr *MockIMainRouteMockRecorder) First() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "First", reflect.TypeOf((*MockIMainRoute)(nil).First))
-}
-
 // InserAt mocks base method.
 func (m *MockIMainRoute) InserAt(index int, mainStop route.IMainStop) {
 	m.ctrl.T.Helper()

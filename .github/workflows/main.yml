@@ -13,7 +13,7 @@ jobs:
         go-version: '1.22.2'
 
     - name: Run Ginkgo Tests
-      run: go run github.com/onsi/ginkgo/v2/ginkgo -r -v ./...
+      run: go run github.com/onsi/ginkgo/v2/ginkgo -r -v ./... --github-output
 
   golangci:
     name: Golang CI Lint
