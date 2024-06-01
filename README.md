@@ -12,11 +12,11 @@ This project implements and compares multiple greedy algorithms and metaheuristi
 
 ## Problem Setup
 
-- **Trucks**: One or more trucks with variable capacity and speed;
+- **Truck**: One or more trucks with variable capacity and speed;
 - **Drone**: Zero or more drones with fixed capacity and speed;
-- **Customers**: A list of customers with demand and location;
-- **Warehouses**: A list of warehouses with unlimited supply of goods;
-- **Routes**: One per Truck.
+- **Customer**: A list of customers with demand and location;
+- **Warehouse**: A list of warehouses with unlimited supply of goods;
+- **Route**: One per Truck.
 
 ## Implemented Algorithms
 
@@ -31,5 +31,5 @@ This project implements and compares multiple greedy algorithms and metaheuristi
 - **Total Time**: Calculate the total time of the route, including the time when vehicles are stopped waiting for others;
 - **Total Fuel**: Calculate the total fuel consumption of the route.
 
-## Examples
+## Example
 - [Example directory](./example/) contains a sample input file and multiple output file with implemented algorithms.
