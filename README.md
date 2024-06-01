@@ -30,3 +30,6 @@ This project implements and compares multiple greedy algorithms and metaheuristi
 - **Total Distante**: Calculate the total distance of the route;
 - **Total Time**: Calculate the total time of the route, including the time when vehicles are stopped waiting for others;
 - **Total Fuel**: Calculate the total fuel consumption of the route.
+
+## Examples
+- [Example directory](./example/) contains a sample input file and multiple output file with implemented algorithms.

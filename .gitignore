@@ -26,6 +26,7 @@ go.work
 # All images, except for the ones in assets folder
 *.png
 !assets/*
+!example/*
 
 # Report files from ginkgo
 *.report
