@@ -7,6 +7,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/route"
 )
 
+//go:generate mockgen -source=constructor.go -destination=mock/constructormock.go
 type Constructor interface {
 	Info
 	LandAllDrones(landingStop route.IMainStop)

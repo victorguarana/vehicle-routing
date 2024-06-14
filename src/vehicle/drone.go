@@ -11,6 +11,7 @@ const DroneSpeed = 25.0
 const DroneStorage = 10.0
 const DroneEfficiency = 30.0
 
+//go:generate mockgen -source=drone.go -destination=mock/dronemock.go
 type IDrone interface {
 	ActualPoint() gps.Point
 	CanReach(...gps.Point) bool

@@ -5,6 +5,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/route"
 )
 
+//go:generate mockgen -source=modifier.go -destination=mock/modifiermock.go
 type Modifier interface {
 	Info
 	RemoveDroneStopFromFlight(index int, flight route.ISubRoute)

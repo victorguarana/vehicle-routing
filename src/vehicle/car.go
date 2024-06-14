@@ -7,6 +7,7 @@ import (
 const CarSpeed = 10.0
 const CarEfficiency = 5.0
 
+//go:generate mockgen -source=car.go -destination=mock/carmock.go
 type ICar interface {
 	ActualPoint() gps.Point
 	Drones() []IDrone

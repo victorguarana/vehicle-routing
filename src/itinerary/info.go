@@ -7,6 +7,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/vehicle"
 )
 
+//go:generate mockgen -source=info.go -destination=mock/infomock.go
 type Info interface {
 	ActualCarPoint() gps.Point
 	ActualCarStop() route.IMainStop

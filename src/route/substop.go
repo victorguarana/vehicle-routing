@@ -4,6 +4,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/gps"
 )
 
+//go:generate mockgen -source=substop.go -destination=mock/substopmock.go
 type ISubStop interface {
 	IsClient() bool
 	IsWarehouse() bool

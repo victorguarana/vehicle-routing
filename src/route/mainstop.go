@@ -5,6 +5,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/slc"
 )
 
+//go:generate mockgen -source=mainstop.go -destination=mock/mainstopmock.go
 type IMainStop interface {
 	IsClient() bool
 	IsWarehouse() bool

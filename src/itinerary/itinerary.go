@@ -11,6 +11,7 @@ var flightFactory = route.NewSubRoute
 // Avoid 'var mockedDrone1 = itinerary.DroneNumber(1)'
 type DroneNumber int
 
+//go:generate mockgen -source=itinerary.go -destination=mock/itinerarymock.go
 type Itinerary interface {
 	Info() Info
 	Constructor() Constructor

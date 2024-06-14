@@ -6,6 +6,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/slc"
 )
 
+//go:generate mockgen -source=mainroute.go -destination=mock/mainroutemock.go
 type IMainRoute interface {
 	Append(mainStop IMainStop)
 	// AtIndex(index int) IMainStop

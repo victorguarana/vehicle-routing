@@ -6,6 +6,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/slc"
 )
 
+//go:generate mockgen -source=subroute.go -destination=mock/subroutemock.go
 type ISubRoute interface {
 	Append(ISubStop)
 	First() ISubStop
