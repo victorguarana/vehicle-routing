@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-const filename = "map_full.txt"
+const filename = "map_105"
 const depositQnt = 3
 const clientQnt = 100
 
