@@ -56,7 +56,7 @@ func (d *drone) ActualPoint() gps.Point {
 }
 
 func (d *drone) CanReach(route ...gps.Point) bool {
-	distance := gps.DistanceBetweenPoints(route...)
+	distance := gps.EuclideanDistanceBetweenPoints(route...)
 	return distance <= d.remaningRange
 }
 
@@ -78,7 +78,7 @@ func (d *drone) Move(destination gps.Point) {
 	if !d.isFlying {
 		log.Printf("Move: Drone %s moving without take off\n", d.name)
 	}
-	d.remaningRange -= gps.DistanceBetweenPoints(d.actualPoint, destination)
+	d.remaningRange -= gps.EuclideanDistanceBetweenPoints(d.actualPoint, destination)
 	d.remaningStorage -= destination.PackageSize
 	d.actualPoint = destination
 }
@@ -92,7 +92,7 @@ func (d *drone) Speed() float64 {
 }
 
 func (d *drone) Support(route ...gps.Point) bool {
-	distance := gps.DistanceBetweenPoints(route...)
+	distance := gps.EuclideanDistanceBetweenPoints(route...)
 	packagesSize := 0.0
 	for _, destination := range route {
 		packagesSize += destination.PackageSize

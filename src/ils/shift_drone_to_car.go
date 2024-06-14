@@ -49,7 +49,7 @@ func findWorstSwappableDroneStopInFlight(flight route.ISubRoute) droneStopCost {
 			index:     0,
 			droneStop: flight.First(),
 			flight:    flight,
-			cost: gps.DistanceBetweenPoints(
+			cost: gps.ManhattanDistanceBetweenPoints(
 				flight.StartingStop().Point(),
 				flight.First().Point(),
 				flight.ReturningStop().Point(),
@@ -63,7 +63,7 @@ func findWorstSwappableDroneStopInFlight(flight route.ISubRoute) droneStopCost {
 	for iterator.HasNext() {
 		actualPoint := iterator.Actual().Point()
 		nextPoint := iterator.Next().Point()
-		cost := gps.DistanceBetweenPoints(previousPoint, actualPoint, nextPoint)
+		cost := gps.ManhattanDistanceBetweenPoints(previousPoint, actualPoint, nextPoint)
 		if cost > worstDroneStop.cost {
 			worstDroneStop = droneStopCost{
 				index:     iterator.Index(),
@@ -78,7 +78,7 @@ func findWorstSwappableDroneStopInFlight(flight route.ISubRoute) droneStopCost {
 
 	actualPoint := iterator.Actual().Point()
 	nextPoint := flight.ReturningStop().Point()
-	cost := gps.DistanceBetweenPoints(previousPoint, actualPoint, nextPoint)
+	cost := gps.ManhattanDistanceBetweenPoints(previousPoint, actualPoint, nextPoint)
 	if cost > worstDroneStop.cost {
 		worstDroneStop = droneStopCost{
 			index:     iterator.Index(),

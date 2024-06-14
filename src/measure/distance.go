@@ -12,7 +12,7 @@ func TotalDistance(itineraryInfo itinerary.Info) float64 {
 	for iterator.HasNext() {
 		actual := iterator.Actual()
 		next := iterator.Next()
-		totalDistance += gps.DistanceBetweenPoints(actual.Point(), next.Point())
+		totalDistance += gps.ManhattanDistanceBetweenPoints(actual.Point(), next.Point())
 		if subRoutes := actual.StartingSubRoutes(); len(subRoutes) > 0 {
 			for _, subRoute := range subRoutes {
 				totalDistance += calcSubRouteDistance(subRoute)
@@ -28,15 +28,15 @@ func calcSubRouteDistance(subRoute route.ISubRoute) float64 {
 	iterator := subRoute.Iterator()
 	actualPoint := subRoute.StartingStop().Point()
 	nextPoint := subRoute.First().Point()
-	totalSubRouteDistance += gps.DistanceBetweenPoints(actualPoint, nextPoint)
+	totalSubRouteDistance += gps.EuclideanDistanceBetweenPoints(actualPoint, nextPoint)
 	for iterator.HasNext() {
 		actualPoint = iterator.Actual().Point()
 		nextPoint = iterator.Next().Point()
-		totalSubRouteDistance += gps.DistanceBetweenPoints(actualPoint, nextPoint)
+		totalSubRouteDistance += gps.EuclideanDistanceBetweenPoints(actualPoint, nextPoint)
 		iterator.GoToNext()
 	}
 	actualPoint = nextPoint
 	nextPoint = subRoute.ReturningStop().Point()
-	totalSubRouteDistance += gps.DistanceBetweenPoints(actualPoint, nextPoint)
+	totalSubRouteDistance += gps.EuclideanDistanceBetweenPoints(actualPoint, nextPoint)
 	return totalSubRouteDistance
 }
