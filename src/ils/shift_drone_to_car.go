@@ -18,8 +18,8 @@ type droneStopCost struct {
 
 func ShiftDroneToCar(modifier itinerary.Modifier) error {
 	worstDroneStop := findWorstDroneStop(modifier)
-	success := modifier.TryToInsertIntoRoutes(worstDroneStop.droneStop.Point(), measure.TotalDistance)
-	if !success {
+	err := modifier.InsertCarDelivery(worstDroneStop.droneStop.Point(), measure.TotalDistance)
+	if err != nil {
 		return errors.New("No drone stop can be inserted into route")
 	}
 	modifier.RemoveDroneStopFromFlight(worstDroneStop.index, worstDroneStop.flight)

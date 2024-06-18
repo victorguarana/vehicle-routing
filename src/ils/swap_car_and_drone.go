@@ -13,19 +13,19 @@ func SwapCarAndDrone(modifier itinerary.Modifier) error {
 	swappableCarStopsOrdered := findWorstSwappableCarStopsOrdered(modifier)
 
 	modifier.RemoveDroneStopFromFlight(worstDroneStop.index, worstDroneStop.flight)
-	var success bool
+	var err error
 	for _, carStopCost := range swappableCarStopsOrdered {
-		if success := modifier.TryToInsertDroneDelivery(carStopCost.carStop.Point(), measure.TotalDistance); success {
+		if err = modifier.InsertDroneDelivery(carStopCost.carStop.Point(), measure.TotalDistance); err == nil {
 			log.Printf("Car stop %v was shifted to drone", carStopCost.carStop)
 			modifier.RemoveMainStopFromRoute(carStopCost.index)
 			break
 		}
 	}
-	if !success {
+	if err != nil {
 		return errors.New("No car stop can be inserted into flight")
 	}
 
-	if success := modifier.TryToInsertIntoRoutes(worstDroneStop.droneStop.Point(), measure.TotalDistance); !success {
+	if err := modifier.InsertCarDelivery(worstDroneStop.droneStop.Point(), measure.TotalDistance); err != nil {
 		return errors.New("No drone stop can be inserted into route")
 	}
 

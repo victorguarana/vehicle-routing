@@ -205,6 +205,34 @@ func (mr *MockModifierMockRecorder) DroneSupport(droneNumber, deliveryPoint, lan
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DroneSupport", reflect.TypeOf((*MockModifier)(nil).DroneSupport), droneNumber, deliveryPoint, landingPoint)
 }
 
+// InsertCarDelivery mocks base method.
+func (m *MockModifier) InsertCarDelivery(point gps.Point, calcCost func(itinerary.Info) float64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InsertCarDelivery", point, calcCost)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InsertCarDelivery indicates an expected call of InsertCarDelivery.
+func (mr *MockModifierMockRecorder) InsertCarDelivery(point, calcCost any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertCarDelivery", reflect.TypeOf((*MockModifier)(nil).InsertCarDelivery), point, calcCost)
+}
+
+// InsertDroneDelivery mocks base method.
+func (m *MockModifier) InsertDroneDelivery(point gps.Point, calcCost func(itinerary.Info) float64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InsertDroneDelivery", point, calcCost)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InsertDroneDelivery indicates an expected call of InsertDroneDelivery.
+func (mr *MockModifierMockRecorder) InsertDroneDelivery(point, calcCost any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertDroneDelivery", reflect.TypeOf((*MockModifier)(nil).InsertDroneDelivery), point, calcCost)
+}
+
 // RemoveDroneStopFromFlight mocks base method.
 func (m *MockModifier) RemoveDroneStopFromFlight(index int, flight route.ISubRoute) {
 	m.ctrl.T.Helper()
@@ -255,32 +283,4 @@ func (m *MockModifier) SubItineraryList() []itinerary.SubItinerary {
 func (mr *MockModifierMockRecorder) SubItineraryList() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubItineraryList", reflect.TypeOf((*MockModifier)(nil).SubItineraryList))
-}
-
-// TryToInsertDroneDelivery mocks base method.
-func (m *MockModifier) TryToInsertDroneDelivery(point gps.Point, calcCost func(itinerary.Info) float64) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TryToInsertDroneDelivery", point, calcCost)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// TryToInsertDroneDelivery indicates an expected call of TryToInsertDroneDelivery.
-func (mr *MockModifierMockRecorder) TryToInsertDroneDelivery(point, calcCost any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TryToInsertDroneDelivery", reflect.TypeOf((*MockModifier)(nil).TryToInsertDroneDelivery), point, calcCost)
-}
-
-// TryToInsertIntoRoutes mocks base method.
-func (m *MockModifier) TryToInsertIntoRoutes(point gps.Point, calcCost func(itinerary.Info) float64) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TryToInsertIntoRoutes", point, calcCost)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// TryToInsertIntoRoutes indicates an expected call of TryToInsertIntoRoutes.
-func (mr *MockModifierMockRecorder) TryToInsertIntoRoutes(point, calcCost any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TryToInsertIntoRoutes", reflect.TypeOf((*MockModifier)(nil).TryToInsertIntoRoutes), point, calcCost)
 }

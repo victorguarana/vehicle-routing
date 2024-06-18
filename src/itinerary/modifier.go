@@ -1,6 +1,9 @@
 package itinerary
 
 import (
+	"errors"
+	"log"
+
 	"github.com/victorguarana/vehicle-routing/src/gps"
 	"github.com/victorguarana/vehicle-routing/src/route"
 )
@@ -10,8 +13,8 @@ type Modifier interface {
 	Info
 	RemoveDroneStopFromFlight(index int, flight route.ISubRoute)
 	RemoveMainStopFromRoute(index int)
-	TryToInsertDroneDelivery(point gps.Point, calcCost func(Info) float64) bool
-	TryToInsertIntoRoutes(point gps.Point, calcCost func(Info) float64) bool
+	InsertDroneDelivery(point gps.Point, calcCost func(Info) float64) error
+	InsertCarDelivery(point gps.Point, calcCost func(Info) float64) error
 }
 
 type modifier struct {
@@ -29,10 +32,6 @@ func (m modifier) RemoveDroneStopFromFlight(index int, flight route.ISubRoute) {
 	flight.RemoveSubStop(index)
 }
 
-func (m modifier) RemoveMainStopFromRoute(index int) {
-	m.route.RemoveMainStop(index)
-}
-
 func (m modifier) removeFlightFromCompletedSubItineraryList(flight route.ISubRoute) {
 	newCompletedSubItineraryList := make([]SubItinerary, 0)
 	for _, subItinerary := range m.completedSubItineraryList {
@@ -43,13 +42,24 @@ func (m modifier) removeFlightFromCompletedSubItineraryList(flight route.ISubRou
 	m.completedSubItineraryList = newCompletedSubItineraryList
 }
 
-func (m modifier) TryToInsertDroneDelivery(point gps.Point, calcCost func(Info) float64) bool {
+func (m modifier) RemoveMainStopFromRoute(index int) {
+	carStopToBeRemoved := m.route.AtIndex(index)
+	if len(carStopToBeRemoved.ReturningSubRoutes()) > 0 {
+		log.Printf("RemoveMainStopFromRoute: Car stop %s has returning subroutes", carStopToBeRemoved.Name())
+	}
+	if len(carStopToBeRemoved.StartingSubRoutes()) > 0 {
+		log.Printf("RemoveMainStopFromRoute: Car stop %s has starting subroutes", carStopToBeRemoved.Name())
+	}
+	m.route.RemoveMainStop(index)
+}
+
+func (m modifier) InsertDroneDelivery(point gps.Point, calcCost func(Info) float64) error {
 	lowestCost := -1.0
 	lowestCostIndex := -1
 	var lowestCostFlight route.ISubRoute
 
 	for _, subItinerary := range m.completedSubItineraryList {
-		if index, newCost, success := m.tryToInsertOnExistingFlight(subItinerary, point, calcCost); success {
+		if index, newCost, err := m.bestCostOnExistingFlight(subItinerary, point, calcCost); err != nil {
 			if lowestCostFlight == nil || newCost < lowestCost {
 				lowestCost = newCost
 				lowestCostIndex = index
@@ -60,13 +70,13 @@ func (m modifier) TryToInsertDroneDelivery(point gps.Point, calcCost func(Info) 
 
 	if lowestCostFlight != nil {
 		lowestCostFlight.InsertAt(lowestCostIndex, route.NewSubStop(point))
-		return true
+		return nil
 	}
 
-	return false
+	return errors.New("point can not be inserted at any flight")
 }
 
-func (m modifier) tryToInsertOnExistingFlight(subItinerary SubItinerary, point gps.Point, calcCost func(Info) float64) (int, float64, bool) {
+func (m modifier) bestCostOnExistingFlight(subItinerary SubItinerary, point gps.Point, calcCost func(Info) float64) (int, float64, error) {
 	initialCost := calcCost(m)
 	lowestCost := -1.0
 	lowestCostIndex := -1
@@ -85,11 +95,11 @@ func (m modifier) tryToInsertOnExistingFlight(subItinerary SubItinerary, point g
 	}
 
 	if lowestCost == -1.0 {
-		return 0, 0, false
+		return 0, 0, errors.New("could not find a valid insertion point")
 	}
 
 	addicionalCost := lowestCost - initialCost
-	return lowestCostIndex, addicionalCost, true
+	return lowestCostIndex, addicionalCost, nil
 }
 
 func isValidFlight(subItinerary SubItinerary) bool {
@@ -114,7 +124,7 @@ func extractPointsFromFlight(flight route.ISubRoute) []gps.Point {
 	return points
 }
 
-func (m modifier) TryToInsertIntoRoutes(point gps.Point, calcCost func(Info) float64) bool {
+func (m modifier) InsertCarDelivery(point gps.Point, calcCost func(Info) float64) error {
 	lowestCost := -1.0
 	lowestCostIndex := -1
 	newCarStop := route.NewMainStop(point)
@@ -132,11 +142,11 @@ func (m modifier) TryToInsertIntoRoutes(point gps.Point, calcCost func(Info) flo
 	}
 
 	if lowestCost == -1.0 {
-		return false
+		return errors.New("could not find a valid insertion point")
 	}
 
 	m.route.InserAt(lowestCostIndex, newCarStop)
-	return true
+	return nil
 }
 
 func isValidRoute(_ Itinerary) bool {

@@ -14,7 +14,7 @@ import (
 type carStopCost struct {
 	carStop route.IMainStop
 	index   int
-	measure float64
+	cost    float64
 }
 
 func ShiftCarToDrone(modifier itinerary.Modifier) error {
@@ -23,7 +23,7 @@ func ShiftCarToDrone(modifier itinerary.Modifier) error {
 		return errors.New("No car stop was swappable")
 	}
 	for _, carStopCost := range swappableCarStopsOrdered {
-		if success := modifier.TryToInsertDroneDelivery(carStopCost.carStop.Point(), measure.TotalDistance); success {
+		if err := modifier.InsertDroneDelivery(carStopCost.carStop.Point(), measure.TotalDistance); err == nil {
 			log.Printf("Car stop %v was shifted to drone by inserting into an existing flight", carStopCost.carStop)
 			modifier.RemoveMainStopFromRoute(carStopCost.index)
 			return nil
@@ -45,7 +45,7 @@ func findWorstSwappableCarStopsOrdered(modifier itinerary.Modifier) []carStopCos
 		}
 		carStopCost := carStopCost{
 			carStop: actual,
-			measure: gps.AdditionalDistancePassingThrough(
+			cost: gps.AdditionalDistancePassingThrough(
 				iterator.Previous().Point(),
 				actual.Point(),
 				iterator.Next().Point(),
@@ -72,7 +72,7 @@ func carStopIsSwappable(carStop route.IMainStop) bool {
 
 func insertCarStopCostOrdered(carStopCosts []carStopCost, newCarStopCost carStopCost) []carStopCost {
 	for i, csc := range carStopCosts {
-		if newCarStopCost.measure > csc.measure {
+		if newCarStopCost.cost > csc.cost {
 			return slc.InsertAt(carStopCosts, newCarStopCost, i)
 		}
 	}
