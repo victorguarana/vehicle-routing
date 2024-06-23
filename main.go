@@ -85,10 +85,11 @@ func ClosestNeighborWithDronesShiftC2D(mapFilename string) {
 	itn := itinerary.New(car)
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
+	finder := itn.Finder()
 	greedy.ClosestNeighbor([]itinerary.Constructor{constructor}, gpsMap)
 	greedy.DroneStrikesInsertion(constructor, modifier)
 
-	err := ils.ShiftCarToDrone(modifier)
+	err := ils.ShiftCarToDrone(modifier, finder)
 	if err != nil {
 		log.Println("ClosestNeighborWithDronesShiftC2D:", err)
 		return
@@ -112,10 +113,11 @@ func ClosestNeighborWithDronesShiftD2C(mapFilename string) {
 	itn := itinerary.New(car)
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
+	finder := itn.Finder()
 	greedy.ClosestNeighbor([]itinerary.Constructor{constructor}, gpsMap)
 	greedy.DroneStrikesInsertion(constructor, modifier)
 
-	err := ils.ShiftDroneToCar(modifier)
+	err := ils.ShiftDroneToCar(modifier, finder)
 	if err != nil {
 		log.Println("ClosestNeighborWithDronesShiftD2C:", err)
 		return
@@ -139,10 +141,11 @@ func ClosestNeighborWithDronesSwapCD(mapFilename string) {
 	itn := itinerary.New(car)
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
+	finder := itn.Finder()
 	greedy.ClosestNeighbor([]itinerary.Constructor{constructor}, gpsMap)
 	greedy.DroneStrikesInsertion(constructor, modifier)
 
-	err := ils.SwapCarAndDrone(modifier)
+	err := ils.SwapCarAndDrone(modifier, finder)
 	if err != nil {
 		log.Println("ClosestNeighborWithDronesSwapCD:", err)
 		return
@@ -210,10 +213,11 @@ func BestInsertionWithDronesShiftC2D(mapFilename string) {
 	itn := itinerary.New(car)
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
+	finder := itn.Finder()
 	greedy.BestInsertion([]itinerary.Constructor{constructor}, gpsMap)
 	greedy.DroneStrikesInsertion(constructor, modifier)
 
-	err := ils.ShiftCarToDrone(modifier)
+	err := ils.ShiftCarToDrone(modifier, finder)
 	if err != nil {
 		log.Println("BestInsertionWithDronesShiftC2D:", err)
 		return
@@ -237,10 +241,11 @@ func BestInsertionWithDronesShiftD2C(mapFilename string) {
 	itn := itinerary.New(car)
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
+	finder := itn.Finder()
 	greedy.BestInsertion([]itinerary.Constructor{constructor}, gpsMap)
 	greedy.DroneStrikesInsertion(constructor, modifier)
 
-	err := ils.ShiftDroneToCar(modifier)
+	err := ils.ShiftDroneToCar(modifier, finder)
 	if err != nil {
 		log.Println("BestInsertionWithDronesShiftD2C:", err)
 	}
@@ -263,10 +268,11 @@ func BestInsertionWithDronesSwapCD(mapFilename string) {
 	itn := itinerary.New(car)
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
+	finder := itn.Finder()
 	greedy.BestInsertion([]itinerary.Constructor{constructor}, gpsMap)
 	greedy.DroneStrikesInsertion(constructor, modifier)
 
-	err := ils.SwapCarAndDrone(modifier)
+	err := ils.SwapCarAndDrone(modifier, finder)
 	if err != nil {
 		log.Println("BestInsertionWithDronesSwapCD:", err)
 	}

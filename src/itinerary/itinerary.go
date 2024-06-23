@@ -15,6 +15,7 @@ type DroneNumber int
 type Itinerary interface {
 	Info() Info
 	Constructor() Constructor
+	Finder() Finder
 	Modifier() Modifier
 }
 
@@ -47,6 +48,10 @@ func (i *itinerary) Info() Info {
 
 func (i *itinerary) Constructor() Constructor {
 	return constructor{info: &info{i}}
+}
+
+func (i *itinerary) Finder() Finder {
+	return finder{info: &info{i}}
 }
 
 func (i *itinerary) Modifier() Modifier {

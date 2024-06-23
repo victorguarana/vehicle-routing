@@ -8,16 +8,16 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/measure"
 )
 
-func SwapCarAndDrone(modifier itinerary.Modifier) error {
-	worstDroneStop := findWorstDroneStop(modifier)
-	swappableCarStopsOrdered := findWorstSwappableCarStopsOrdered(modifier)
+func SwapCarAndDrone(modifier itinerary.Modifier, finder itinerary.Finder) error {
+	worstDroneStopCost := finder.FindWorstDroneStop()
+	swappableCarStopsOrdered := finder.FindWorstSwappableCarStopsOrdered()
 
-	modifier.RemoveDroneStopFromFlight(worstDroneStop.index, worstDroneStop.flight)
+	modifier.RemoveDroneStopFromFlight(worstDroneStopCost.Index, worstDroneStopCost.Flight)
 	var err error
 	for _, carStopCost := range swappableCarStopsOrdered {
-		if err = modifier.InsertDroneDelivery(carStopCost.carStop.Point(), measure.TotalDistance); err == nil {
-			log.Printf("Car stop %v was shifted to drone", carStopCost.carStop)
-			modifier.RemoveMainStopFromRoute(carStopCost.index)
+		if err = modifier.InsertDroneDelivery(carStopCost.Stop.Point(), measure.TotalDistance); err == nil {
+			log.Printf("Car stop %v was shifted to drone", carStopCost.Stop)
+			modifier.RemoveMainStopFromRoute(carStopCost.Index)
 			break
 		}
 	}
@@ -25,7 +25,7 @@ func SwapCarAndDrone(modifier itinerary.Modifier) error {
 		return errors.New("No car stop can be inserted into flight")
 	}
 
-	if err := modifier.InsertCarDelivery(worstDroneStop.droneStop.Point(), measure.TotalDistance); err != nil {
+	if err := modifier.InsertCarDelivery(worstDroneStopCost.Stop.Point(), measure.TotalDistance); err != nil {
 		return errors.New("No drone stop can be inserted into route")
 	}
 

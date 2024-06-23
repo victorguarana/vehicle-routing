@@ -53,6 +53,20 @@ func (mr *MockItineraryMockRecorder) Constructor() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Constructor", reflect.TypeOf((*MockItinerary)(nil).Constructor))
 }
 
+// Finder mocks base method.
+func (m *MockItinerary) Finder() itinerary.Finder {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Finder")
+	ret0, _ := ret[0].(itinerary.Finder)
+	return ret0
+}
+
+// Finder indicates an expected call of Finder.
+func (mr *MockItineraryMockRecorder) Finder() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Finder", reflect.TypeOf((*MockItinerary)(nil).Finder))
+}
+
 // Info mocks base method.
 func (m *MockItinerary) Info() itinerary.Info {
 	m.ctrl.T.Helper()
