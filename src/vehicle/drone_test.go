@@ -88,7 +88,7 @@ var _ = Describe("drone{}", func() {
 		}
 
 		It("should move drone and decrease range and package storage", func() {
-			distance := gps.DistanceBetweenPoints(initialPoint, destinationPoint)
+			distance := gps.ManhattanDistanceBetweenPoints(initialPoint, destinationPoint)
 			sut.Move(destinationPoint)
 			Expect(sut.remaningRange).To(Equal(DroneRange - distance))
 			Expect(sut.remaningStorage).To(Equal(DroneStorage - destinationPoint.PackageSize))

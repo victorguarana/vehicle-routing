@@ -45,7 +45,7 @@ var _ = Describe("ClosestPoint", func() {
 	})
 })
 
-var _ = Describe("DistanceBetweenPoints", func() {
+var _ = Describe("ManhattanDistanceBetweenPoints", func() {
 	Context("when points are positive", func() {
 		var points = []Point{
 			{Latitude: 10, Longitude: 10},
@@ -53,7 +53,7 @@ var _ = Describe("DistanceBetweenPoints", func() {
 			{Latitude: 30, Longitude: 30},
 		}
 		It("should return the sum of the distances between points", func() {
-			Expect(DistanceBetweenPoints(points...)).To(Equal(40.0))
+			Expect(ManhattanDistanceBetweenPoints(points...)).To(Equal(40.0))
 		})
 	})
 	Context("when points are mirrored", func() {
@@ -62,7 +62,7 @@ var _ = Describe("DistanceBetweenPoints", func() {
 			{Latitude: 20, Longitude: 10},
 		}
 		It("should return the sum of the distances between points", func() {
-			Expect(DistanceBetweenPoints(points...)).To(Equal(20.0))
+			Expect(ManhattanDistanceBetweenPoints(points...)).To(Equal(20.0))
 		})
 	})
 	Context("when points are opposite", func() {
@@ -71,7 +71,7 @@ var _ = Describe("DistanceBetweenPoints", func() {
 			{Latitude: -10, Longitude: -10},
 		}
 		It("should return the sum of the distances between points", func() {
-			Expect(DistanceBetweenPoints(points...)).To(Equal(40.0))
+			Expect(ManhattanDistanceBetweenPoints(points...)).To(Equal(40.0))
 		})
 	})
 	Context("when points turn back", func() {
@@ -81,7 +81,7 @@ var _ = Describe("DistanceBetweenPoints", func() {
 			{Latitude: 0, Longitude: 0},
 		}
 		It("should return the sum of the distances between points", func() {
-			Expect(DistanceBetweenPoints(points...)).To(Equal(40.0))
+			Expect(ManhattanDistanceBetweenPoints(points...)).To(Equal(40.0))
 		})
 	})
 })

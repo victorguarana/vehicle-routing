@@ -15,7 +15,6 @@ func CoveringWithDrones(constructorList []itinerary.Constructor, m gps.Map, neig
 		constructor.MoveCar(actualClient)
 		deliverNeighborsWithDrones(constructor, clientsNeighborhood[actualClient])
 		removeClientAndItsNeighborsFromMap(actualClient, clientsNeighborhood)
-		gps.RemovePointFromNearbyMap(actualClient, clientsNeighborhood)
 	}
 
 	finishOnClosestWarehouses(constructorList, m)

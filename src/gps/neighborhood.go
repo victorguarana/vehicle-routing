@@ -14,7 +14,7 @@ func MapNeighborhood(points []Point, maxDistance float64) Neighborhood {
 			if point == neighbor {
 				continue
 			}
-			if DistanceBetweenPoints(point, neighbor) <= maxDistance {
+			if ManhattanDistanceBetweenPoints(point, neighbor) <= maxDistance {
 				neighborhood[point] = append(neighborhood[point], neighbor)
 			}
 		}
@@ -39,7 +39,7 @@ func ClosestPointWithMostNeighbors(initialPoint Point, neighborhood Neighborhood
 			maxNeighborhoodSize = neighborhoodSize
 		}
 		if neighborhoodSize == maxNeighborhoodSize {
-			if DistanceBetweenPoints(initialPoint, point) < DistanceBetweenPoints(initialPoint, bestPoint) {
+			if ManhattanDistanceBetweenPoints(initialPoint, point) < ManhattanDistanceBetweenPoints(initialPoint, bestPoint) {
 				bestPoint = point
 			}
 		}
