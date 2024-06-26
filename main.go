@@ -15,7 +15,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/src/vehicle"
 )
 
-const mapFilename = "maps/map1.csv"
+const mapFilename = "maps/map1"
 
 func main() {
 	BestInsertion(mapFilename)

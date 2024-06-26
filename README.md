@@ -34,7 +34,3 @@ This project implements and compares multiple greedy algorithms and metaheuristi
 
 ## Example
 - [Example directory](./example/) contains a sample input file and multiple output file with implemented algorithms.
-
-Este projeto implementa e compara vários algoritmos gulosos e metaheurísticas* para resolver o Problema de Roteamento de Veículos Híbridos com Caminhões e Drones (PRVH-CD), uma variante do Problema de Roteamento de Veículos (PRV), usando Golang. 
-
-*Metaheurística: Procedimento de alto nível projetado para encontrar, gerar, ajustar ou selecionar uma heurística que pode fornecer uma solução suficientemente boa para um problema de otimização ou de aprendizado de máquina.
