@@ -11,6 +11,9 @@ import (
 func SwapCarAndDrone(modifier itinerary.Modifier, finder itinerary.Finder) error {
 	worstDroneStopCost := finder.FindWorstDroneStop()
 	swappableCarStopsOrdered := finder.FindWorstSwappableCarStopsOrdered()
+	if len(swappableCarStopsOrdered) == 0 {
+		return errors.New("No car stop was swappable")
+	}
 
 	modifier.RemoveDroneStopFromFlight(worstDroneStopCost.Index, worstDroneStopCost.Flight)
 	var err error
