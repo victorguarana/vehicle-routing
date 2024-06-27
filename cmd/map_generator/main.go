@@ -22,12 +22,16 @@ func main() {
 	defer writer.Flush()
 
 	writeRandomWarehouses(writer)
+	writeNewLine(writer)
 	writeRandomClients(writer)
 }
 
 func writeRandomWarehouses(writer *bufio.Writer) {
 	for i := 1; i <= depositQnt; i++ {
-		line := fmt.Sprintf("Deposito%d;%d;%d;%d\n", i, randomPosition(), randomPosition(), 0)
+		line := fmt.Sprintf("Deposito%d;%d;%d;%d", i, randomPosition(), randomPosition(), 0)
+		if i < depositQnt {
+			line += "\n"
+		}
 		if _, err := writer.WriteString(line); err != nil {
 			panic(err)
 		}
@@ -36,10 +40,19 @@ func writeRandomWarehouses(writer *bufio.Writer) {
 
 func writeRandomClients(writer *bufio.Writer) {
 	for i := 1; i <= clientQnt; i++ {
-		line := fmt.Sprintf("Cliente%d;%d;%d;%d\n", i, randomPosition(), randomPosition(), randomPackage())
+		line := fmt.Sprintf("Cliente%d;%d;%d;%d", i, randomPosition(), randomPosition(), randomPackage())
+		if i < clientQnt {
+			line += "\n"
+		}
 		if _, err := writer.WriteString(line); err != nil {
 			panic(err)
 		}
+	}
+}
+
+func writeNewLine(writer *bufio.Writer) {
+	if _, err := writer.WriteString("\n"); err != nil {
+		panic(err)
 	}
 }
 
