@@ -5,14 +5,14 @@ import (
 	"log"
 	"strings"
 
-	"github.com/victorguarana/vehicle-routing/src/csp"
-	"github.com/victorguarana/vehicle-routing/src/gps"
-	"github.com/victorguarana/vehicle-routing/src/greedy"
-	"github.com/victorguarana/vehicle-routing/src/ils"
-	"github.com/victorguarana/vehicle-routing/src/itinerary"
-	"github.com/victorguarana/vehicle-routing/src/measure"
-	"github.com/victorguarana/vehicle-routing/src/output"
-	"github.com/victorguarana/vehicle-routing/src/vehicle"
+	"github.com/victorguarana/vehicle-routing/internal/csp"
+	"github.com/victorguarana/vehicle-routing/internal/gps"
+	"github.com/victorguarana/vehicle-routing/internal/greedy"
+	"github.com/victorguarana/vehicle-routing/internal/ils"
+	"github.com/victorguarana/vehicle-routing/internal/itinerary"
+	"github.com/victorguarana/vehicle-routing/internal/measure"
+	"github.com/victorguarana/vehicle-routing/internal/output"
+	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
 const mapFilename = "maps/map1"
