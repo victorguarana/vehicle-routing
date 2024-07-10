@@ -20,6 +20,10 @@ const paddingUp = 55
 const applyScaleValue = 5
 const mainLineWidth = 0.3
 
+type Info struct {
+	Str string
+}
+
 type Stop interface {
 	IsClient() bool
 	IsWarehouse() bool
@@ -28,10 +32,10 @@ type Stop interface {
 	Name() string
 }
 
-func ToImage(fileName string, itineraryInfo itinerary.Info, routeDistance float64, routeTime float64) {
+func ToImage(fileName string, itineraryInfo itinerary.Info, infos []Info) {
 	ggCtx := gg.NewContext(imageSize, imageSize)
 	drawBackgound(ggCtx)
-	drawInfos(ggCtx, routeDistance, routeTime)
+	drawInfos(ggCtx, infos)
 	setRouteValues(ggCtx)
 	itineraryToImage(ggCtx, itineraryInfo)
 	err := ggCtx.SavePNG(fileName)

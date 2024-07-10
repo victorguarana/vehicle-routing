@@ -1,9 +1,9 @@
 package output
 
 import (
-	"fmt"
 	"image"
 	"image/color"
+	"math"
 
 	"github.com/fogleman/gg"
 )
@@ -58,24 +58,28 @@ func drawMovement(ggCtx *gg.Context, actual Stop, next Stop, img image.Image, cl
 	)
 }
 
-func drawInfos(ggCtx *gg.Context, routeDistance float64, routeTime float64) {
+func drawInfos(ggCtx *gg.Context, infos []Info) (float64, float64) {
+	if len(infos) == 0 {
+		return 0, 0
+	}
+
 	// Pushing and Popping the context to avoid changing color outsite this function
 	ggCtx.Push()
 	defer ggCtx.Pop()
 
 	ggCtx.SetColor(textColor)
-	totalDistanceString := fmt.Sprintf("Total Distance: %.2f", routeDistance)
-	totalTimeString := fmt.Sprintf("Total Time: %.2f", routeTime)
-	_, totalDistanceHeight := ggCtx.MeasureString(totalDistanceString)
-	_, totalTimeHeight := ggCtx.MeasureString(totalTimeString)
-	ggCtx.DrawString(
-		fmt.Sprintln("Total Distance: ", routeDistance),
-		0, totalDistanceHeight,
-	)
-	ggCtx.DrawString(
-		fmt.Sprintln("Total Time: ", routeTime),
-		0, totalDistanceHeight+totalTimeHeight,
-	)
+	infosWidth := 0.0
+	infosHeight := 0.0
+
+	for _, info := range infos {
+		width, height := ggCtx.MeasureString(info.Str)
+		infosHeight += height
+		infosWidth = math.Max(infosWidth, width)
+		ggCtx.DrawString(info.Str, 0, infosHeight)
+	}
+
+	return infosWidth, infosHeight
+
 }
 
 func axisX(stop Stop) float64 {
