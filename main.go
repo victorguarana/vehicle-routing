@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/victorguarana/vehicle-routing/internal/csp"
 	"github.com/victorguarana/vehicle-routing/internal/gps"
@@ -15,74 +14,57 @@ import (
 	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
-const mapFilename = "maps/map1"
+const mapFilename = "example/map"
 
-func main() {
-	BestInsertion(mapFilename)
-	BestInsertionWithDrones(mapFilename)
-	BestInsertionWithDronesShiftC2D(mapFilename)
-	BestInsertionWithDronesShiftD2C(mapFilename)
-	BestInsertionWithDronesSwapCD(mapFilename)
-
-	ClosestNeighbor(mapFilename)
-	ClosestNeighborWithDrones(mapFilename)
-	ClosestNeighborWithDronesShiftC2D(mapFilename)
-	ClosestNeighborWithDronesShiftD2C(mapFilename)
-	ClosestNeighborWithDronesSwapCD(mapFilename)
-
-	Covering(mapFilename)
-	CoveringMaxDrones(mapFilename)
+var allMeasures = map[string]func(itinerary.Info) float64{
+	"Total Distance": measure.TotalDistance,
+	"Total Time":     measure.TimeSpent,
+	"Total Fuel":     measure.SpentFuel,
 }
 
-func ClosestNeighbor(mapFilename string) {
-	gpsMap := gps.LoadMap(mapFilename)
-	initialPoint := gpsMap.Warehouses[0]
-	car := vehicle.NewCar("car1", initialPoint)
-	itn := itinerary.New(car)
+func main() {
+	BestInsertion()
+	BestInsertionWithDrones()
+	BestInsertionWithDronesShiftC2D()
+	BestInsertionWithDronesShiftD2C()
+	BestInsertionWithDronesSwapCD()
+
+	ClosestNeighbor()
+	ClosestNeighborWithDrones()
+	ClosestNeighborWithDronesShiftC2D()
+	ClosestNeighborWithDronesShiftD2C()
+	ClosestNeighborWithDronesSwapCD()
+
+	Covering()
+	CoveringMaxDrones()
+}
+
+func ClosestNeighbor() {
+	gpsMap, itn := loadEnvironment()
 	constructor := itn.Constructor()
 	greedy.ClosestNeighbor([]itinerary.Constructor{constructor}, gpsMap)
 
 	itnInfo := itn.Info()
-	totalDistance := measure.TotalDistance(itnInfo)
-	totalTime := measure.TimeSpent(itnInfo)
-	totalFuelSpent := measure.SpentFuel(itnInfo)
-	log.Println("ClosestNeighbor: Total Distance:", totalDistance)
-	log.Println("ClosestNeighbor: Total Time:", totalTime)
-	log.Println("ClosestNeighbor: Total Fuel Spent:", totalFuelSpent)
-
-	filename := fmt.Sprintf("%s_closest_neighbor.png", removeExtentionFromFilename(mapFilename))
-	output.ToImage(filename, itnInfo, totalDistance, totalTime)
+	outputInfos := mountOutputInfo(itnInfo)
+	filename := fmt.Sprintf("%s_closest_neighbor.png", mapFilename)
+	output.ToImage(filename, itnInfo, outputInfos)
 }
 
-func ClosestNeighborWithDrones(mapFilename string) {
-	gpsMap := gps.LoadMap(mapFilename)
-	initialPoint := gpsMap.Warehouses[0]
-	car := vehicle.NewCar("car1", initialPoint)
-	car.NewDrone("drone1")
-	itn := itinerary.New(car)
+func ClosestNeighborWithDrones() {
+	gpsMap, itn := loadEnvironment()
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
 	greedy.ClosestNeighbor([]itinerary.Constructor{constructor}, gpsMap)
 	greedy.DroneStrikesInsertion(constructor, modifier)
 
 	itnInfo := itn.Info()
-	totalDistance := measure.TotalDistance(itnInfo)
-	totalTime := measure.TimeSpent(itnInfo)
-	totalFuelSpent := measure.SpentFuel(itnInfo)
-	log.Println("ClosestNeighborWithDrones: Total Distance:", totalDistance)
-	log.Println("ClosestNeighborWithDrones: Total Time:", totalTime)
-	log.Println("ClosestNeighborWithDrones: Total Fuel Spent:", totalFuelSpent)
-
-	filename := fmt.Sprintf("%s_closest_neighbor_with_drones.png", removeExtentionFromFilename(mapFilename))
-	output.ToImage(filename, itnInfo, totalDistance, totalTime)
+	outputInfos := mountOutputInfo(itnInfo)
+	filename := fmt.Sprintf("%s_closest_neighbor_with_drones.png", mapFilename)
+	output.ToImage(filename, itnInfo, outputInfos)
 }
 
-func ClosestNeighborWithDronesShiftC2D(mapFilename string) {
-	gpsMap := gps.LoadMap(mapFilename)
-	initialPoint := gpsMap.Warehouses[0]
-	car := vehicle.NewCar("car1", initialPoint)
-	car.NewDrone("drone1")
-	itn := itinerary.New(car)
+func ClosestNeighborWithDronesShiftC2D() {
+	gpsMap, itn := loadEnvironment()
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
 	finder := itn.Finder()
@@ -96,21 +78,13 @@ func ClosestNeighborWithDronesShiftC2D(mapFilename string) {
 	}
 
 	itnInfo := itn.Info()
-	totalDistance := measure.TotalDistance(itnInfo)
-	totalTime := measure.TimeSpent(itnInfo)
-	log.Println("ClosestNeighborWithDronesShiftC2D: Total Distance:", totalDistance)
-	log.Println("ClosestNeighborWithDronesShiftC2D: Total Time:", totalTime)
-
-	filename := fmt.Sprintf("%s-closest-neighbor-with-drones-shift-c2d.png", removeExtentionFromFilename(mapFilename))
-	output.ToImage(filename, itnInfo, totalDistance, totalTime)
+	outputInfos := mountOutputInfo(itnInfo)
+	filename := fmt.Sprintf("%s_closest_neighbor_with_drones_shift_c2d.png", mapFilename)
+	output.ToImage(filename, itnInfo, outputInfos)
 }
 
-func ClosestNeighborWithDronesShiftD2C(mapFilename string) {
-	gpsMap := gps.LoadMap(mapFilename)
-	initialPoint := gpsMap.Warehouses[0]
-	car := vehicle.NewCar("car1", initialPoint)
-	car.NewDrone("drone1")
-	itn := itinerary.New(car)
+func ClosestNeighborWithDronesShiftD2C() {
+	gpsMap, itn := loadEnvironment()
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
 	finder := itn.Finder()
@@ -124,21 +98,13 @@ func ClosestNeighborWithDronesShiftD2C(mapFilename string) {
 	}
 
 	itnInfo := itn.Info()
-	totalDistance := measure.TotalDistance(itnInfo)
-	totalTime := measure.TimeSpent(itnInfo)
-	log.Println("ClosestNeighborWithDronesShiftD2C: Total Distance:", totalDistance)
-	log.Println("ClosestNeighborWithDronesShiftD2C: Total Time:", totalTime)
-
-	filename := fmt.Sprintf("%s-closest-neighbor-with-drones-shift-d2c.png", removeExtentionFromFilename(mapFilename))
-	output.ToImage(filename, itnInfo, totalDistance, totalTime)
+	outputInfos := mountOutputInfo(itnInfo)
+	filename := fmt.Sprintf("%s_closest_neighbor_with_drones_shift_d2c.png", mapFilename)
+	output.ToImage(filename, itnInfo, outputInfos)
 }
 
-func ClosestNeighborWithDronesSwapCD(mapFilename string) {
-	gpsMap := gps.LoadMap(mapFilename)
-	initialPoint := gpsMap.Warehouses[0]
-	car := vehicle.NewCar("car1", initialPoint)
-	car.NewDrone("drone1")
-	itn := itinerary.New(car)
+func ClosestNeighborWithDronesSwapCD() {
+	gpsMap, itn := loadEnvironment()
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
 	finder := itn.Finder()
@@ -152,65 +118,37 @@ func ClosestNeighborWithDronesSwapCD(mapFilename string) {
 	}
 
 	itnInfo := itn.Info()
-	totalDistance := measure.TotalDistance(itnInfo)
-	totalTime := measure.TimeSpent(itnInfo)
-	log.Println("ClosestNeighborWithDronesSwapCD: Total Distance:", totalDistance)
-	log.Println("ClosestNeighborWithDronesSwapCD: Total Time:", totalTime)
-
-	filename := fmt.Sprintf("%s-closest-neighbor-with-drones-swap-cd.png", removeExtentionFromFilename(mapFilename))
-	output.ToImage(filename, itnInfo, totalDistance, totalTime)
+	outputInfos := mountOutputInfo(itnInfo)
+	filename := fmt.Sprintf("%s_closest_neighbor_with_drones_swap_cd.png", mapFilename)
+	output.ToImage(filename, itnInfo, outputInfos)
 }
 
-func BestInsertion(mapFilename string) {
-	gpsMap := gps.LoadMap(mapFilename)
-	initialPoint := gpsMap.Warehouses[0]
-	car := vehicle.NewCar("car1", initialPoint)
-	car.NewDrone("drone1")
-	itn := itinerary.New(car)
+func BestInsertion() {
+	gpsMap, itn := loadEnvironment()
 	constructor := itn.Constructor()
 	greedy.BestInsertion([]itinerary.Constructor{constructor}, gpsMap)
 
 	itnInfo := itn.Info()
-	totalDistance := measure.TotalDistance(itnInfo)
-	totalTime := measure.TimeSpent(itnInfo)
-	totalFuelSpent := measure.SpentFuel(itnInfo)
-	log.Println("BestInsertion: Total Distance:", totalDistance)
-	log.Println("BestInsertion: Total Time:", totalTime)
-	log.Println("BestInsertion: Total Fuel Spent:", totalFuelSpent)
-
-	filename := fmt.Sprintf("%s_best_insertion.png", removeExtentionFromFilename(mapFilename))
-	output.ToImage(filename, itnInfo, totalDistance, totalTime)
+	outputInfos := mountOutputInfo(itnInfo)
+	filename := fmt.Sprintf("%s_best_insertion.png", mapFilename)
+	output.ToImage(filename, itnInfo, outputInfos)
 }
 
-func BestInsertionWithDrones(mapFilename string) {
-	gpsMap := gps.LoadMap(mapFilename)
-	initialPoint := gpsMap.Warehouses[0]
-	car := vehicle.NewCar("car1", initialPoint)
-	car.NewDrone("drone1")
-	itn := itinerary.New(car)
+func BestInsertionWithDrones() {
+	gpsMap, itn := loadEnvironment()
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
 	greedy.BestInsertion([]itinerary.Constructor{constructor}, gpsMap)
 	greedy.DroneStrikesInsertion(constructor, modifier)
 
 	itnInfo := itn.Info()
-	totalDistance := measure.TotalDistance(itnInfo)
-	totalTime := measure.TimeSpent(itnInfo)
-	totalFuelSpent := measure.SpentFuel(itnInfo)
-	log.Println("BestInsertionWithDrones: Total Distance:", totalDistance)
-	log.Println("BestInsertionWithDrones: Total Time:", totalTime)
-	log.Println("BestInsertionWithDrones: Total Fuel Spent:", totalFuelSpent)
-
-	filename := fmt.Sprintf("%s_best_insertion_with_drones.png", removeExtentionFromFilename(mapFilename))
-	output.ToImage(filename, itnInfo, totalDistance, totalTime)
+	outputInfos := mountOutputInfo(itnInfo)
+	filename := fmt.Sprintf("%s_best_insertion_with_drones.png", mapFilename)
+	output.ToImage(filename, itnInfo, outputInfos)
 }
 
-func BestInsertionWithDronesShiftC2D(mapFilename string) {
-	gpsMap := gps.LoadMap(mapFilename)
-	initialPoint := gpsMap.Warehouses[0]
-	car := vehicle.NewCar("car1", initialPoint)
-	car.NewDrone("drone1")
-	itn := itinerary.New(car)
+func BestInsertionWithDronesShiftC2D() {
+	gpsMap, itn := loadEnvironment()
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
 	finder := itn.Finder()
@@ -224,21 +162,13 @@ func BestInsertionWithDronesShiftC2D(mapFilename string) {
 	}
 
 	itnInfo := itn.Info()
-	totalDistance := measure.TotalDistance(itnInfo)
-	totalTime := measure.TimeSpent(itnInfo)
-	log.Println("BestInsertionWithDronesShiftC2D: Total Distance:", totalDistance)
-	log.Println("BestInsertionWithDronesShiftC2D: Total Time:", totalTime)
-
-	filename := fmt.Sprintf("%s-best-insertion-with-drones-shift-c2d.png", removeExtentionFromFilename(mapFilename))
-	output.ToImage(filename, itnInfo, totalDistance, totalTime)
+	outputInfos := mountOutputInfo(itnInfo)
+	filename := fmt.Sprintf("%s_best_insertion_with_drones_shift_c2d.png", mapFilename)
+	output.ToImage(filename, itnInfo, outputInfos)
 }
 
-func BestInsertionWithDronesShiftD2C(mapFilename string) {
-	gpsMap := gps.LoadMap(mapFilename)
-	initialPoint := gpsMap.Warehouses[0]
-	car := vehicle.NewCar("car1", initialPoint)
-	car.NewDrone("drone1")
-	itn := itinerary.New(car)
+func BestInsertionWithDronesShiftD2C() {
+	gpsMap, itn := loadEnvironment()
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
 	finder := itn.Finder()
@@ -251,21 +181,13 @@ func BestInsertionWithDronesShiftD2C(mapFilename string) {
 	}
 
 	itnInfo := itn.Info()
-	totalDistance := measure.TotalDistance(itnInfo)
-	totalTime := measure.TimeSpent(itnInfo)
-	log.Println("BestInsertionWithDronesShiftD2C: Total Distance:", totalDistance)
-	log.Println("BestInsertionWithDronesShiftD2C: Total Time:", totalTime)
-
-	filename := fmt.Sprintf("%s-best-insertion-with-drones-shift-d2c.png", removeExtentionFromFilename(mapFilename))
-	output.ToImage(filename, itnInfo, totalDistance, totalTime)
+	outputInfos := mountOutputInfo(itnInfo)
+	filename := fmt.Sprintf("%s_best_insertion_with_drones_shift_d2c.png", mapFilename)
+	output.ToImage(filename, itnInfo, outputInfos)
 }
 
-func BestInsertionWithDronesSwapCD(mapFilename string) {
-	gpsMap := gps.LoadMap(mapFilename)
-	initialPoint := gpsMap.Warehouses[0]
-	car := vehicle.NewCar("car1", initialPoint)
-	car.NewDrone("drone1")
-	itn := itinerary.New(car)
+func BestInsertionWithDronesSwapCD() {
+	gpsMap, itn := loadEnvironment()
 	constructor := itn.Constructor()
 	modifier := itn.Modifier()
 	finder := itn.Finder()
@@ -278,59 +200,54 @@ func BestInsertionWithDronesSwapCD(mapFilename string) {
 	}
 
 	itnInfo := itn.Info()
-	totalDistance := measure.TotalDistance(itnInfo)
-	totalTime := measure.TimeSpent(itnInfo)
-	log.Println("BestInsertionWithDronesSwapCD: Total Distance:", totalDistance)
-	log.Println("BestInsertionWithDronesSwapCD: Total Time:", totalTime)
-
-	filename := fmt.Sprintf("%s-best-insertion-with-drones-swap-cd.png", removeExtentionFromFilename(mapFilename))
-	output.ToImage(filename, itnInfo, totalDistance, totalTime)
+	outputInfos := mountOutputInfo(itnInfo)
+	filename := fmt.Sprintf("%s_best_insertion_with_drones_swap_cd.png", mapFilename)
+	output.ToImage(filename, itnInfo, outputInfos)
 }
 
-func Covering(mapFilename string) {
-	gpsMap := gps.LoadMap(mapFilename)
-	initialPoint := gpsMap.Warehouses[0]
-	car := vehicle.NewCar("car1", initialPoint)
-	car.NewDrone("drone1")
-	itn := itinerary.New(car)
+func Covering() {
+	gpsMap, itn := loadEnvironment()
 	neighorhoodDistance := vehicle.DroneRange / 4
 	constructor := itn.Constructor()
 	csp.CoveringWithDrones([]itinerary.Constructor{constructor}, gpsMap, neighorhoodDistance)
 
 	itnInfo := itn.Info()
-	totalDistance := measure.TotalDistance(itnInfo)
-	totalTime := measure.TimeSpent(itnInfo)
-	totalFuelSpent := measure.SpentFuel(itnInfo)
-	log.Println("Covering: Total Distance:", totalDistance)
-	log.Println("Covering: Total Time:", totalTime)
-	log.Println("Covering: Total Fuel Spent:", totalFuelSpent)
-
-	filename := fmt.Sprintf("%s_covering.png", removeExtentionFromFilename(mapFilename))
-	output.ToImage(filename, itnInfo, totalDistance, totalTime)
+	outputInfos := mountOutputInfo(itnInfo)
+	filename := fmt.Sprintf("%s_covering.png", mapFilename)
+	output.ToImage(filename, itnInfo, outputInfos)
 }
 
-func CoveringMaxDrones(mapFilename string) {
-	gpsMap := gps.LoadMap(mapFilename)
-	initialPoint := gpsMap.Warehouses[0]
-	car := vehicle.NewCar("car1", initialPoint)
-	car.NewDrone("drone1")
-	itn := itinerary.New(car)
+func CoveringMaxDrones() {
+	gpsMap, itn := loadEnvironment()
 	neighorhoodDistance := vehicle.DroneRange / 2
 	constructor := itn.Constructor()
 	csp.CoveringWithDrones([]itinerary.Constructor{constructor}, gpsMap, neighorhoodDistance)
 
 	itnInfo := itn.Info()
-	totalDistance := measure.TotalDistance(itnInfo)
-	totalTime := measure.TimeSpent(itnInfo)
-	totalFuelSpent := measure.SpentFuel(itnInfo)
-	log.Println("CoveringMaxDrones: Total Distance:", totalDistance)
-	log.Println("CoveringMaxDrones: Total Time:", totalTime)
-	log.Println("CoveringMaxDrones: Total Fuel Spent:", totalFuelSpent)
-
-	filename := fmt.Sprintf("%s_covering_max_drones.png", removeExtentionFromFilename(mapFilename))
-	output.ToImage(filename, itnInfo, totalDistance, totalTime)
+	outputInfos := mountOutputInfo(itnInfo)
+	filename := fmt.Sprintf("%s_covering_max_drones.png", mapFilename)
+	output.ToImage(filename, itnInfo, outputInfos)
 }
 
-func removeExtentionFromFilename(filename string) string {
-	return strings.Trim(strings.TrimSuffix(filename, ".txt"), ".csv")
+func mountOutputInfo(itnInfo itinerary.Info) []output.Info {
+	var infos []output.Info
+	for measureName, measureFunc := range allMeasures {
+		measureValue := measureFunc(itnInfo)
+		measureStr := fmt.Sprintf("%s: %.2f", measureName, measureValue)
+		infos = append(infos, output.Info{Str: measureStr})
+
+		log.Println(measureName, measureValue)
+	}
+
+	return infos
+}
+
+func loadEnvironment() (gps.Map, itinerary.Itinerary) {
+	gpsMap := gps.LoadMap(mapFilename)
+	initialPoint := gpsMap.Warehouses[0]
+	car := vehicle.NewCar("car1", initialPoint)
+	car.NewDrone("drone1")
+	itn := itinerary.New(car)
+
+	return gpsMap, itn
 }

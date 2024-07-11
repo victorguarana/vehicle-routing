@@ -8,17 +8,20 @@ import (
 	"github.com/victorguarana/vehicle-routing/internal/route"
 )
 
-var textColor = color.Black
+var primaryColor = color.Black
 var backgroundColor = color.White
 var flightLineColor = color.RGBA{0, 0, 255, 255}
 var routeLineColor = color.RGBA{0, 255, 0, 255}
-var endGradLineColor = color.RGBA{255, 0, 0, 255}
 
 const imageSize = 550
-const paddingLeft = 50
-const paddingUp = 55
+const paddingLeft = 250
+const paddingUp = 250
 const applyScaleValue = 5
-const mainLineWidth = 0.3
+const mainLineWidth = 1.5
+
+type Info struct {
+	Str string
+}
 
 type Stop interface {
 	IsClient() bool
@@ -28,20 +31,19 @@ type Stop interface {
 	Name() string
 }
 
-func ToImage(fileName string, itineraryInfo itinerary.Info, routeDistance float64, routeTime float64) {
+func ToImage(fileName string, itineraryInfo itinerary.Info, infos []Info) {
 	ggCtx := gg.NewContext(imageSize, imageSize)
+	ggCtx.SetLineWidth(mainLineWidth)
+	ggCtx.SetColor(primaryColor)
+
 	drawBackgound(ggCtx)
-	drawInfos(ggCtx, routeDistance, routeTime)
-	setRouteValues(ggCtx)
+	_, infosHeight := drawInfos(ggCtx, infos)
+	ggCtx.Translate(paddingLeft, paddingUp+infosHeight)
 	itineraryToImage(ggCtx, itineraryInfo)
 	err := ggCtx.SavePNG(fileName)
 	if err != nil {
 		panic(err)
 	}
-}
-
-func setRouteValues(ggCtx *gg.Context) {
-	ggCtx.SetLineWidth(applyScale(mainLineWidth))
 }
 
 func itineraryToImage(ggCtx *gg.Context, itineraryInfo itinerary.Info) {
