@@ -41,3 +41,11 @@ func loadStopImage(stop Stop) image.Image {
 
 	panic("Stop type not found")
 }
+
+func loadArrowImage() image.Image {
+	im, err := gg.LoadPNG("assets/up.png")
+	if err != nil {
+		panic(err)
+	}
+	return im
+}

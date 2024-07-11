@@ -18,11 +18,6 @@ func drawBackgound(ggCtx *gg.Context) {
 }
 
 func drawStop(ggCtx *gg.Context, stop Stop) {
-	// Pushing and Popping the context to avoid changing color outsite this function
-	ggCtx.Push()
-	defer ggCtx.Pop()
-
-	ggCtx.SetColor(textColor)
 	stopImage := loadStopImage(stop)
 	stopImageHeight := stopImage.Bounds().Max.Y
 	centerAxis := 0.5
@@ -42,32 +37,17 @@ func drawMovement(ggCtx *gg.Context, actual Stop, next Stop, img image.Image, cl
 	ggCtx.Push()
 	defer ggCtx.Pop()
 
-	grad := movementGradient(actual, next, clr)
-	ggCtx.SetStrokeStyle(grad)
-
+	ggCtx.SetColor(clr)
 	ggCtx.DrawLine(
 		axisX(actual), axisY(actual),
 		axisX(next), axisY(next),
 	)
 	ggCtx.Stroke()
-	centerAxis := 0.5
-	ggCtx.DrawImageAnchored(
-		img,
-		int((axisX(actual)+axisX(next))/2), int((axisY(actual)+axisY(next))/2),
-		centerAxis, centerAxis,
-	)
+	drawArrow(ggCtx, actual, next)
+	drawVehicle(ggCtx, actual, next, img)
 }
 
 func drawInfos(ggCtx *gg.Context, infos []Info) (float64, float64) {
-	if len(infos) == 0 {
-		return 0, 0
-	}
-
-	// Pushing and Popping the context to avoid changing color outsite this function
-	ggCtx.Push()
-	defer ggCtx.Pop()
-
-	ggCtx.SetColor(textColor)
 	infosWidth := 0.0
 	infosHeight := 0.0
 
@@ -83,21 +63,35 @@ func drawInfos(ggCtx *gg.Context, infos []Info) (float64, float64) {
 }
 
 func axisX(stop Stop) float64 {
-	return applyScale(stop.Longitude() + paddingLeft)
+	return applyScale(stop.Longitude())
 }
 
 func axisY(stop Stop) float64 {
-	return applyScale(stop.Latitude() + paddingUp)
+	return applyScale(stop.Latitude())
 }
 
 func applyScale(in float64) float64 {
 	return in * applyScaleValue
 }
 
-func movementGradient(actual Stop, next Stop, initialColor color.Color) gg.Gradient {
-	grad := gg.NewLinearGradient(axisX(actual), axisY(actual), axisX(next), axisY(next))
-	grad.AddColorStop(0, initialColor)
-	grad.AddColorStop(0.7, initialColor)
-	grad.AddColorStop(1, endGradLineColor)
-	return grad
+func drawArrow(ggCtx *gg.Context, actual Stop, next Stop) {
+	// Pushing and Popping the context to avoid rotating outsite this function
+	ggCtx.Push()
+	defer ggCtx.Pop()
+
+	arrowImg := loadArrowImage()
+	ang := math.Atan2(axisY(actual)-axisY(next), axisX(actual)-axisX(next))
+	centerAxis := 0.5
+	posX := (axisX(actual) + axisX(next)*2) / 3
+	posY := (axisY(actual) + axisY(next)*2) / 3
+	// Subtracting Pi/2 because the arrow image is pointing up
+	ggCtx.RotateAbout(ang-math.Pi/2, posX, posY)
+	ggCtx.DrawImageAnchored(arrowImg, int(posX), int(posY), centerAxis, centerAxis)
+}
+
+func drawVehicle(ggCtx *gg.Context, actual Stop, next Stop, img image.Image) {
+	centerAxis := 0.5
+	posX := (axisX(actual) + axisX(next)) / 2
+	posY := (axisY(actual) + axisY(next)) / 2
+	ggCtx.DrawImageAnchored(img, int(posX), int(posY), centerAxis, centerAxis)
 }
