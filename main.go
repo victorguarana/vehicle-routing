@@ -14,7 +14,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
-const mapFilename = "maps/map1"
+const mapFilename = "example/map"
 
 var allMeasures = map[string]func(itinerary.Info) float64{
 	"Total Distance": measure.TotalDistance,
@@ -46,7 +46,7 @@ func ClosestNeighbor() {
 
 	itnInfo := itn.Info()
 	outputInfos := mountOutputInfo(itnInfo)
-	filename := fmt.Sprintf("%s-closest-neighbor.png", mapFilename)
+	filename := fmt.Sprintf("%s_closest_neighbor.png", mapFilename)
 	output.ToImage(filename, itnInfo, outputInfos)
 }
 
@@ -59,7 +59,7 @@ func ClosestNeighborWithDrones() {
 
 	itnInfo := itn.Info()
 	outputInfos := mountOutputInfo(itnInfo)
-	filename := fmt.Sprintf("%s-closest-neighbor-with-drones.png", mapFilename)
+	filename := fmt.Sprintf("%s_closest_neighbor_with_drones.png", mapFilename)
 	output.ToImage(filename, itnInfo, outputInfos)
 }
 
@@ -79,7 +79,7 @@ func ClosestNeighborWithDronesShiftC2D() {
 
 	itnInfo := itn.Info()
 	outputInfos := mountOutputInfo(itnInfo)
-	filename := fmt.Sprintf("%s-closest-neighbor-with-drones-shift-c2d.png", mapFilename)
+	filename := fmt.Sprintf("%s_closest_neighbor_with_drones_shift_c2d.png", mapFilename)
 	output.ToImage(filename, itnInfo, outputInfos)
 }
 
@@ -99,7 +99,7 @@ func ClosestNeighborWithDronesShiftD2C() {
 
 	itnInfo := itn.Info()
 	outputInfos := mountOutputInfo(itnInfo)
-	filename := fmt.Sprintf("%s-closest-neighbor-with-drones-shift-d2c.png", mapFilename)
+	filename := fmt.Sprintf("%s_closest_neighbor_with_drones_shift_d2c.png", mapFilename)
 	output.ToImage(filename, itnInfo, outputInfos)
 }
 
@@ -119,7 +119,7 @@ func ClosestNeighborWithDronesSwapCD() {
 
 	itnInfo := itn.Info()
 	outputInfos := mountOutputInfo(itnInfo)
-	filename := fmt.Sprintf("%s-closest-neighbor-with-drones-swap-cd.png", mapFilename)
+	filename := fmt.Sprintf("%s_closest_neighbor_with_drones_swap_cd.png", mapFilename)
 	output.ToImage(filename, itnInfo, outputInfos)
 }
 
@@ -130,7 +130,7 @@ func BestInsertion() {
 
 	itnInfo := itn.Info()
 	outputInfos := mountOutputInfo(itnInfo)
-	filename := fmt.Sprintf("%s-best-insertion.png", mapFilename)
+	filename := fmt.Sprintf("%s_best_insertion.png", mapFilename)
 	output.ToImage(filename, itnInfo, outputInfos)
 }
 
@@ -143,7 +143,7 @@ func BestInsertionWithDrones() {
 
 	itnInfo := itn.Info()
 	outputInfos := mountOutputInfo(itnInfo)
-	filename := fmt.Sprintf("%s-best-insertion-with-drones.png", mapFilename)
+	filename := fmt.Sprintf("%s_best_insertion_with_drones.png", mapFilename)
 	output.ToImage(filename, itnInfo, outputInfos)
 }
 
@@ -163,7 +163,7 @@ func BestInsertionWithDronesShiftC2D() {
 
 	itnInfo := itn.Info()
 	outputInfos := mountOutputInfo(itnInfo)
-	filename := fmt.Sprintf("%s-best-insertion-with-drones-shift-c2d.png", mapFilename)
+	filename := fmt.Sprintf("%s_best_insertion_with_drones_shift_c2d.png", mapFilename)
 	output.ToImage(filename, itnInfo, outputInfos)
 }
 
@@ -182,7 +182,7 @@ func BestInsertionWithDronesShiftD2C() {
 
 	itnInfo := itn.Info()
 	outputInfos := mountOutputInfo(itnInfo)
-	filename := fmt.Sprintf("%s-best-insertion-with-drones-shift-d2c.png", mapFilename)
+	filename := fmt.Sprintf("%s_best_insertion_with_drones_shift_d2c.png", mapFilename)
 	output.ToImage(filename, itnInfo, outputInfos)
 }
 
@@ -201,7 +201,7 @@ func BestInsertionWithDronesSwapCD() {
 
 	itnInfo := itn.Info()
 	outputInfos := mountOutputInfo(itnInfo)
-	filename := fmt.Sprintf("%s-best-insertion-with-drones-swap-cd.png", mapFilename)
+	filename := fmt.Sprintf("%s_best_insertion_with_drones_swap_cd.png", mapFilename)
 	output.ToImage(filename, itnInfo, outputInfos)
 }
 
@@ -213,7 +213,7 @@ func Covering() {
 
 	itnInfo := itn.Info()
 	outputInfos := mountOutputInfo(itnInfo)
-	filename := fmt.Sprintf("%s-covering.png", mapFilename)
+	filename := fmt.Sprintf("%s_covering.png", mapFilename)
 	output.ToImage(filename, itnInfo, outputInfos)
 }
 
@@ -225,7 +225,7 @@ func CoveringMaxDrones() {
 
 	itnInfo := itn.Info()
 	outputInfos := mountOutputInfo(itnInfo)
-	filename := fmt.Sprintf("%s-covering-max-drones.png", mapFilename)
+	filename := fmt.Sprintf("%s_covering_max_drones.png", mapFilename)
 	output.ToImage(filename, itnInfo, outputInfos)
 }
 
