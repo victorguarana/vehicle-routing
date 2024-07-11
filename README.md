@@ -22,9 +22,9 @@ This project implements and compares multiple greedy algorithms and metaheuristi
 
 - **Closest Neighbor**: Createa a route by moving the vehicle to closest customer based on distance to current location;
 - **Best Insertion**: Creates a route by iterating through the customer list and inserting it into the best position based on total distance;
-- **Drone Strike Insertion**: Improve a truck only route by replacing truck deliveries with drone deliveries
-- **Greedy Coverage by Drones**: Create a route by moving the truck to the customer with more near by customers, then send the drone(s) to the nearest customer(s).
-- **Heuristic based on Iterated Local Search (ILS)**: Impreve a route by applying all possible moves and selecting the best one;
+- **Drone Strike Insertion**: Improve a truck only route by replacing truck deliveries with drone deliveries;
+- **Greedy Coverage by Drones**: Create a route by moving the truck to the customer with more near by customers, then send the drone(s) to the nearest customer(s);
+- **Heuristic based on Iterated Local Search (ILS)**: Impreve a route by applying all possible moves and selecting the best one.
 
 ## Comparison Criteria
 
