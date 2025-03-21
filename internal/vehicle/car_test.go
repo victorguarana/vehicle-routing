@@ -7,11 +7,11 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("NewCar", func() {
+var _ = Describe("NewDefaultCar", func() {
 	Context("when car can be created", func() {
 		var initialPoint = gps.Point{Latitude: 1, Longitude: 2, PackageSize: 3, Name: "initialPoint"}
 		It("should create car with correct params", func() {
-			receivedCar := NewCar("car1", initialPoint)
+			receivedCar := NewDefaultCar("car1", initialPoint)
 			expectedCar := car{
 				actualPoint: initialPoint,
 				efficiency:  CarEfficiency,
@@ -86,7 +86,7 @@ var _ = Describe("car{}", func() {
 		}
 
 		It("should create new drone", func() {
-			sut.NewDrone("drone1")
+			sut.NewDefaultDrone("drone1")
 			Expect(len(sut.drones)).To(Equal(1))
 		})
 	})

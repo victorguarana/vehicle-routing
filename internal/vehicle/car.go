@@ -14,8 +14,10 @@ type ICar interface {
 	Efficiency() float64
 	Move(destination gps.Point)
 	Name() string
-	NewDrone(name string)
+	NewDefaultDrone(name string)
+	NewDroneWithParams(params DroneParams)
 	Speed() float64
+	Storage() float64
 	Support(...gps.Point) bool
 }
 
@@ -27,7 +29,7 @@ type car struct {
 	speed       float64
 }
 
-func NewCar(name string, startingPoint gps.Point) ICar {
+func NewDefaultCar(name string, startingPoint gps.Point) ICar {
 	return &car{
 		actualPoint: startingPoint,
 		drones:      []*drone{},
@@ -62,13 +64,22 @@ func (c *car) Name() string {
 	return c.name
 }
 
-func (c *car) NewDrone(name string) {
-	d := newDrone(name, c)
+func (c *car) NewDefaultDrone(name string) {
+	d := newDefaultDrone(name)
+	c.drones = append(c.drones, d)
+}
+
+func (c *car) NewDroneWithParams(params DroneParams) {
+	d := newDroneWithParams(params)
 	c.drones = append(c.drones, d)
 }
 
 func (c *car) Speed() float64 {
 	return c.speed
+}
+
+func (c *car) Storage() float64 {
+	return 0
 }
 
 func (c *car) Support(destination ...gps.Point) bool {

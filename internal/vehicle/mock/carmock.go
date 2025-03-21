@@ -108,16 +108,28 @@ func (mr *MockICarMockRecorder) Name() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockICar)(nil).Name))
 }
 
-// NewDrone mocks base method.
-func (m *MockICar) NewDrone(name string) {
+// NewDefaultDrone mocks base method.
+func (m *MockICar) NewDefaultDrone(name string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "NewDrone", name)
+	m.ctrl.Call(m, "NewDefaultDrone", name)
 }
 
-// NewDrone indicates an expected call of NewDrone.
-func (mr *MockICarMockRecorder) NewDrone(name any) *gomock.Call {
+// NewDefaultDrone indicates an expected call of NewDefaultDrone.
+func (mr *MockICarMockRecorder) NewDefaultDrone(name any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewDrone", reflect.TypeOf((*MockICar)(nil).NewDrone), name)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewDefaultDrone", reflect.TypeOf((*MockICar)(nil).NewDefaultDrone), name)
+}
+
+// NewDroneWithParams mocks base method.
+func (m *MockICar) NewDroneWithParams(params vehicle.DroneParams) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "NewDroneWithParams", params)
+}
+
+// NewDroneWithParams indicates an expected call of NewDroneWithParams.
+func (mr *MockICarMockRecorder) NewDroneWithParams(params any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewDroneWithParams", reflect.TypeOf((*MockICar)(nil).NewDroneWithParams), params)
 }
 
 // Speed mocks base method.
@@ -132,6 +144,20 @@ func (m *MockICar) Speed() float64 {
 func (mr *MockICarMockRecorder) Speed() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Speed", reflect.TypeOf((*MockICar)(nil).Speed))
+}
+
+// Storage mocks base method.
+func (m *MockICar) Storage() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Storage")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Storage indicates an expected call of Storage.
+func (mr *MockICarMockRecorder) Storage() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Storage", reflect.TypeOf((*MockICar)(nil).Storage))
 }
 
 // Support mocks base method.

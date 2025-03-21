@@ -151,6 +151,20 @@ func (mr *MockIDroneMockRecorder) Speed() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Speed", reflect.TypeOf((*MockIDrone)(nil).Speed))
 }
 
+// Storage mocks base method.
+func (m *MockIDrone) Storage() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Storage")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Storage indicates an expected call of Storage.
+func (mr *MockIDroneMockRecorder) Storage() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Storage", reflect.TypeOf((*MockIDrone)(nil).Storage))
+}
+
 // Support mocks base method.
 func (m *MockIDrone) Support(arg0 ...gps.Point) bool {
 	m.ctrl.T.Helper()

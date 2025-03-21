@@ -21,13 +21,22 @@ type IDrone interface {
 	Move(destination gps.Point)
 	Name() string
 	Speed() float64
+	Storage() float64
 	Support(...gps.Point) bool
 	TakeOff()
 }
 
+type DroneParams struct {
+	Efficiency    float64
+	Speed         float64
+	Storage       float64
+	Range         float64
+	Name          string
+	StartingPoint gps.Point
+}
+
 type drone struct {
 	actualPoint     gps.Point
-	car             *car
 	efficiency      float64
 	name            string
 	speed           float64
@@ -38,9 +47,8 @@ type drone struct {
 	totalStorage    float64
 }
 
-func newDrone(name string, c *car) *drone {
+func newDefaultDrone(name string) *drone {
 	return &drone{
-		car:             c,
 		efficiency:      DroneEfficiency,
 		name:            name,
 		speed:           DroneSpeed,
@@ -48,6 +56,18 @@ func newDrone(name string, c *car) *drone {
 		remaningStorage: DroneStorage,
 		totalRange:      DroneRange,
 		totalStorage:    DroneStorage,
+	}
+}
+
+func newDroneWithParams(params DroneParams) *drone {
+	return &drone{
+		efficiency:      params.Efficiency,
+		name:            params.Name,
+		speed:           params.Speed,
+		remaningRange:   params.Range,
+		remaningStorage: params.Storage,
+		totalRange:      params.Range,
+		totalStorage:    params.Storage,
 	}
 }
 
@@ -89,6 +109,10 @@ func (d *drone) Name() string {
 
 func (d *drone) Speed() float64 {
 	return d.speed
+}
+
+func (d *drone) Storage() float64 {
+	return d.totalStorage
 }
 
 func (d *drone) Support(route ...gps.Point) bool {
