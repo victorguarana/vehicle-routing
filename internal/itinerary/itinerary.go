@@ -7,10 +7,6 @@ import (
 
 var flightFactory = route.NewSubRoute
 
-// TODO: Hide its implementation from other packages tests
-// Avoid 'var mockedDrone1 = itinerary.DroneNumber(1)'
-type DroneNumber int
-
 //go:generate mockgen -source=itinerary.go -destination=mock/itinerarymock.go
 type Itinerary interface {
 	Info() Info
@@ -25,19 +21,17 @@ type SubItinerary struct {
 }
 
 type itinerary struct {
-	activeFlights             map[DroneNumber]route.ISubRoute
+	activeFlights             map[vehicle.IDrone]route.ISubRoute
 	car                       vehicle.ICar
 	completedSubItineraryList []SubItinerary
-	droneNumbersMap           map[DroneNumber]vehicle.IDrone
 	route                     route.IMainRoute
 }
 
 func New(car vehicle.ICar) Itinerary {
 	return &itinerary{
-		activeFlights:             map[DroneNumber]route.ISubRoute{},
+		activeFlights:             map[vehicle.IDrone]route.ISubRoute{},
 		car:                       car,
 		completedSubItineraryList: []SubItinerary{},
-		droneNumbersMap:           generateDroneNumbersMap(car.Drones()),
 		route:                     route.NewMainRoute(route.NewMainStop(car.ActualPoint())),
 	}
 }
@@ -56,12 +50,4 @@ func (i *itinerary) Finder() Finder {
 
 func (i *itinerary) Modifier() Modifier {
 	return modifier{info: &info{i}}
-}
-
-func generateDroneNumbersMap(drones []vehicle.IDrone) map[DroneNumber]vehicle.IDrone {
-	activeSubitineraryMap := make(map[DroneNumber]vehicle.IDrone)
-	for i, drone := range drones {
-		activeSubitineraryMap[DroneNumber(i+1)] = drone
-	}
-	return activeSubitineraryMap
 }
