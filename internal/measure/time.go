@@ -4,6 +4,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/internal/gps"
 	"github.com/victorguarana/vehicle-routing/internal/itinerary"
 	"github.com/victorguarana/vehicle-routing/internal/route"
+	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
 type subRouteTimes map[route.ISubRoute]float64
@@ -14,13 +15,13 @@ func TimeSpent(itineraryInfo itinerary.Info) float64 {
 	var subRoutesFlyingTimes = make(subRouteTimes)
 	var mainRouteTravelTime = make(subRouteTimes)
 	var totalTime float64
-	carSpeed := itineraryInfo.CarSpeed()
-	droneSpeed := itineraryInfo.DroneSpeed()
+	carSpeed := itineraryInfo.Car().Speed()
+	droneByFlight := mapDroneByFlight(itineraryInfo)
 	iterator := itineraryInfo.RouteIterator()
 	for {
 		actual := iterator.Actual()
 		if subRoutes := actual.StartingSubRoutes(); len(subRoutes) > 0 {
-			calcSubRouteTimes(mainRouteTravelTime, subRoutesFlyingTimes, subRoutes, droneSpeed)
+			calcSubRouteTimes(mainRouteTravelTime, subRoutesFlyingTimes, subRoutes, droneByFlight)
 		}
 		if subRoutes := actual.ReturningSubRoutes(); len(subRoutes) > 0 {
 			totalTime += maxAdditionalTimeWaitingSubRoutes(mainRouteTravelTime, subRoutesFlyingTimes, subRoutes)
@@ -39,10 +40,11 @@ func TimeSpent(itineraryInfo itinerary.Info) float64 {
 	return totalTime
 }
 
-func calcSubRouteTimes(mainRouteTravelTime subRouteTimes, subRouteFlyingTimes subRouteTimes, subRoutes []route.ISubRoute, droneSpeed float64) {
+func calcSubRouteTimes(mainRouteTravelTime subRouteTimes, subRouteFlyingTimes subRouteTimes, subRoutes []route.ISubRoute, droneByFlight map[route.ISubRoute]vehicle.IDrone) {
 	for _, subRoute := range subRoutes {
+		drone := droneByFlight[subRoute]
 		mainRouteTravelTime[subRoute] = 0
-		subRouteFlyingTimes[subRoute] = calcSubRouteDistance(subRoute) / droneSpeed
+		subRouteFlyingTimes[subRoute] = calcSubRouteDistance(subRoute) / drone.Speed()
 	}
 }
 
@@ -68,4 +70,13 @@ func updateMainRouteTravelTimes(mainRouteTravelTime subRouteTimes, travelTime fl
 	for subRoute := range mainRouteTravelTime {
 		mainRouteTravelTime[subRoute] += travelTime
 	}
+}
+
+func mapDroneByFlight(itineraryInfo itinerary.Info) map[route.ISubRoute]vehicle.IDrone {
+	droneByFlight := make(map[route.ISubRoute]vehicle.IDrone)
+	for _, subItinerary := range itineraryInfo.SubItineraryList() {
+		droneByFlight[subItinerary.Flight] = subItinerary.Drone
+	}
+
+	return droneByFlight
 }

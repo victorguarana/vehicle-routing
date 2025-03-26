@@ -11,18 +11,13 @@ import (
 type Info interface {
 	ActualCarPoint() gps.Point
 	ActualCarStop() route.IMainStop
-	CarEfficiency() float64
-	CarSpeed() float64
-	CarSupport(nextPoints ...gps.Point) bool
-	Drones() []vehicle.IDrone
-	DroneCanReach(drone vehicle.IDrone, nextPoints ...gps.Point) bool
-	DroneEfficiency() float64
-	DroneIsFlying(drone vehicle.IDrone) bool
-	DroneSpeed() float64
-	DroneSupport(drone vehicle.IDrone, deliveryPoint gps.Point, landingPoint gps.Point) bool
+	Car() vehicle.ICar
+	MainRoute() route.IMainRoute
 	RouteIterator() slc.Iterator[route.IMainStop]
 	SubItineraryList() []SubItinerary
 }
+
+var _ Info = (*info)(nil)
 
 type info struct {
 	*itinerary
@@ -36,40 +31,12 @@ func (i *info) ActualCarStop() route.IMainStop {
 	return i.route.Last()
 }
 
-func (i *info) CarEfficiency() float64 {
-	return vehicle.CarEfficiency
+func (i *info) Car() vehicle.ICar {
+	return i.car
 }
 
-func (i *info) CarSpeed() float64 {
-	return vehicle.CarSpeed
-}
-
-func (i *info) CarSupport(nextPoints ...gps.Point) bool {
-	return i.car.Support(nextPoints...)
-}
-
-func (i *info) DroneCanReach(drone vehicle.IDrone, nextPoints ...gps.Point) bool {
-	return drone.CanReach(nextPoints...)
-}
-
-func (i *info) DroneEfficiency() float64 {
-	return vehicle.DroneEfficiency
-}
-
-func (i *info) DroneIsFlying(drone vehicle.IDrone) bool {
-	return drone.IsFlying()
-}
-
-func (i *info) Drones() []vehicle.IDrone {
-	return i.car.Drones()
-}
-
-func (i *info) DroneSpeed() float64 {
-	return vehicle.DroneSpeed
-}
-
-func (i *info) DroneSupport(drone vehicle.IDrone, deliveryPoint gps.Point, landingPoint gps.Point) bool {
-	return drone.Support(deliveryPoint) && drone.CanReach(deliveryPoint, landingPoint)
+func (i *info) MainRoute() route.IMainRoute {
+	return i.route
 }
 
 func (i *info) RouteIterator() slc.Iterator[route.IMainStop] {

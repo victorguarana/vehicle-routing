@@ -27,7 +27,7 @@ func deliverNeighborsWithDrones(constructor itinerary.Constructor, neighbors []g
 	if len(neighbors) <= 0 {
 		return
 	}
-	drones := constructor.Drones()
+	drones := constructor.Car().Drones()
 	actualCarPoint := constructor.ActualCarPoint()
 	actualCarStop := constructor.ActualCarStop()
 	for neighborIndex, droneIndex := 0, 0; neighborIndex < len(neighbors); droneIndex++ {
@@ -41,15 +41,15 @@ func deliverNeighborsWithDrones(constructor itinerary.Constructor, neighbors []g
 }
 
 func tryToDeliver(constructor itinerary.Constructor, drone vehicle.IDrone, returningStop route.IMainStop, returningPoint gps.Point, destination gps.Point) bool {
-	if constructor.DroneSupport(drone, destination, returningPoint) {
-		if !constructor.DroneIsFlying(drone) {
+	if drone.Support(destination, returningPoint) {
+		if !drone.IsFlying() {
 			constructor.StartDroneFlight(drone, returningStop)
 		}
 		constructor.MoveDrone(drone, destination)
 		return false
 	}
 
-	if constructor.DroneIsFlying(drone) {
+	if drone.IsFlying() {
 		constructor.LandDrone(drone, returningStop)
 		return true
 	}

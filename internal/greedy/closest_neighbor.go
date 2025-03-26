@@ -14,7 +14,7 @@ func ClosestNeighbor(constructorList []itinerary.Constructor, m gps.Map) {
 		closestClient := gps.ClosestPoint(carActualPoint, remaningClients)
 		closestWarehouseFromClosestClient := gps.ClosestPoint(closestClient, m.Warehouses)
 
-		if constructor.CarSupport(closestClient, closestWarehouseFromClosestClient) {
+		if constructor.Car().Support(closestClient, closestWarehouseFromClosestClient) {
 			constructor.MoveCar(closestClient)
 			remaningClients = slc.RemoveElement(remaningClients, closestClient)
 			continue

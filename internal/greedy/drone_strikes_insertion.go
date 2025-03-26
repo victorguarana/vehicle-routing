@@ -57,7 +57,7 @@ func DroneStrikesInsertion(constructor itinerary.Constructor, modifier itinerary
 }
 
 func initDroneStrikes(constructor itinerary.Constructor) []droneStrikes {
-	drones := constructor.Drones()
+	drones := constructor.Car().Drones()
 	dStrks := make([]droneStrikes, len(drones))
 	for i, d := range drones {
 		dStrks[i] = droneStrikes{drone: d}
@@ -84,7 +84,7 @@ func anyDroneWasStriked(dStrks []droneStrikes) bool {
 func anyDroneNeedToLand(constructor itinerary.Constructor, dStrks []droneStrikes, next route.IMainStop) bool {
 	nextPoint := next.Point()
 	for _, dStrk := range dStrks {
-		if constructor.DroneIsFlying(dStrk.drone) && !constructor.DroneCanReach(dStrk.drone, nextPoint) {
+		if dStrk.drone.IsFlying() && !dStrk.drone.CanReach(nextPoint) {
 			return true
 		}
 	}
@@ -95,8 +95,8 @@ func updateDroneStrikes(constructor itinerary.Constructor, dStrks []droneStrikes
 	actualPoint := actual.Point()
 	nextPoint := next.Point()
 	for i, dStrk := range dStrks {
-		if constructor.DroneIsFlying(dStrk.drone) {
-			if constructor.DroneSupport(dStrk.drone, actualPoint, nextPoint) {
+		if dStrk.drone.IsFlying() {
+			if dStrk.drone.Support(actualPoint, nextPoint) {
 				dStrk.strikes = 0
 			} else {
 				dStrk.strikes++
@@ -111,7 +111,7 @@ func flyingDroneThatCanSupport(constructor itinerary.Constructor, dStrks []drone
 	nextPoint := next.Point()
 	nextPoint.PackageSize = 0
 	for _, dStrk := range dStrks {
-		if constructor.DroneIsFlying(dStrk.drone) && constructor.DroneSupport(dStrk.drone, actualPoint, nextPoint) {
+		if dStrk.drone.IsFlying() && dStrk.drone.Support(actualPoint, nextPoint) {
 			return dStrk.drone, true
 		}
 	}
@@ -123,7 +123,7 @@ func dockedDroneThatCanSupport(constructor itinerary.Constructor, dStrks []drone
 	nextPoint := next.Point()
 	nextPoint.PackageSize = 0
 	for _, dStrk := range dStrks {
-		if !constructor.DroneIsFlying(dStrk.drone) && constructor.DroneSupport(dStrk.drone, actualPoint, nextPoint) {
+		if !dStrk.drone.IsFlying() && dStrk.drone.Support(actualPoint, nextPoint) {
 			return dStrk.drone, true
 		}
 	}

@@ -6,6 +6,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/internal/gps"
 	"github.com/victorguarana/vehicle-routing/internal/itinerary"
 	mockitinerary "github.com/victorguarana/vehicle-routing/internal/itinerary/mock"
+	mockvehicle "github.com/victorguarana/vehicle-routing/internal/vehicle/mock"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -16,11 +17,15 @@ var _ = Describe("BestInsertion", func() {
 	var mockCtrl *gomock.Controller
 	var mockedConstructor1 *mockitinerary.MockConstructor
 	var mockedConstructor2 *mockitinerary.MockConstructor
+	var mockedCar1 *mockvehicle.MockICar
+	var mockedCar2 *mockvehicle.MockICar
 
 	BeforeEach(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockedConstructor1 = mockitinerary.NewMockConstructor(mockCtrl)
 		mockedConstructor2 = mockitinerary.NewMockConstructor(mockCtrl)
+		mockedCar1 = mockvehicle.NewMockICar(mockCtrl)
+		mockedCar2 = mockvehicle.NewMockICar(mockCtrl)
 		constructorList = []itinerary.Constructor{mockedConstructor1, mockedConstructor2}
 	})
 
@@ -40,21 +45,23 @@ var _ = Describe("BestInsertion", func() {
 		}
 
 		It("return a route without warehouses between clients", func() {
+			mockedConstructor1.EXPECT().Car().Return(mockedCar1).AnyTimes()
 			mockedConstructor1.EXPECT().ActualCarPoint().Return(initialPoint).AnyTimes()
-			mockedConstructor1.EXPECT().CarSupport(client3, warehouse1).Return(true)
+			mockedCar1.EXPECT().Support(client3, warehouse1).Return(true)
 			mockedConstructor1.EXPECT().MoveCar(client3)
-			mockedConstructor1.EXPECT().CarSupport(client5, warehouse2).Return(true)
+			mockedCar1.EXPECT().Support(client5, warehouse2).Return(true)
 			mockedConstructor1.EXPECT().MoveCar(client5)
-			mockedConstructor1.EXPECT().CarSupport(client4, warehouse2).Return(true)
+			mockedCar1.EXPECT().Support(client4, warehouse2).Return(true)
 			mockedConstructor1.EXPECT().MoveCar(client4)
 			mockedConstructor1.EXPECT().MoveCar(warehouse1)
 
+			mockedConstructor2.EXPECT().Car().Return(mockedCar2).AnyTimes()
 			mockedConstructor2.EXPECT().ActualCarPoint().Return(initialPoint).AnyTimes()
-			mockedConstructor2.EXPECT().CarSupport(client1, warehouse1).Return(true)
+			mockedCar2.EXPECT().Support(client1, warehouse1).Return(true)
 			mockedConstructor2.EXPECT().MoveCar(client1)
-			mockedConstructor2.EXPECT().CarSupport(client6, warehouse2).Return(true)
+			mockedCar2.EXPECT().Support(client6, warehouse2).Return(true)
 			mockedConstructor2.EXPECT().MoveCar(client6)
-			mockedConstructor2.EXPECT().CarSupport(client2, warehouse1).Return(true)
+			mockedCar2.EXPECT().Support(client2, warehouse1).Return(true)
 			mockedConstructor2.EXPECT().MoveCar(client2)
 			mockedConstructor2.EXPECT().MoveCar(warehouse1)
 
