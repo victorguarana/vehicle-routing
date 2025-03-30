@@ -130,11 +130,24 @@ func (d *drone) Support(route ...gps.Point) bool {
 	return true
 }
 
+func (d *drone) TakeOff() {
+	d.isFlying = true
+}
+
+func (d *drone) clone() *drone {
+	return &drone{
+		actualPoint:     d.actualPoint,
+		efficiency:      d.efficiency,
+		name:            d.name,
+		speed:           d.speed,
+		remaningRange:   d.remaningRange,
+		remaningStorage: d.remaningStorage,
+		totalRange:      d.totalRange,
+		totalStorage:    d.totalStorage,
+	}
+}
+
 func (d *drone) resetAttributes() {
 	d.remaningRange = d.totalRange
 	d.remaningStorage = d.totalStorage
-}
-
-func (d *drone) TakeOff() {
-	d.isFlying = true
 }

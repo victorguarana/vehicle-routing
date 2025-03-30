@@ -10,6 +10,7 @@ const CarEfficiency = 5.0
 //go:generate mockgen -source=car.go -destination=mock/carmock.go
 type ICar interface {
 	ActualPoint() gps.Point
+	Clone() ICar
 	Drones() []IDrone
 	Efficiency() float64
 	Move(destination gps.Point)
@@ -41,6 +42,21 @@ func NewDefaultCar(name string, startingPoint gps.Point) ICar {
 
 func (c *car) ActualPoint() gps.Point {
 	return c.actualPoint
+}
+
+func (c *car) Clone() ICar {
+	clonedDrones := make([]*drone, len(c.drones))
+	for i, d := range c.drones {
+		clonedDrones[i] = d.clone()
+	}
+
+	return &car{
+		actualPoint: c.actualPoint,
+		drones:      clonedDrones,
+		efficiency:  c.efficiency,
+		name:        c.name,
+		speed:       c.speed,
+	}
 }
 
 func (c *car) Drones() []IDrone {

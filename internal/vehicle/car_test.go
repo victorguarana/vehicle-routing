@@ -37,6 +37,26 @@ var _ = Describe("car{}", func() {
 		})
 	})
 
+	Describe("Clone", func() {
+		var drone1 = &drone{}
+		var sut = &car{
+			actualPoint: gps.Point{Latitude: 1, Longitude: 2, PackageSize: 3, Name: "initialPoint"},
+			drones:      []*drone{drone1},
+			efficiency:  10,
+			name:        "testCar",
+			speed:       20,
+		}
+
+		It("should clone car with all params", func() {
+			receivedCar := sut.Clone()
+			Expect(receivedCar).To(Equal(sut))
+			Expect(receivedCar).NotTo(BeIdenticalTo(sut))
+
+			sut.actualPoint.Latitude = 10
+			Expect(receivedCar).NotTo(Equal(sut))
+		})
+	})
+
 	Describe("Drones", func() {
 		var drone1 = &drone{}
 		var drone2 = &drone{}
