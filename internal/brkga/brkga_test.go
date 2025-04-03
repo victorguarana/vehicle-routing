@@ -225,10 +225,10 @@ var _ = Describe("BRKGA", func() {
 
 		It("should evaluate and fill score from not evaluated individuals", func() {
 			individual2.Score = 20.0
-			mockedDecoder.EXPECT().Decode(individual1).Return(1)
-			mockedDecoder.EXPECT().Decode(individual3).Return(3)
-			mockedMeasurer.EXPECT().Measure(1).Return(10.0)
-			mockedMeasurer.EXPECT().Measure(3).Return(30.0)
+			mockedDecoder.EXPECT().Decode(individual1).Return([]int{1})
+			mockedDecoder.EXPECT().Decode(individual3).Return([]int{3})
+			mockedMeasurer.EXPECT().Measure([]int{1}).Return(10.0)
+			mockedMeasurer.EXPECT().Measure([]int{3}).Return(30.0)
 
 			sut.evaluateGeneration(initialGeneration)
 
@@ -244,12 +244,13 @@ var _ = Describe("BRKGA", func() {
 		var individualWithScore3 = &Individual{Score: 3}
 		var individualWithScore4 = &Individual{Score: 4}
 		var individualWithScore1_1 = &Individual{Score: 1}
-		var expectedGeneration = []*Individual{
-			individualWithScore4, individualWithScore3, individualWithScore2, individualWithScore1, individualWithScore1_1,
-		}
 
 		Context("when generation already ordered", func() {
 			It("should do nothing", func() {
+				expectedGeneration := []*Individual{
+					individualWithScore4, individualWithScore3, individualWithScore2, individualWithScore1, individualWithScore1_1,
+				}
+
 				generation := []*Individual{
 					individualWithScore4, individualWithScore3, individualWithScore2, individualWithScore1, individualWithScore1_1,
 				}
@@ -260,13 +261,35 @@ var _ = Describe("BRKGA", func() {
 		})
 
 		Context("when generation is not ordered", func() {
-			It("should order generation desc by score", func() {
-				generation := []*Individual{
-					individualWithScore1_1, individualWithScore4, individualWithScore2, individualWithScore1, individualWithScore3,
-				}
+			Context("when optimizer is maximize", func() {
+				It("should order generation desc by score", func() {
+					expectedGeneration := []*Individual{
+						individualWithScore4, individualWithScore3, individualWithScore2, individualWithScore1, individualWithScore1_1,
+					}
 
-				sut.orderGeneration(generation)
-				Expect(generation).To(Equal(expectedGeneration))
+					generation := []*Individual{
+						individualWithScore1_1, individualWithScore4, individualWithScore2, individualWithScore1, individualWithScore3,
+					}
+
+					sut.orderGeneration(generation)
+					Expect(generation).To(Equal(expectedGeneration))
+				})
+			})
+
+			Context("when optimizer is minimize", func() {
+				It("should order generation asc by score", func() {
+					sut.measureOptimizer = Minimize
+					expectedGeneration := []*Individual{
+						individualWithScore1, individualWithScore1_1, individualWithScore2, individualWithScore3, individualWithScore4,
+					}
+
+					generation := []*Individual{
+						individualWithScore1_1, individualWithScore4, individualWithScore2, individualWithScore1, individualWithScore3,
+					}
+
+					sut.orderGeneration(generation)
+					Expect(generation).To(Equal(expectedGeneration))
+				})
 			})
 		})
 	})

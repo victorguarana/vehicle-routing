@@ -39,10 +39,10 @@ func (m *MockIDecoder[T]) EXPECT() *MockIDecoderMockRecorder[T] {
 }
 
 // Decode mocks base method.
-func (m *MockIDecoder[T]) Decode(arg0 *Individual) T {
+func (m *MockIDecoder[T]) Decode(arg0 *Individual) []T {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Decode", arg0)
-	ret0, _ := ret[0].(T)
+	ret0, _ := ret[0].([]T)
 	return ret0
 }
 
@@ -76,7 +76,7 @@ func (m *MockIMeasurer[T]) EXPECT() *MockIMeasurerMockRecorder[T] {
 }
 
 // Measure mocks base method.
-func (m *MockIMeasurer[T]) Measure(arg0 T) float64 {
+func (m *MockIMeasurer[T]) Measure(arg0 []T) float64 {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Measure", arg0)
 	ret0, _ := ret[0].(float64)

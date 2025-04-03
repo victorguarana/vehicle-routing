@@ -5,13 +5,20 @@ import (
 	"sort"
 )
 
+type Optimizer int
+
+const (
+	Maximize Optimizer = iota
+	Minimize
+)
+
 //go:generate mockgen -source=brkga.go -destination=brkgamock_test.go -package=brkga
 type IDecoder[T any] interface {
-	Decode(*Individual) T
+	Decode(*Individual) []T
 }
 
 type IMeasurer[T any] interface {
-	Measure(T) float64
+	Measure([]T) float64
 }
 
 type BRKGAParams[T any] struct {
@@ -23,6 +30,7 @@ type BRKGAParams[T any] struct {
 	GenerationLimit     int
 	Decoder             IDecoder[T]
 	Measurer            IMeasurer[T]
+	MeasureOptimizer    Optimizer
 }
 
 type BRKGA[T any] struct {
@@ -33,8 +41,9 @@ type BRKGA[T any] struct {
 	biasPercentage  float64
 	generationLimit int
 
-	decoder  func(*Individual) T
-	measurer func(T) float64
+	decoder          func(*Individual) []T
+	measurer         func([]T) float64
+	measureOptimizer Optimizer
 }
 
 func NewBRKGA[T any](params BRKGAParams[T]) BRKGA[T] {
@@ -49,12 +58,13 @@ func NewBRKGA[T any](params BRKGAParams[T]) BRKGA[T] {
 		generationLimit: params.GenerationLimit,
 		biasPercentage:  params.BiasPercentage,
 
-		measurer: params.Measurer.Measure,
-		decoder:  params.Decoder.Decode,
+		measurer:         params.Measurer.Measure,
+		decoder:          params.Decoder.Decode,
+		measureOptimizer: params.MeasureOptimizer,
 	}
 }
 
-func (b BRKGA[T]) Execute() T {
+func (b BRKGA[T]) Execute() []T {
 	var prevGeneration []*Individual
 	currentGeneration := b.createInitialGeneration()
 	b.evaluateGeneration(currentGeneration)
@@ -85,22 +95,31 @@ func (b BRKGA[T]) newGeneration(orderedGeneration []*Individual) []*Individual {
 	newGeneration := make([]*Individual, b.maxPop)
 
 	for i := 0; i < b.maxPop; i++ {
-		if i < b.topQnt {
-			newGeneration[i] = orderedGeneration[i]
-			continue
+		switch {
+		case i < b.topQnt:
+			newGeneration[i] = b.createEliteIndividual(orderedGeneration, i)
+		case i < b.maxPop-b.mutantQnt:
+			newGeneration[i] = b.createCrossoverIndividual(orderedGeneration)
+		default:
+			newGeneration[i] = b.createMutantIndividual()
 		}
-
-		if i < b.maxPop-b.mutantQnt {
-			individualTop := b.randomIndividualTop(orderedGeneration)
-			individualBottom := b.randomIndividualNotTop(orderedGeneration)
-			newGeneration[i] = b.crossover(individualTop, individualBottom)
-			continue
-		}
-
-		newGeneration[i] = newMutantIndividual(b.chromosomeLen)
 	}
 
 	return newGeneration
+}
+
+func (b BRKGA[T]) createEliteIndividual(orderedGeneration []*Individual, index int) *Individual {
+	return orderedGeneration[index]
+}
+
+func (b BRKGA[T]) createCrossoverIndividual(orderedGeneration []*Individual) *Individual {
+	individualTop := b.randomIndividualTop(orderedGeneration)
+	individualBottom := b.randomIndividualNotTop(orderedGeneration)
+	return b.crossover(individualTop, individualBottom)
+}
+
+func (b BRKGA[T]) createMutantIndividual() *Individual {
+	return newMutantIndividual(b.chromosomeLen)
 }
 
 func (b BRKGA[T]) randomIndividualTop(orderedGeneration []*Individual) *Individual {
@@ -140,10 +159,17 @@ func (b BRKGA[T]) evaluateIndividual(individual *Individual) float64 {
 	return b.measurer(decodedIndividual)
 }
 
-func (BRKGA[T]) orderGeneration(generation []*Individual) {
-	sort.Slice(generation, func(i, j int) bool {
-		return generation[i].Score > generation[j].Score
-	})
+func (b BRKGA[T]) orderGeneration(generation []*Individual) {
+	switch b.measureOptimizer {
+	case Maximize:
+		sort.Slice(generation, func(i, j int) bool {
+			return generation[i].Score > generation[j].Score
+		})
+	default:
+		sort.Slice(generation, func(i, j int) bool {
+			return generation[i].Score < generation[j].Score
+		})
+	}
 }
 
 func calculateQuantity(totalQnt int, percentage float64) int {
