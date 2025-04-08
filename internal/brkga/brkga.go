@@ -1,20 +1,21 @@
 package brkga
 
 import (
+	"math"
 	"math/rand"
 	"sort"
 )
 
-type Optimizer int
+type OptimizationGoal int
 
 const (
-	Maximize Optimizer = iota
+	Maximize OptimizationGoal = iota + 1
 	Minimize
 )
 
 //go:generate mockgen -source=brkga.go -destination=brkgamock_test.go -package=brkga
 type IDecoder[T any] interface {
-	Decode(*Individual) []T
+	Decode(*Individual) ([]T, error)
 }
 
 type IMeasurer[T any] interface {
@@ -30,7 +31,7 @@ type BRKGAParams[T any] struct {
 	GenerationLimit     int
 	Decoder             IDecoder[T]
 	Measurer            IMeasurer[T]
-	MeasureOptimizer    Optimizer
+	OptimizationGoal    OptimizationGoal
 }
 
 type BRKGA[T any] struct {
@@ -41,9 +42,9 @@ type BRKGA[T any] struct {
 	biasPercentage  float64
 	generationLimit int
 
-	decoder          func(*Individual) []T
-	measurer         func([]T) float64
-	measureOptimizer Optimizer
+	decoder          IDecoder[T]
+	measurer         IMeasurer[T]
+	optimizationGoal OptimizationGoal
 }
 
 func NewBRKGA[T any](params BRKGAParams[T]) BRKGA[T] {
@@ -58,9 +59,9 @@ func NewBRKGA[T any](params BRKGAParams[T]) BRKGA[T] {
 		generationLimit: params.GenerationLimit,
 		biasPercentage:  params.BiasPercentage,
 
-		measurer:         params.Measurer.Measure,
-		decoder:          params.Decoder.Decode,
-		measureOptimizer: params.MeasureOptimizer,
+		measurer:         params.Measurer,
+		decoder:          params.Decoder,
+		optimizationGoal: params.OptimizationGoal,
 	}
 }
 
@@ -78,7 +79,8 @@ func (b BRKGA[T]) Execute() []T {
 		b.evaluateGeneration(currentGeneration)
 		b.orderGeneration(currentGeneration)
 		if generationCounter >= b.generationLimit {
-			return b.decoder(currentGeneration[0])
+			solution, _ := b.decoder.Decode(currentGeneration[0])
+			return solution
 		}
 	}
 }
@@ -155,12 +157,18 @@ func (b BRKGA[T]) evaluateGeneration(generation []*Individual) {
 }
 
 func (b BRKGA[T]) evaluateIndividual(individual *Individual) float64 {
-	decodedIndividual := b.decoder(individual)
-	return b.measurer(decodedIndividual)
+	decodedIndividual, err := b.decoder.Decode(individual)
+	if err != nil {
+		if b.optimizationGoal == Maximize {
+			return math.Inf(-1)
+		}
+		return math.Inf(1)
+	}
+	return b.measurer.Measure(decodedIndividual)
 }
 
 func (b BRKGA[T]) orderGeneration(generation []*Individual) {
-	switch b.measureOptimizer {
+	switch b.optimizationGoal {
 	case Maximize:
 		sort.Slice(generation, func(i, j int) bool {
 			return generation[i].Score > generation[j].Score

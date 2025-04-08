@@ -1,6 +1,9 @@
 package brkga
 
 import (
+	"errors"
+	"math"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	gomock "go.uber.org/mock/gomock"
@@ -51,8 +54,8 @@ var _ = Describe("BRKGA", func() {
 				mutantQnt:       2,
 				biasPercentage:  0.7,
 				generationLimit: 20,
-				decoder:         mockedDecoder.Decode,
-				measurer:        mockedMeasurer.Measure,
+				decoder:         mockedDecoder,
+				measurer:        mockedMeasurer,
 			}
 
 			Expect(receivedSut.chromosomeLen).To(Equal(expectedSut.chromosomeLen))
@@ -223,18 +226,36 @@ var _ = Describe("BRKGA", func() {
 		var individual3 = newMutantIndividual(1)
 		var initialGeneration = []*Individual{individual1, individual2, individual3}
 
-		It("should evaluate and fill score from not evaluated individuals", func() {
-			individual2.Score = 20.0
-			mockedDecoder.EXPECT().Decode(individual1).Return([]int{1})
-			mockedDecoder.EXPECT().Decode(individual3).Return([]int{3})
-			mockedMeasurer.EXPECT().Measure([]int{1}).Return(10.0)
-			mockedMeasurer.EXPECT().Measure([]int{3}).Return(30.0)
+		Context("when optimization goal is set to maximize", func() {
+			It("should evaluate and fill score from not evaluated individuals", func() {
+				sut.optimizationGoal = Maximize
+				individual2.Score = 20.0
+				mockedDecoder.EXPECT().Decode(individual1).Return([]int{1}, nil)
+				mockedDecoder.EXPECT().Decode(individual3).Return(nil, errors.New("mocked error"))
+				mockedMeasurer.EXPECT().Measure([]int{1}).Return(10.0)
 
-			sut.evaluateGeneration(initialGeneration)
+				sut.evaluateGeneration(initialGeneration)
 
-			Expect(initialGeneration[0].Score).To(Equal(10.0))
-			Expect(initialGeneration[1].Score).To(Equal(20.0))
-			Expect(initialGeneration[2].Score).To(Equal(30.0))
+				Expect(initialGeneration[0].Score).To(Equal(10.0))
+				Expect(initialGeneration[1].Score).To(Equal(20.0))
+				Expect(initialGeneration[2].Score).To(Equal(math.Inf(-1)))
+			})
+		})
+
+		Context("when optimization goal is set to minimize", func() {
+			It("should evaluate and fill score from not evaluated individuals", func() {
+				sut.optimizationGoal = Minimize
+				individual2.Score = 20.0
+				mockedDecoder.EXPECT().Decode(individual1).Return([]int{1}, nil)
+				mockedDecoder.EXPECT().Decode(individual3).Return(nil, errors.New("mocked error"))
+				mockedMeasurer.EXPECT().Measure([]int{1}).Return(10.0)
+
+				sut.evaluateGeneration(initialGeneration)
+
+				Expect(initialGeneration[0].Score).To(Equal(10.0))
+				Expect(initialGeneration[1].Score).To(Equal(20.0))
+				Expect(initialGeneration[2].Score).To(Equal(math.Inf(1)))
+			})
 		})
 	})
 
@@ -278,7 +299,7 @@ var _ = Describe("BRKGA", func() {
 
 			Context("when optimizer is minimize", func() {
 				It("should order generation asc by score", func() {
-					sut.measureOptimizer = Minimize
+					sut.optimizationGoal = Minimize
 					expectedGeneration := []*Individual{
 						individualWithScore1, individualWithScore1_1, individualWithScore2, individualWithScore3, individualWithScore4,
 					}

@@ -39,11 +39,12 @@ func (m *MockIDecoder[T]) EXPECT() *MockIDecoderMockRecorder[T] {
 }
 
 // Decode mocks base method.
-func (m *MockIDecoder[T]) Decode(arg0 *Individual) []T {
+func (m *MockIDecoder[T]) Decode(arg0 *Individual) ([]T, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Decode", arg0)
 	ret0, _ := ret[0].([]T)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Decode indicates an expected call of Decode.
