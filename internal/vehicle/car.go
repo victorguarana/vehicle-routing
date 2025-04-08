@@ -1,6 +1,8 @@
 package vehicle
 
 import (
+	"math"
+
 	"github.com/victorguarana/vehicle-routing/internal/gps"
 )
 
@@ -17,6 +19,7 @@ type ICar interface {
 	Name() string
 	NewDefaultDrone(name string)
 	NewDroneWithParams(params DroneParams)
+	Range() float64
 	Speed() float64
 	Storage() float64
 	Support(...gps.Point) bool
@@ -90,15 +93,19 @@ func (c *car) NewDroneWithParams(params DroneParams) {
 	c.drones = append(c.drones, d)
 }
 
+func (*car) Range() float64 {
+	return math.Inf(1)
+}
+
 func (c *car) Speed() float64 {
 	return c.speed
 }
 
-func (c *car) Storage() float64 {
-	return 0
+func (*car) Storage() float64 {
+	return math.Inf(1)
 }
 
-func (c *car) Support(destination ...gps.Point) bool {
+func (*car) Support(destination ...gps.Point) bool {
 	return true
 }
 

@@ -146,6 +146,20 @@ func (mr *MockICarMockRecorder) NewDroneWithParams(params any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewDroneWithParams", reflect.TypeOf((*MockICar)(nil).NewDroneWithParams), params)
 }
 
+// Range mocks base method.
+func (m *MockICar) Range() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Range")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Range indicates an expected call of Range.
+func (mr *MockICarMockRecorder) Range() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Range", reflect.TypeOf((*MockICar)(nil).Range))
+}
+
 // Speed mocks base method.
 func (m *MockICar) Speed() float64 {
 	m.ctrl.T.Helper()

@@ -23,6 +23,7 @@ type IDrone interface {
 	Speed() float64
 	Storage() float64
 	Support(...gps.Point) bool
+	Range() float64
 	TakeOff()
 }
 
@@ -128,6 +129,10 @@ func (d *drone) Support(route ...gps.Point) bool {
 		return false
 	}
 	return true
+}
+
+func (d *drone) Range() float64 {
+	return d.totalRange
 }
 
 func (d *drone) TakeOff() {

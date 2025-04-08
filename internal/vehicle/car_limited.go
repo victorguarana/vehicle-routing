@@ -44,6 +44,10 @@ func (c *carLimtited) Move(destination gps.Point) {
 	c.moveDockedDrones(destination)
 }
 
+func (c *carLimtited) Range() float64 {
+	return c.totalRange
+}
+
 func (c *carLimtited) Storage() float64 {
 	return c.totalStorage
 }
