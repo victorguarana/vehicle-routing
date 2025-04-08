@@ -14,6 +14,7 @@ type IMainRoute interface {
 	Iterator() slc.Iterator[IMainStop]
 	Last() IMainStop
 	Length() int
+	MainStopList() []IMainStop
 	RemoveMainStop(index int)
 }
 
@@ -64,6 +65,14 @@ func (r *mainRoute) Last() IMainStop {
 
 func (r *mainRoute) Length() int {
 	return len(r.mainStops)
+}
+
+func (r *mainRoute) MainStopList() []IMainStop {
+	iMainStops := make([]IMainStop, len(r.mainStops))
+	for i, ms := range r.mainStops {
+		iMainStops[i] = ms
+	}
+	return iMainStops
 }
 
 func (r *mainRoute) RemoveMainStop(index int) {

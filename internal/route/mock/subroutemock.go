@@ -171,3 +171,17 @@ func (mr *MockISubRouteMockRecorder) StartingStop() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartingStop", reflect.TypeOf((*MockISubRoute)(nil).StartingStop))
 }
+
+// SubStopList mocks base method.
+func (m *MockISubRoute) SubStopList() []route.ISubStop {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SubStopList")
+	ret0, _ := ret[0].([]route.ISubStop)
+	return ret0
+}
+
+// SubStopList indicates an expected call of SubStopList.
+func (mr *MockISubRouteMockRecorder) SubStopList() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubStopList", reflect.TypeOf((*MockISubRoute)(nil).SubStopList))
+}
