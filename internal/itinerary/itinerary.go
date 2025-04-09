@@ -13,6 +13,7 @@ type Itinerary interface {
 	Constructor() Constructor
 	Finder() Finder
 	Modifier() Modifier
+	Validator() Validator
 }
 
 type SubItinerary struct {
@@ -50,4 +51,8 @@ func (i *itinerary) Finder() Finder {
 
 func (i *itinerary) Modifier() Modifier {
 	return modifier{info: &info{i}}
+}
+
+func (i *itinerary) Validator() Validator {
+	return &validator{info: &info{i}}
 }

@@ -1,6 +1,7 @@
 package decoder
 
 import (
+	"errors"
 	"math"
 	"slices"
 	"sort"
@@ -41,12 +42,16 @@ func NewSimpleDecoder(carList []vehicle.ICar, gpsMap gps.Map) *positionDecoder {
 	}
 }
 
-func (d *positionDecoder) Decode(individual *brkga.Individual) []itinerary.Itinerary {
+func (d *positionDecoder) Decode(individual *brkga.Individual) ([]itinerary.Itinerary, error) {
 	d.initializeDecoding(individual)
 	d.processChromossomes()
 	d.finalizeItineraries()
 
-	return d.collectItineraries()
+	if !d.isValidSolution() {
+		return nil, errors.New("Invalid Solution")
+	}
+
+	return d.collectItineraries(), nil
 }
 
 func (d *positionDecoder) initializeDecoding(individual *brkga.Individual) {
@@ -182,10 +187,10 @@ func (d *positionDecoder) decodeDroneChromossome(chromossome *brkga.Chromossome)
 func (d *positionDecoder) decodeCarChromossome(chromossome *brkga.Chromossome) {
 	car := d.carByChromossome[chromossome]
 	constructor := d.itineraryByCar[car].Constructor()
-	constructor.LandAllDrones(constructor.ActualCarStop())
 
 	actualCustomerPoint := d.customerByChromossome[chromossome]
 	constructor.MoveCar(actualCustomerPoint)
+	constructor.LandAllDrones(constructor.ActualCarStop())
 }
 
 func (d *positionDecoder) geneAmplifier() float64 {
@@ -213,4 +218,14 @@ func (d *positionDecoder) calcTotalStorage() float64 {
 		}
 	}
 	return totalStorage
+}
+
+func (d *positionDecoder) isValidSolution() bool {
+	for _, itn := range d.itineraryByCar {
+		if !itn.Validator().IsValid() {
+			return false
+		}
+	}
+
+	return true
 }

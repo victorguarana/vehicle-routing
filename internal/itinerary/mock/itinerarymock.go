@@ -94,3 +94,17 @@ func (mr *MockItineraryMockRecorder) Modifier() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Modifier", reflect.TypeOf((*MockItinerary)(nil).Modifier))
 }
+
+// Validator mocks base method.
+func (m *MockItinerary) Validator() itinerary.Validator {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Validator")
+	ret0, _ := ret[0].(itinerary.Validator)
+	return ret0
+}
+
+// Validator indicates an expected call of Validator.
+func (mr *MockItineraryMockRecorder) Validator() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Validator", reflect.TypeOf((*MockItinerary)(nil).Validator))
+}

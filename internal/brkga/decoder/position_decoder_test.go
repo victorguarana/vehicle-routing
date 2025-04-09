@@ -21,7 +21,9 @@ var _ = Describe("positionDecoder", func() {
 	var mockedDrone1 *mockvehicle.MockIDrone
 	var mockedDrone2 *mockvehicle.MockIDrone
 	var mockedItinerary1 *mockitinerary.MockItinerary
+	var mockedItinerary2 *mockitinerary.MockItinerary
 	var mockedConstructor1 *mockitinerary.MockConstructor
+	var mockedConstructor2 *mockitinerary.MockConstructor
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
@@ -30,7 +32,9 @@ var _ = Describe("positionDecoder", func() {
 		mockedDrone1 = mockvehicle.NewMockIDrone(mockedCtrl)
 		mockedDrone2 = mockvehicle.NewMockIDrone(mockedCtrl)
 		mockedItinerary1 = mockitinerary.NewMockItinerary(mockedCtrl)
+		mockedItinerary2 = mockitinerary.NewMockItinerary(mockedCtrl)
 		mockedConstructor1 = mockitinerary.NewMockConstructor(mockedCtrl)
+		mockedConstructor2 = mockitinerary.NewMockConstructor(mockedCtrl)
 
 		sut = positionDecoder{}
 	})
@@ -225,12 +229,6 @@ var _ = Describe("positionDecoder", func() {
 		var carPoint1 gps.Point
 		var carPoint2 gps.Point
 
-		var mockedItinerary1 *mockitinerary.MockItinerary
-		var mockedItinerary2 *mockitinerary.MockItinerary
-
-		var mockedConstructor1 *mockitinerary.MockConstructor
-		var mockedConstructor2 *mockitinerary.MockConstructor
-
 		var mockedCarStop1 *mockroute.MockIMainStop
 		var mockedCarStop2 *mockroute.MockIMainStop
 
@@ -242,10 +240,6 @@ var _ = Describe("positionDecoder", func() {
 
 			sut.gpsMap.Warehouses = []gps.Point{warehouse1, warehouse2}
 
-			mockedItinerary1 = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedItinerary2 = mockitinerary.NewMockItinerary(mockedCtrl)
-			mockedConstructor1 = mockitinerary.NewMockConstructor(mockedCtrl)
-			mockedConstructor2 = mockitinerary.NewMockConstructor(mockedCtrl)
 			mockedCarStop1 = mockroute.NewMockIMainStop(mockedCtrl)
 			mockedCarStop2 = mockroute.NewMockIMainStop(mockedCtrl)
 
@@ -660,6 +654,39 @@ var _ = Describe("positionDecoder", func() {
 			Expect(sut.calcTotalStorage()).To(Equal(33.4))
 		})
 
+	})
+
+	Describe("isValidSolution", func() {
+		var mockedValidator1 *mockitinerary.MockValidator
+		var mockedValidator2 *mockitinerary.MockValidator
+
+		BeforeEach(func() {
+			mockedValidator1 = mockitinerary.NewMockValidator(mockedCtrl)
+			mockedValidator2 = mockitinerary.NewMockValidator(mockedCtrl)
+
+			sut.itineraryByCar = map[vehicle.ICar]itinerary.Itinerary{
+				mockedCar1: mockedItinerary1,
+				mockedCar2: mockedItinerary2,
+			}
+		})
+
+		It("should return false when any itinerary is invalid", func() {
+			mockedItinerary1.EXPECT().Validator().Return(mockedValidator1)
+			mockedValidator1.EXPECT().IsValid().Return(true)
+			mockedItinerary2.EXPECT().Validator().Return(mockedValidator2)
+			mockedValidator2.EXPECT().IsValid().Return(false)
+
+			Expect(sut.isValidSolution()).To(BeFalse())
+		})
+
+		It("should return true when all itineraries are valid", func() {
+			mockedItinerary1.EXPECT().Validator().Return(mockedValidator1)
+			mockedValidator1.EXPECT().IsValid().Return(true)
+			mockedItinerary2.EXPECT().Validator().Return(mockedValidator2)
+			mockedValidator2.EXPECT().IsValid().Return(true)
+
+			Expect(sut.isValidSolution()).To(BeTrue())
+		})
 	})
 
 })
