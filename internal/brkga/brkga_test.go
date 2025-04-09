@@ -31,6 +31,7 @@ var _ = Describe("BRKGA", func() {
 			Decoder:             mockedDecoder,
 			Measurer:            mockedMeasurer,
 		}
+
 		sut = NewBRKGA(params)
 	})
 
@@ -221,15 +222,22 @@ var _ = Describe("BRKGA", func() {
 	})
 
 	Describe("evaluateGeneration", func() {
-		var individual1 = newMutantIndividual(1)
-		var individual2 = newMutantIndividual(1)
-		var individual3 = newMutantIndividual(1)
-		var initialGeneration = []*Individual{individual1, individual2, individual3}
+		var individual1 *Individual
+		var individual2 *Individual
+		var individual3 *Individual
+		var initialGeneration []*Individual
+
+		BeforeEach(func() {
+			individual1 = newMutantIndividual(1)
+			individual2 = newMutantIndividual(1)
+			individual3 = newMutantIndividual(1)
+			individual2.Score = 20.0
+			initialGeneration = []*Individual{individual1, individual2, individual3}
+		})
 
 		Context("when optimization goal is set to maximize", func() {
 			It("should evaluate and fill score from not evaluated individuals", func() {
 				sut.optimizationGoal = Maximize
-				individual2.Score = 20.0
 				mockedDecoder.EXPECT().Decode(individual1).Return([]int{1}, nil)
 				mockedDecoder.EXPECT().Decode(individual3).Return(nil, errors.New("mocked error"))
 				mockedMeasurer.EXPECT().Measure([]int{1}).Return(10.0)
@@ -245,7 +253,6 @@ var _ = Describe("BRKGA", func() {
 		Context("when optimization goal is set to minimize", func() {
 			It("should evaluate and fill score from not evaluated individuals", func() {
 				sut.optimizationGoal = Minimize
-				individual2.Score = 20.0
 				mockedDecoder.EXPECT().Decode(individual1).Return([]int{1}, nil)
 				mockedDecoder.EXPECT().Decode(individual3).Return(nil, errors.New("mocked error"))
 				mockedMeasurer.EXPECT().Measure([]int{1}).Return(10.0)
@@ -268,6 +275,7 @@ var _ = Describe("BRKGA", func() {
 
 		Context("when generation already ordered", func() {
 			It("should do nothing", func() {
+				sut.optimizationGoal = Maximize
 				expectedGeneration := []*Individual{
 					individualWithScore4, individualWithScore3, individualWithScore2, individualWithScore1, individualWithScore1_1,
 				}
@@ -284,6 +292,7 @@ var _ = Describe("BRKGA", func() {
 		Context("when generation is not ordered", func() {
 			Context("when optimizer is maximize", func() {
 				It("should order generation desc by score", func() {
+					sut.optimizationGoal = Maximize
 					expectedGeneration := []*Individual{
 						individualWithScore4, individualWithScore3, individualWithScore2, individualWithScore1, individualWithScore1_1,
 					}
