@@ -5,6 +5,8 @@ import (
 	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
+type ItineraryList []Itinerary
+
 var flightFactory = route.NewSubRoute
 
 //go:generate mockgen -source=itinerary.go -destination=mock/itinerarymock.go

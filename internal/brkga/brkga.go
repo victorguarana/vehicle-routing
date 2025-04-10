@@ -15,11 +15,11 @@ const (
 
 //go:generate mockgen -source=brkga.go -destination=brkgamock_test.go -package=brkga
 type IDecoder[T any] interface {
-	Decode(*Individual) ([]T, error)
+	Decode(*Individual) (T, error)
 }
 
 type IMeasurer[T any] interface {
-	Measure([]T) float64
+	Measure(T) float64
 }
 
 type BRKGAParams[T any] struct {
@@ -65,7 +65,7 @@ func NewBRKGA[T any](params BRKGAParams[T]) BRKGA[T] {
 	}
 }
 
-func (b BRKGA[T]) Execute() []T {
+func (b BRKGA[T]) Execute() T {
 	var prevGeneration []*Individual
 	currentGeneration := b.createInitialGeneration()
 	b.evaluateGeneration(currentGeneration)

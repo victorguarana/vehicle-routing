@@ -12,7 +12,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
-var _ brkga.IDecoder[itinerary.Itinerary] = (*positionDecoder)(nil)
+var _ brkga.IDecoder[itinerary.ItineraryList] = (*positionDecoder)(nil)
 
 type positionDecoder struct {
 	masterCarList []vehicle.ICar
@@ -34,7 +34,7 @@ type positionDecoder struct {
 	cachedGeneModule    float64
 }
 
-func NewSimpleDecoder(carList []vehicle.ICar, gpsMap gps.Map) *positionDecoder {
+func NewPositionalDecoder(carList []vehicle.ICar, gpsMap gps.Map) *positionDecoder {
 	return &positionDecoder{
 		masterCarList: carList,
 		masterGPSMap:  gpsMap,
@@ -42,7 +42,7 @@ func NewSimpleDecoder(carList []vehicle.ICar, gpsMap gps.Map) *positionDecoder {
 	}
 }
 
-func (d *positionDecoder) Decode(individual *brkga.Individual) ([]itinerary.Itinerary, error) {
+func (d *positionDecoder) Decode(individual *brkga.Individual) (itinerary.ItineraryList, error) {
 	d.initializeDecoding(individual)
 	d.processChromossomes()
 	d.finalizeItineraries()
