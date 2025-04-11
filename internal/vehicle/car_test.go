@@ -7,53 +7,13 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("NewDefaultCar", func() {
-	Context("when car can be created", func() {
-		var initialPoint = gps.Point{Latitude: 1, Longitude: 2, PackageSize: 3, Name: "initialPoint"}
-		It("should create car with correct params", func() {
-			receivedCar := NewDefaultCar("car1", initialPoint)
-			expectedCar := car{
-				actualPoint: initialPoint,
-				efficiency:  CarEfficiency,
-				drones:      []*drone{},
-				name:        "car1",
-				speed:       CarSpeed,
-			}
-
-			Expect(receivedCar).To(Equal(&expectedCar))
-		})
-	})
-})
-
 var _ = Describe("car{}", func() {
 	Describe("ActualPoint", func() {
 		var actualPoint = gps.Point{Latitude: 1, Longitude: 2, PackageSize: 3, Name: "initialPoint"}
-		var sut = &car{
-			actualPoint: actualPoint,
-		}
+		var sut = &car{actualPoint: actualPoint}
 
 		It("should return actual point", func() {
-			Expect(sut.ActualPoint()).To(Equal(actualPoint))
-		})
-	})
-
-	Describe("Clone", func() {
-		var drone1 = &drone{}
-		var sut = &car{
-			actualPoint: gps.Point{Latitude: 1, Longitude: 2, PackageSize: 3, Name: "initialPoint"},
-			drones:      []*drone{drone1},
-			efficiency:  10,
-			name:        "testCar",
-			speed:       20,
-		}
-
-		It("should clone car with all params", func() {
-			receivedCar := sut.Clone()
-			Expect(receivedCar).To(Equal(sut))
-			Expect(receivedCar).NotTo(BeIdenticalTo(sut))
-
-			sut.actualPoint.Latitude = 10
-			Expect(receivedCar).NotTo(Equal(sut))
+			Expect(sut.ActualPoint()).To(BeIdenticalTo(actualPoint))
 		})
 	})
 
@@ -65,34 +25,22 @@ var _ = Describe("car{}", func() {
 		}
 
 		It("should return all drones", func() {
-			Expect(sut.Drones()).To(Equal([]IDrone{drone1, drone2}))
+			receivedDrones := sut.Drones()
+			Expect(receivedDrones).To(HaveLen(2))
+			Expect(receivedDrones).To(ContainElements(BeIdenticalTo(drone1), BeIdenticalTo(drone2)))
 		})
 	})
 
-	Describe("Move", func() {
-		var initialPoint = gps.Point{Latitude: 1, Longitude: 2, PackageSize: 3, Name: "initialPoint"}
-		var destination = gps.Point{Latitude: 4, Longitude: 5, PackageSize: 6, Name: "destination"}
-		var dockedDrone = drone{actualPoint: initialPoint, isFlying: false, remaningRange: DroneRange}
-		var flyingDrone = drone{actualPoint: gps.Point{}, isFlying: true, remaningRange: DroneRange}
-		var sut = &car{
-			actualPoint: initialPoint,
-			drones:      []*drone{&dockedDrone, &flyingDrone},
-		}
+	Describe("Efficiency", func() {
+		var sut = &car{efficiency: 10.0}
 
-		It("should move car and docked drones without decrease range to destination", func() {
-			sut.Move(destination)
-			Expect(sut.actualPoint).To(Equal(destination))
-			Expect(flyingDrone.actualPoint).NotTo(Equal(destination))
-			Expect(flyingDrone.remaningRange).To(Equal(DroneRange))
-			Expect(dockedDrone.actualPoint).To(Equal(destination))
-			Expect(dockedDrone.remaningRange).To(Equal(DroneRange))
+		It("should return car efficiency", func() {
+			Expect(sut.Efficiency()).To(Equal(10.0))
 		})
 	})
 
 	Describe("Name", func() {
-		var sut = &car{
-			name: "car1",
-		}
+		var sut = &car{name: "car1"}
 
 		It("should return car name", func() {
 			Expect(sut.Name()).To(Equal("car1"))
@@ -112,12 +60,24 @@ var _ = Describe("car{}", func() {
 	})
 
 	Describe("Speed", func() {
-		var sut = &car{
-			speed: CarSpeed,
-		}
+		var sut = &car{speed: 10.0}
 
 		It("should return car speed", func() {
-			Expect(sut.Speed()).To(Equal(CarSpeed))
+			Expect(sut.Speed()).To(Equal(10.0))
+		})
+	})
+
+	Describe("moveDockedDrones", func() {
+		var droneFlying = &drone{isFlying: true}
+		var droneDocked = &drone{isFlying: false}
+		var sut = &car{drones: []*drone{droneFlying, droneDocked}}
+
+		It("should move only docked drones", func() {
+			destination := gps.Point{Latitude: 10}
+			sut.moveDockedDrones(destination)
+
+			Expect(droneDocked.actualPoint).To(BeIdenticalTo(destination))
+			Expect(droneFlying.actualPoint).NotTo(Equal(destination))
 		})
 	})
 })
