@@ -331,4 +331,56 @@ var _ = Describe("BRKGA", func() {
 		})
 
 	})
+
+	Describe("defineBestScore", func() {
+		var sut BRKGA[int]
+
+		Context("when optimization goal is Maximize", func() {
+			BeforeEach(func() {
+				sut.optimizationGoal = Maximize
+			})
+
+			It("should update best score if current score is higher", func() {
+				bestScore := 10.0
+				currentScore := 15.0
+				generationCounter := 1
+
+				receivedBestScore := sut.defineBestScore(bestScore, currentScore, generationCounter)
+				Expect(receivedBestScore).To(Equal(currentScore))
+			})
+
+			It("should not update best score if current score is lower", func() {
+				bestScore := 10.0
+				currentScore := 5.0
+				generationCounter := 1
+
+				receivedBestScore := sut.defineBestScore(bestScore, currentScore, generationCounter)
+				Expect(receivedBestScore).To(Equal(bestScore))
+			})
+		})
+
+		Context("when optimization goal is Minimize", func() {
+			BeforeEach(func() {
+				sut.optimizationGoal = Minimize
+			})
+
+			It("should update best score if current score is lower", func() {
+				bestScore := 10.0
+				currentScore := 5.0
+				generationCounter := 1
+
+				receivedBestScore := sut.defineBestScore(bestScore, currentScore, generationCounter)
+				Expect(receivedBestScore).To(Equal(currentScore))
+			})
+
+			It("should not update best score if current score is higher", func() {
+				bestScore := 10.0
+				currentScore := 15.0
+				generationCounter := 1
+
+				receivedBestScore := sut.defineBestScore(bestScore, currentScore, generationCounter)
+				Expect(receivedBestScore).To(Equal(bestScore))
+			})
+		})
+	})
 })

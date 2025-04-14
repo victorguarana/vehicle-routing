@@ -1,6 +1,8 @@
 package brkga
 
 import (
+	"log"
+	"log/slog"
 	"math"
 	"math/rand"
 	"sort"
@@ -12,6 +14,8 @@ const (
 	Maximize OptimizationGoal = iota + 1
 	Minimize
 )
+
+var logger *slog.Logger = slog.New(slog.NewTextHandler(log.Writer(), nil))
 
 //go:generate mockgen -source=brkga.go -destination=brkgamock_test.go -package=brkga
 type IDecoder[T any] interface {
@@ -71,6 +75,7 @@ func (b BRKGA[T]) Execute() T {
 	b.evaluateGeneration(currentGeneration)
 	b.orderGeneration(currentGeneration)
 	generationCounter := 0
+	bestScore := currentGeneration[0].Score
 
 	for {
 		generationCounter++
@@ -78,6 +83,8 @@ func (b BRKGA[T]) Execute() T {
 		currentGeneration = b.newGeneration(prevGeneration)
 		b.evaluateGeneration(currentGeneration)
 		b.orderGeneration(currentGeneration)
+
+		bestScore = b.defineBestScore(bestScore, currentGeneration[0].Score, generationCounter)
 		if generationCounter >= b.generationLimit {
 			solution, _ := b.decoder.Decode(currentGeneration[0])
 			return solution
@@ -178,6 +185,21 @@ func (b BRKGA[T]) orderGeneration(generation []*Individual) {
 			return generation[i].Score < generation[j].Score
 		})
 	}
+}
+
+func (b BRKGA[T]) defineBestScore(bestScore float64, currentScore float64, generationCounter int) float64 {
+	if b.optimizationGoal == Maximize {
+		if currentScore > bestScore {
+			logger.Info("Best individual", "generation", generationCounter, "score", currentScore)
+			return currentScore
+		}
+	} else {
+		if currentScore < bestScore {
+			logger.Info("Best individual", "generation", generationCounter, "score", currentScore)
+			return currentScore
+		}
+	}
+	return bestScore
 }
 
 func calculateQuantity(totalQnt int, percentage float64) int {
