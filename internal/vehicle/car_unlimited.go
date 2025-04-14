@@ -22,7 +22,7 @@ func NewCarUnlimited(name string, startingPoint gps.Point) *CarUnlimited {
 	}
 }
 
-func (c *CarUnlimited) Clone() *CarUnlimited {
+func (c *CarUnlimited) Clone() ICar {
 	clonedDrones := make([]*drone, len(c.drones))
 	for i, d := range c.drones {
 		clonedDrones[i] = d.clone()

@@ -5,6 +5,22 @@ import "github.com/victorguarana/vehicle-routing/internal/gps"
 const CarDefaultSpeed = 10.0
 const CarDefaultEfficiency = 5.0
 
+//go:generate mockgen -source=car.go -destination=mock/carmock.go
+type ICar interface {
+	ActualPoint() gps.Point
+	Clone() ICar
+	Drones() []IDrone
+	Efficiency() float64
+	Move(destination gps.Point)
+	Name() string
+	NewDefaultDrone(name string)
+	NewDroneWithParams(params DroneParams)
+	Range() float64
+	Speed() float64
+	Storage() float64
+	Support(...gps.Point) bool
+}
+
 type car struct {
 	actualPoint gps.Point
 	efficiency  float64

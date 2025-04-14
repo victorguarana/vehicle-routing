@@ -37,7 +37,7 @@ func NewCarLimited(params CarParams) *CarLimited {
 	}
 }
 
-func (c *CarLimited) Clone() *CarLimited {
+func (c *CarLimited) Clone() ICar {
 	clonedDrones := make([]*drone, len(c.drones))
 	for i, d := range c.drones {
 		clonedDrones[i] = d.clone()
