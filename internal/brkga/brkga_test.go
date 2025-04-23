@@ -238,9 +238,9 @@ var _ = Describe("BRKGA", func() {
 		Context("when optimization goal is set to maximize", func() {
 			It("should evaluate and fill score from not evaluated individuals", func() {
 				sut.optimizationGoal = Maximize
-				mockedDecoder.EXPECT().Decode(individual1).Return([]int{1}, nil)
-				mockedDecoder.EXPECT().Decode(individual3).Return(nil, errors.New("mocked error"))
-				mockedMeasurer.EXPECT().Measure([]int{1}).Return(10.0)
+				mockedDecoder.EXPECT().Decode(individual1).Return(1, nil)
+				mockedDecoder.EXPECT().Decode(individual3).Return(0, errors.New("mocked error"))
+				mockedMeasurer.EXPECT().Measure(1).Return(10.0)
 
 				sut.evaluateGeneration(initialGeneration)
 
@@ -253,9 +253,9 @@ var _ = Describe("BRKGA", func() {
 		Context("when optimization goal is set to minimize", func() {
 			It("should evaluate and fill score from not evaluated individuals", func() {
 				sut.optimizationGoal = Minimize
-				mockedDecoder.EXPECT().Decode(individual1).Return([]int{1}, nil)
-				mockedDecoder.EXPECT().Decode(individual3).Return(nil, errors.New("mocked error"))
-				mockedMeasurer.EXPECT().Measure([]int{1}).Return(10.0)
+				mockedDecoder.EXPECT().Decode(individual1).Return(1, nil)
+				mockedDecoder.EXPECT().Decode(individual3).Return(0, errors.New("mocked error"))
+				mockedMeasurer.EXPECT().Measure(1).Return(10.0)
 
 				sut.evaluateGeneration(initialGeneration)
 
