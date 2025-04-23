@@ -1,4 +1,4 @@
-package decoder
+package positiondecoder
 
 import (
 	. "github.com/onsi/ginkgo/v2"
@@ -24,6 +24,7 @@ var _ = Describe("positionDecoder", func() {
 	var mockedItinerary2 *mockitinerary.MockItinerary
 	var mockedConstructor1 *mockitinerary.MockConstructor
 	var mockedConstructor2 *mockitinerary.MockConstructor
+	var mockedVehicleChooser *MockvehicleChooser
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
@@ -35,6 +36,7 @@ var _ = Describe("positionDecoder", func() {
 		mockedItinerary2 = mockitinerary.NewMockItinerary(mockedCtrl)
 		mockedConstructor1 = mockitinerary.NewMockConstructor(mockedCtrl)
 		mockedConstructor2 = mockitinerary.NewMockConstructor(mockedCtrl)
+		mockedVehicleChooser = NewMockvehicleChooser(mockedCtrl)
 
 		sut = positionDecoder{}
 	})
@@ -80,6 +82,7 @@ var _ = Describe("positionDecoder", func() {
 			customer3 = gps.Point{Name: "Customer 3"}
 			customer4 = gps.Point{Name: "Customer 4"}
 
+			sut.vehicleChooser = mockedVehicleChooser
 			sut.masterCarList = []vehicle.ICar{mockedCar1, mockedCar2}
 			sut.gpsMap.Clients = []gps.Point{customer1, customer2, customer3, customer4}
 		})
@@ -113,12 +116,13 @@ var _ = Describe("positionDecoder", func() {
 			clonedCar1.EXPECT().ActualPoint().Return(warehouse1)
 			clonedCar2.EXPECT().ActualPoint().Return(warehouse2)
 
-			clonedCar1.EXPECT().Storage().Return(2.0).AnyTimes()
-			clonedCar2.EXPECT().Storage().Return(2.0).AnyTimes()
 			clonedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1}).AnyTimes()
 			clonedCar2.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone2}).AnyTimes()
-			mockedDrone1.EXPECT().Storage().Return(1.0).AnyTimes()
-			mockedDrone2.EXPECT().Storage().Return(1.0).AnyTimes()
+
+			mockedVehicleChooser.EXPECT().defineVehicle(chromossome1).Return(mockedCar1, nil)
+			mockedVehicleChooser.EXPECT().defineVehicle(chromossome2).Return(mockedCar1, nil)
+			mockedVehicleChooser.EXPECT().defineVehicle(chromossome3).Return(mockedCar2, mockedDrone1)
+			mockedVehicleChooser.EXPECT().defineVehicle(chromossome4).Return(mockedCar2, mockedDrone2)
 
 			sut.initializeDecoding(individual)
 
@@ -154,8 +158,6 @@ var _ = Describe("positionDecoder", func() {
 					chromossome1, chromossome2, chromossome3, chromossome4},
 			}
 
-			sut.cachedGeneAmplifier = 60
-			sut.cachedGeneModule = 6
 			sut.carList = []vehicle.ICar{mockedCar1, mockedCar2}
 			sut.individual = individual
 		})
@@ -410,8 +412,11 @@ var _ = Describe("positionDecoder", func() {
 		var chromossome2 *brkga.Chromossome
 		var chromossome3 *brkga.Chromossome
 		var chromossome4 *brkga.Chromossome
+		var vehicleChooser *MockvehicleChooser
 
 		BeforeEach(func() {
+			vehicleChooser = NewMockvehicleChooser(mockedCtrl)
+
 			c1 := brkga.Chromossome(0.13)
 			chromossome1 = &c1
 			c2 := brkga.Chromossome(0.14)
@@ -426,19 +431,16 @@ var _ = Describe("positionDecoder", func() {
 					chromossome1, chromossome2, chromossome3, chromossome4},
 			}
 
-			sut.cachedGeneAmplifier = 60
-			sut.cachedGeneModule = 6
 			sut.carList = []vehicle.ICar{mockedCar1, mockedCar2}
 			sut.individual = individual
+			sut.vehicleChooser = vehicleChooser
 		})
 
 		It("should map chromossomes to vehicles", func() {
-			mockedCar1.EXPECT().Storage().Return(2.0).AnyTimes()
-			mockedCar2.EXPECT().Storage().Return(2.0).AnyTimes()
-			mockedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1}).AnyTimes()
-			mockedCar2.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone2}).AnyTimes()
-			mockedDrone1.EXPECT().Storage().Return(1.0).AnyTimes()
-			mockedDrone2.EXPECT().Storage().Return(1.0).AnyTimes()
+			vehicleChooser.EXPECT().defineVehicle(chromossome1).Return(mockedCar1, nil)
+			vehicleChooser.EXPECT().defineVehicle(chromossome2).Return(mockedCar1, nil)
+			vehicleChooser.EXPECT().defineVehicle(chromossome3).Return(mockedCar2, mockedDrone1)
+			vehicleChooser.EXPECT().defineVehicle(chromossome4).Return(mockedCar2, mockedDrone2)
 
 			expectedCarMap := map[*brkga.Chromossome]vehicle.ICar{
 				chromossome1: mockedCar1,
@@ -457,44 +459,6 @@ var _ = Describe("positionDecoder", func() {
 			Expect(sut.carByChromossome).To(Equal(expectedCarMap))
 			Expect(sut.droneByChromossome).To(Equal(expectedDroneMap))
 		})
-	})
-
-	Describe("defineVehicle", func() {
-		BeforeEach(func() {
-			sut.cachedGeneAmplifier = 60
-			sut.cachedGeneModule = 12
-			sut.carList = []vehicle.ICar{mockedCar1}
-
-		})
-
-		Context("when there is a car chromossome", func() {
-			It("should return only car", func() {
-				c := brkga.Chromossome(0.1)
-				chromossome1 := &c
-
-				mockedCar1.EXPECT().Storage().Return(10.0)
-
-				receivedCar, receivedDrone := sut.defineVehicle(chromossome1)
-				Expect(receivedCar).To(Equal(mockedCar1))
-				Expect(receivedDrone).To(BeNil())
-			})
-		})
-
-		Context("when there is a drone chromossome", func() {
-			It("should return drone and car", func() {
-				c := brkga.Chromossome(0.18)
-				chromossome1 := &c
-
-				mockedCar1.EXPECT().Storage().Return(10.0)
-				mockedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1})
-				mockedDrone1.EXPECT().Storage().Return(2.0)
-
-				receivedCar, receivedDrone := sut.defineVehicle(chromossome1)
-				Expect(receivedCar).To(Equal(mockedCar1))
-				Expect(receivedDrone).To(Equal(mockedDrone1))
-			})
-		})
-
 	})
 
 	Describe("decodeDroneChromossome", func() {
@@ -561,99 +525,6 @@ var _ = Describe("positionDecoder", func() {
 
 			sut.decodeCarChromossome(chromossome1)
 		})
-	})
-
-	Describe("geneAmplifier", func() {
-		BeforeEach(func() {
-			sut.carList = []vehicle.ICar{mockedCar1, mockedCar2}
-			sut.gpsMap.Clients = []gps.Point{{}, {}, {}}
-		})
-
-		Context("when cache is empty", func() {
-			It("should calc gene amplifier", func() {
-				mockedCar1.EXPECT().Storage().Return(2.0)
-				mockedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1})
-				mockedDrone1.EXPECT().Storage().Return(2.0)
-				mockedCar2.EXPECT().Storage().Return(1.0)
-				mockedCar2.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone2})
-				mockedDrone2.EXPECT().Storage().Return(1.0)
-
-				Expect(sut.geneAmplifier()).To(Equal(18.0))
-				Expect(sut.cachedGeneAmplifier).To(Equal(18.0))
-			})
-		})
-
-		Context("when cache is not empty", func() {
-			It("should not calc gene amplifier", func() {
-				sut.cachedGeneAmplifier = 1.0
-
-				mockedCar1.EXPECT().Storage().Return(2.0).Times(0)
-				mockedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1}).Times(0)
-				mockedDrone1.EXPECT().Storage().Return(2.0).Times(0)
-				mockedCar2.EXPECT().Storage().Return(1.0).Times(0)
-				mockedCar2.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone2}).Times(0)
-				mockedDrone2.EXPECT().Storage().Return(1.0).Times(0)
-
-				Expect(sut.geneAmplifier()).To(Equal(1.0))
-				Expect(sut.cachedGeneAmplifier).To(Equal(1.0))
-			})
-		})
-	})
-
-	Describe("geneModule", func() {
-		BeforeEach(func() {
-			sut.carList = []vehicle.ICar{mockedCar1, mockedCar2}
-			sut.gpsMap.Clients = []gps.Point{{}, {}, {}}
-		})
-
-		Context("when cache is empty", func() {
-			It("should calc gene amplifier", func() {
-				mockedCar1.EXPECT().Storage().Return(2.0)
-				mockedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1})
-				mockedDrone1.EXPECT().Storage().Return(2.0)
-				mockedCar2.EXPECT().Storage().Return(1.0)
-				mockedCar2.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone2})
-				mockedDrone2.EXPECT().Storage().Return(1.0)
-
-				Expect(sut.geneModule()).To(Equal(6.0))
-				Expect(sut.cachedGeneModule).To(Equal(6.0))
-			})
-		})
-
-		Context("when cache is not empty", func() {
-			It("should not calc gene amplifier", func() {
-				sut.cachedGeneModule = 1.0
-
-				mockedCar1.EXPECT().Storage().Return(2.0).Times(0)
-				mockedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1}).Times(0)
-				mockedDrone1.EXPECT().Storage().Return(2.0).Times(0)
-				mockedCar2.EXPECT().Storage().Return(1.0).Times(0)
-				mockedCar2.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone2}).Times(0)
-				mockedDrone2.EXPECT().Storage().Return(1.0).Times(0)
-
-				Expect(sut.geneModule()).To(Equal(1.0))
-				Expect(sut.cachedGeneModule).To(Equal(1.0))
-			})
-		})
-	})
-
-	Describe("calcTotalStorage", func() {
-
-		BeforeEach(func() {
-			sut.carList = []vehicle.ICar{mockedCar1, mockedCar2}
-		})
-
-		It("should the sum of storage of all vehicles", func() {
-			mockedCar1.EXPECT().Storage().Return(10.1)
-			mockedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1, mockedDrone2})
-			mockedDrone1.EXPECT().Storage().Return(1.1)
-			mockedDrone2.EXPECT().Storage().Return(2.1)
-			mockedCar2.EXPECT().Storage().Return(20.1)
-			mockedCar2.EXPECT().Drones().Return([]vehicle.IDrone{})
-
-			Expect(sut.calcTotalStorage()).To(Equal(33.4))
-		})
-
 	})
 
 	Describe("isValidSolution", func() {

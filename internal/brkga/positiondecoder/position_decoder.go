@@ -1,8 +1,7 @@
-package decoder
+package positiondecoder
 
 import (
 	"errors"
-	"math"
 	"slices"
 	"sort"
 
@@ -13,6 +12,11 @@ import (
 )
 
 var _ brkga.IDecoder[itinerary.ItineraryList] = (*positionDecoder)(nil)
+
+//go:generate mockgen -source=position_decoder.go -destination=vehicle_chooser_mock_test.go
+type vehicleChooser interface {
+	defineVehicle(chromossome *brkga.Chromossome) (vehicle.ICar, vehicle.IDrone)
+}
 
 type positionDecoder struct {
 	masterCarList []vehicle.ICar
@@ -30,15 +34,15 @@ type positionDecoder struct {
 	carByChromossome      map[*brkga.Chromossome]vehicle.ICar
 	droneByChromossome    map[*brkga.Chromossome]vehicle.IDrone
 
-	cachedGeneAmplifier float64
-	cachedGeneModule    float64
+	vehicleChooser vehicleChooser
 }
 
-func NewPositionalDecoder(carList []vehicle.ICar, gpsMap gps.Map) *positionDecoder {
+func NewPositionalDecoder(carList []vehicle.ICar, gpsMap gps.Map, vehicleChooser vehicleChooser) *positionDecoder {
 	return &positionDecoder{
-		masterCarList: carList,
-		masterGPSMap:  gpsMap,
-		gpsMap:        gpsMap,
+		masterCarList:  carList,
+		masterGPSMap:   gpsMap,
+		gpsMap:         gpsMap,
+		vehicleChooser: vehicleChooser,
 	}
 }
 
@@ -130,7 +134,7 @@ func (d *positionDecoder) mapChromossomeByVehicle() {
 	d.droneByChromossome = make(map[*brkga.Chromossome]vehicle.IDrone)
 
 	for _, chromossome := range d.individual.Chromosomes {
-		car, drone := d.defineVehicle(chromossome)
+		car, drone := d.vehicleChooser.defineVehicle(chromossome)
 		if car != nil {
 			d.carByChromossome[chromossome] = car
 		}
@@ -138,30 +142,6 @@ func (d *positionDecoder) mapChromossomeByVehicle() {
 			d.droneByChromossome[chromossome] = drone
 		}
 	}
-}
-
-func (d *positionDecoder) defineVehicle(chromossome *brkga.Chromossome) (vehicle.ICar, vehicle.IDrone) {
-	modSum := 0.0
-	amplifiedGene := chromossome.Gene() * d.geneAmplifier()
-	moduledGene := math.Mod(amplifiedGene, d.geneModule())
-
-	for _, car := range d.carList {
-		modSum += car.Storage()
-		if moduledGene < modSum {
-			return car, nil
-		}
-	}
-
-	for _, car := range d.carList {
-		for _, drone := range car.Drones() {
-			modSum += drone.Storage()
-			if moduledGene < modSum {
-				return car, drone
-			}
-		}
-	}
-
-	return nil, nil
 }
 
 func (d *positionDecoder) closestWarehouse(car vehicle.ICar) gps.Point {
@@ -191,33 +171,6 @@ func (d *positionDecoder) decodeCarChromossome(chromossome *brkga.Chromossome) {
 	actualCustomerPoint := d.customerByChromossome[chromossome]
 	constructor.MoveCar(actualCustomerPoint)
 	constructor.LandAllDrones(constructor.ActualCarStop())
-}
-
-func (d *positionDecoder) geneAmplifier() float64 {
-	if d.cachedGeneAmplifier == 0 {
-		d.cachedGeneAmplifier = float64(len(d.gpsMap.Clients)) * d.calcTotalStorage()
-	}
-
-	return d.cachedGeneAmplifier
-}
-
-func (d *positionDecoder) geneModule() float64 {
-	if d.cachedGeneModule == 0 {
-		d.cachedGeneModule = d.calcTotalStorage()
-	}
-
-	return d.cachedGeneModule
-}
-
-func (d *positionDecoder) calcTotalStorage() float64 {
-	totalStorage := 0.0
-	for _, car := range d.carList {
-		totalStorage += car.Storage()
-		for _, drone := range car.Drones() {
-			totalStorage += drone.Storage()
-		}
-	}
-	return totalStorage
 }
 
 func (d *positionDecoder) isValidSolution() bool {
