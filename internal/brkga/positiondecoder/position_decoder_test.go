@@ -119,10 +119,10 @@ var _ = Describe("positionDecoder", func() {
 			clonedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1}).AnyTimes()
 			clonedCar2.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone2}).AnyTimes()
 
-			mockedVehicleChooser.EXPECT().defineVehicle(chromossome1).Return(mockedCar1, nil)
-			mockedVehicleChooser.EXPECT().defineVehicle(chromossome2).Return(mockedCar1, nil)
-			mockedVehicleChooser.EXPECT().defineVehicle(chromossome3).Return(mockedCar2, mockedDrone1)
-			mockedVehicleChooser.EXPECT().defineVehicle(chromossome4).Return(mockedCar2, mockedDrone2)
+			mockedVehicleChooser.EXPECT().defineVehicle(sut.carList, chromossome1).Return(mockedCar1, nil)
+			mockedVehicleChooser.EXPECT().defineVehicle(sut.carList, chromossome2).Return(mockedCar1, nil)
+			mockedVehicleChooser.EXPECT().defineVehicle(sut.carList, chromossome3).Return(mockedCar2, mockedDrone1)
+			mockedVehicleChooser.EXPECT().defineVehicle(sut.carList, chromossome4).Return(mockedCar2, mockedDrone2)
 
 			sut.initializeDecoding(individual)
 
@@ -437,10 +437,10 @@ var _ = Describe("positionDecoder", func() {
 		})
 
 		It("should map chromossomes to vehicles", func() {
-			vehicleChooser.EXPECT().defineVehicle(chromossome1).Return(mockedCar1, nil)
-			vehicleChooser.EXPECT().defineVehicle(chromossome2).Return(mockedCar1, nil)
-			vehicleChooser.EXPECT().defineVehicle(chromossome3).Return(mockedCar2, mockedDrone1)
-			vehicleChooser.EXPECT().defineVehicle(chromossome4).Return(mockedCar2, mockedDrone2)
+			vehicleChooser.EXPECT().defineVehicle(sut.carList, chromossome1).Return(mockedCar1, nil)
+			vehicleChooser.EXPECT().defineVehicle(sut.carList, chromossome2).Return(mockedCar1, nil)
+			vehicleChooser.EXPECT().defineVehicle(sut.carList, chromossome3).Return(mockedCar2, mockedDrone1)
+			vehicleChooser.EXPECT().defineVehicle(sut.carList, chromossome4).Return(mockedCar2, mockedDrone2)
 
 			expectedCarMap := map[*brkga.Chromossome]vehicle.ICar{
 				chromossome1: mockedCar1,

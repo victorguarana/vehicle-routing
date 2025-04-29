@@ -13,9 +13,9 @@ import (
 
 var _ brkga.IDecoder[itinerary.ItineraryList] = (*positionDecoder)(nil)
 
-//go:generate mockgen -source=position_decoder.go -destination=vehicle_chooser_mock_test.go
+//go:generate mockgen -source=position_decoder.go -destination=vehicle_chooser_mock_test.go -package=positiondecoder
 type vehicleChooser interface {
-	defineVehicle(chromossome *brkga.Chromossome) (vehicle.ICar, vehicle.IDrone)
+	defineVehicle(carList []vehicle.ICar, chromossome *brkga.Chromossome) (vehicle.ICar, vehicle.IDrone)
 }
 
 type positionDecoder struct {
@@ -134,7 +134,7 @@ func (d *positionDecoder) mapChromossomeByVehicle() {
 	d.droneByChromossome = make(map[*brkga.Chromossome]vehicle.IDrone)
 
 	for _, chromossome := range d.individual.Chromosomes {
-		car, drone := d.vehicleChooser.defineVehicle(chromossome)
+		car, drone := d.vehicleChooser.defineVehicle(d.carList, chromossome)
 		if car != nil {
 			d.carByChromossome[chromossome] = car
 		}
