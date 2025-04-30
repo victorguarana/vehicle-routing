@@ -1,4 +1,4 @@
-package positiondecoder
+package chooser
 
 import (
 	"math"
@@ -51,7 +51,7 @@ var _ = Describe("vehicleChooserByPercentage", func() {
 		})
 	})
 
-	Describe("defineVehicle", func() {
+	Describe("DefineVehicle", func() {
 		Context("when the gene corresponds to a car", func() {
 			It("should return only car", func() {
 				sut.gpsMap.Clients = []gps.Point{{}, {}, {}}
@@ -63,7 +63,7 @@ var _ = Describe("vehicleChooserByPercentage", func() {
 				mockedCar1.EXPECT().Drones().Return([]vehicle.IDrone{}).AnyTimes()
 				mockedCar2.EXPECT().Drones().Return([]vehicle.IDrone{}).AnyTimes()
 
-				receivedCar, receivedDrone := sut.defineVehicle(carList, chromossome1)
+				receivedCar, receivedDrone := sut.DefineVehicle(carList, chromossome1)
 				Expect(receivedCar).To(Equal(mockedCar1))
 				Expect(receivedDrone).To(BeNil())
 			})
@@ -81,7 +81,7 @@ var _ = Describe("vehicleChooserByPercentage", func() {
 				mockedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1}).AnyTimes()
 				mockedCar2.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone2}).AnyTimes()
 
-				receivedCar, receivedDrone := sut.defineVehicle(carList, chromossome1)
+				receivedCar, receivedDrone := sut.DefineVehicle(carList, chromossome1)
 				Expect(receivedCar).To(Equal(mockedCar2))
 				Expect(receivedDrone).To(Equal(mockedDrone2))
 			})

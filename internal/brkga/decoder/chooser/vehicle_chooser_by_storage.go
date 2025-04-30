@@ -1,4 +1,4 @@
-package positiondecoder
+package chooser
 
 import (
 	"math"
@@ -20,7 +20,7 @@ func NewVehicleChooserByStorage(gpsMap gps.Map) *vehicleChooserByStorage {
 	return ch
 }
 
-func (c *vehicleChooserByStorage) defineVehicle(carList []vehicle.ICar, chromossome *brkga.Chromossome) (vehicle.ICar, vehicle.IDrone) {
+func (c *vehicleChooserByStorage) DefineVehicle(carList []vehicle.ICar, chromossome *brkga.Chromossome) (vehicle.ICar, vehicle.IDrone) {
 	modSum := 0.0
 	moduledGene := c.calcModuledGene(carList, chromossome)
 

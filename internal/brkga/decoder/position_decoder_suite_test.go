@@ -1,4 +1,4 @@
-package positiondecoder_test
+package decoder_test
 
 import (
 	"testing"

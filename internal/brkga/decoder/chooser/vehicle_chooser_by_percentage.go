@@ -1,4 +1,4 @@
-package positiondecoder
+package chooser
 
 import (
 	"math"
@@ -24,7 +24,7 @@ func NewVehicleChooserByPercentage(gpsMap gps.Map, dronePercentage float64) *veh
 	return ch
 }
 
-func (c *vehicleChooserByPercentage) defineVehicle(carList []vehicle.ICar, chromossome *brkga.Chromossome) (vehicle.ICar, vehicle.IDrone) {
+func (c *vehicleChooserByPercentage) DefineVehicle(carList []vehicle.ICar, chromossome *brkga.Chromossome) (vehicle.ICar, vehicle.IDrone) {
 	moduledGene := c.calcModuledGene(chromossome)
 
 	if moduledGene < c.carPercentage {

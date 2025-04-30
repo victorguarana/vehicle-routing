@@ -1,4 +1,4 @@
-package positiondecoder
+package chooser
 
 import (
 	. "github.com/onsi/ginkgo/v2"
@@ -47,7 +47,7 @@ var _ = Describe("vehicleChooserByStorage", func() {
 		})
 	})
 
-	Describe("defineVehicle", func() {
+	Describe("DefineVehicle", func() {
 		Context("when there is a car chromossome", func() {
 			It("should return only car", func() {
 				sut.gpsMap.Clients = []gps.Point{{}, {}, {}}
@@ -62,7 +62,7 @@ var _ = Describe("vehicleChooserByStorage", func() {
 				mockedDrone1.EXPECT().Storage().Return(1.0).AnyTimes()
 				mockedDrone2.EXPECT().Storage().Return(1.0).AnyTimes()
 
-				receivedCar, receivedDrone := sut.defineVehicle(carList, chromossome1)
+				receivedCar, receivedDrone := sut.DefineVehicle(carList, chromossome1)
 				Expect(receivedCar).To(Equal(mockedCar1))
 				Expect(receivedDrone).To(BeNil())
 			})
@@ -82,7 +82,7 @@ var _ = Describe("vehicleChooserByStorage", func() {
 				mockedDrone1.EXPECT().Storage().Return(1.0).AnyTimes()
 				mockedDrone2.EXPECT().Storage().Return(1.0).AnyTimes()
 
-				receivedCar, receivedDrone := sut.defineVehicle(carList, chromossome1)
+				receivedCar, receivedDrone := sut.DefineVehicle(carList, chromossome1)
 				Expect(receivedCar).To(Equal(mockedCar1))
 				Expect(receivedDrone).To(Equal(mockedDrone1))
 			})
