@@ -15,7 +15,6 @@ var _ brkga.IDecoder[itinerary.ItineraryList] = (*positionDecoder)(nil)
 
 type positionDecoder struct {
 	masterCarList []vehicle.ICar
-	masterGPSMap  gps.Map
 
 	carList []vehicle.ICar
 	gpsMap  gps.Map
@@ -35,7 +34,6 @@ type positionDecoder struct {
 func NewPositionalDecoder(carList []vehicle.ICar, gpsMap gps.Map, vehicleChooser vehicleChooser) *positionDecoder {
 	return &positionDecoder{
 		masterCarList:  carList,
-		masterGPSMap:   gpsMap,
 		gpsMap:         gpsMap,
 		vehicleChooser: vehicleChooser,
 	}

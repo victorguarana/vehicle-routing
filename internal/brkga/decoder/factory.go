@@ -11,7 +11,6 @@ import (
 func NewPositionalDecoderWithVehicleByStorage(carList []vehicle.ICar, gpsMap gps.Map) brkga.IDecoder[itinerary.ItineraryList] {
 	return &positionDecoder{
 		masterCarList:  carList,
-		masterGPSMap:   gpsMap,
 		gpsMap:         gpsMap,
 		vehicleChooser: chooser.NewVehicleChooserByStorage(gpsMap),
 	}
@@ -20,7 +19,6 @@ func NewPositionalDecoderWithVehicleByStorage(carList []vehicle.ICar, gpsMap gps
 func NewPositionalDecoderWithVehicleByPercentage(carList []vehicle.ICar, gpsMap gps.Map, dronePercentage float64) brkga.IDecoder[itinerary.ItineraryList] {
 	return &positionDecoder{
 		masterCarList:  carList,
-		masterGPSMap:   gpsMap,
 		gpsMap:         gpsMap,
 		vehicleChooser: chooser.NewVehicleChooserByPercentage(gpsMap, dronePercentage),
 	}
