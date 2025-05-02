@@ -1,4 +1,4 @@
-package chooser
+package strategy
 
 import (
 	"math"

@@ -24,7 +24,7 @@ var _ = Describe("positionDecoder", func() {
 	var mockedItinerary2 *mockitinerary.MockItinerary
 	var mockedConstructor1 *mockitinerary.MockConstructor
 	var mockedConstructor2 *mockitinerary.MockConstructor
-	var mockedVehicleChooser *MockvehicleChooser
+	var mockedStrategy *Mockstrategy
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
@@ -36,7 +36,7 @@ var _ = Describe("positionDecoder", func() {
 		mockedItinerary2 = mockitinerary.NewMockItinerary(mockedCtrl)
 		mockedConstructor1 = mockitinerary.NewMockConstructor(mockedCtrl)
 		mockedConstructor2 = mockitinerary.NewMockConstructor(mockedCtrl)
-		mockedVehicleChooser = NewMockvehicleChooser(mockedCtrl)
+		mockedStrategy = NewMockstrategy(mockedCtrl)
 
 		sut = positionDecoder{}
 	})
@@ -82,7 +82,7 @@ var _ = Describe("positionDecoder", func() {
 			customer3 = gps.Point{Name: "Customer 3"}
 			customer4 = gps.Point{Name: "Customer 4"}
 
-			sut.vehicleChooser = mockedVehicleChooser
+			sut.strategy = mockedStrategy
 			sut.masterCarList = []vehicle.ICar{mockedCar1, mockedCar2}
 			sut.gpsMap.Clients = []gps.Point{customer1, customer2, customer3, customer4}
 		})
@@ -119,10 +119,10 @@ var _ = Describe("positionDecoder", func() {
 			clonedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1}).AnyTimes()
 			clonedCar2.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone2}).AnyTimes()
 
-			mockedVehicleChooser.EXPECT().DefineVehicle(sut.carList, chromossome1).Return(mockedCar1, nil)
-			mockedVehicleChooser.EXPECT().DefineVehicle(sut.carList, chromossome2).Return(mockedCar1, nil)
-			mockedVehicleChooser.EXPECT().DefineVehicle(sut.carList, chromossome3).Return(mockedCar2, mockedDrone1)
-			mockedVehicleChooser.EXPECT().DefineVehicle(sut.carList, chromossome4).Return(mockedCar2, mockedDrone2)
+			mockedStrategy.EXPECT().DefineVehicle(sut.carList, chromossome1).Return(mockedCar1, nil)
+			mockedStrategy.EXPECT().DefineVehicle(sut.carList, chromossome2).Return(mockedCar1, nil)
+			mockedStrategy.EXPECT().DefineVehicle(sut.carList, chromossome3).Return(mockedCar2, mockedDrone1)
+			mockedStrategy.EXPECT().DefineVehicle(sut.carList, chromossome4).Return(mockedCar2, mockedDrone2)
 
 			sut.initializeDecoding(individual)
 
@@ -412,10 +412,10 @@ var _ = Describe("positionDecoder", func() {
 		var chromossome2 *brkga.Chromossome
 		var chromossome3 *brkga.Chromossome
 		var chromossome4 *brkga.Chromossome
-		var vehicleChooser *MockvehicleChooser
+		var strategy *Mockstrategy
 
 		BeforeEach(func() {
-			vehicleChooser = NewMockvehicleChooser(mockedCtrl)
+			strategy = NewMockstrategy(mockedCtrl)
 
 			c1 := brkga.Chromossome(0.13)
 			chromossome1 = &c1
@@ -433,14 +433,14 @@ var _ = Describe("positionDecoder", func() {
 
 			sut.carList = []vehicle.ICar{mockedCar1, mockedCar2}
 			sut.individual = individual
-			sut.vehicleChooser = vehicleChooser
+			sut.strategy = strategy
 		})
 
 		It("should map chromossomes to vehicles", func() {
-			vehicleChooser.EXPECT().DefineVehicle(sut.carList, chromossome1).Return(mockedCar1, nil)
-			vehicleChooser.EXPECT().DefineVehicle(sut.carList, chromossome2).Return(mockedCar1, nil)
-			vehicleChooser.EXPECT().DefineVehicle(sut.carList, chromossome3).Return(mockedCar2, mockedDrone1)
-			vehicleChooser.EXPECT().DefineVehicle(sut.carList, chromossome4).Return(mockedCar2, mockedDrone2)
+			strategy.EXPECT().DefineVehicle(sut.carList, chromossome1).Return(mockedCar1, nil)
+			strategy.EXPECT().DefineVehicle(sut.carList, chromossome2).Return(mockedCar1, nil)
+			strategy.EXPECT().DefineVehicle(sut.carList, chromossome3).Return(mockedCar2, mockedDrone1)
+			strategy.EXPECT().DefineVehicle(sut.carList, chromossome4).Return(mockedCar2, mockedDrone2)
 
 			expectedCarMap := map[*brkga.Chromossome]vehicle.ICar{
 				chromossome1: mockedCar1,

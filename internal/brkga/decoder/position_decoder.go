@@ -28,15 +28,7 @@ type positionDecoder struct {
 	carByChromossome      map[*brkga.Chromossome]vehicle.ICar
 	droneByChromossome    map[*brkga.Chromossome]vehicle.IDrone
 
-	vehicleChooser vehicleChooser
-}
-
-func NewPositionalDecoder(carList []vehicle.ICar, gpsMap gps.Map, vehicleChooser vehicleChooser) *positionDecoder {
-	return &positionDecoder{
-		masterCarList:  carList,
-		gpsMap:         gpsMap,
-		vehicleChooser: vehicleChooser,
-	}
+	strategy strategy
 }
 
 func (d *positionDecoder) Decode(individual *brkga.Individual) (itinerary.ItineraryList, error) {
@@ -127,7 +119,7 @@ func (d *positionDecoder) mapChromossomeByVehicle() {
 	d.droneByChromossome = make(map[*brkga.Chromossome]vehicle.IDrone)
 
 	for _, chromossome := range d.individual.Chromosomes {
-		car, drone := d.vehicleChooser.DefineVehicle(d.carList, chromossome)
+		car, drone := d.strategy.DefineVehicle(d.carList, chromossome)
 		if car != nil {
 			d.carByChromossome[chromossome] = car
 		}

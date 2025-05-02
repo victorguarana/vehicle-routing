@@ -1,4 +1,4 @@
-package chooser_test
+package strategy_test
 
 import (
 	"testing"
