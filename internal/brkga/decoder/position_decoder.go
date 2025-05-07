@@ -2,12 +2,11 @@ package decoder
 
 import (
 	"errors"
-	"slices"
-	"sort"
 
 	"github.com/victorguarana/vehicle-routing/internal/brkga"
 	"github.com/victorguarana/vehicle-routing/internal/gps"
 	"github.com/victorguarana/vehicle-routing/internal/itinerary"
+	"github.com/victorguarana/vehicle-routing/internal/slc"
 	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
@@ -15,155 +14,78 @@ var _ brkga.IDecoder[itinerary.ItineraryList] = (*positionDecoder)(nil)
 
 type positionDecoder struct {
 	masterCarList []vehicle.ICar
-
-	carList []vehicle.ICar
-	gpsMap  gps.Map
-
-	individual *brkga.Individual
-
-	customerByChromossome map[*brkga.Chromossome]gps.Point
-	orderedChromossomes   []*brkga.Chromossome
-	itineraryByCar        map[vehicle.ICar]itinerary.Itinerary
-	itineraryByDrone      map[vehicle.IDrone]itinerary.Itinerary
-	carByChromossome      map[*brkga.Chromossome]vehicle.ICar
-	droneByChromossome    map[*brkga.Chromossome]vehicle.IDrone
-
-	strategy strategy
+	gpsMap        gps.Map
+	strategy      strategy
 }
 
 func (d *positionDecoder) Decode(individual *brkga.Individual) (itinerary.ItineraryList, error) {
-	d.initializeDecoding(individual)
-	d.processChromossomes()
-	d.finalizeItineraries()
+	decodedChromossomeList := d.decodeChromossomeList(individual.Chromosomes)
+	d.parseChromossomes(decodedChromossomeList)
+	itineraryList := d.collectItineraries(decodedChromossomeList)
 
-	if !d.isValidSolution() {
+	finalizeItineraries(itineraryList, d.gpsMap)
+
+	if !isValidSolution(itineraryList) {
 		return nil, errors.New("Invalid Solution")
 	}
 
-	return d.collectItineraries(), nil
+	return itineraryList, nil
 }
 
-func (d *positionDecoder) initializeDecoding(individual *brkga.Individual) {
-	d.individual = individual
-	d.cloneCars()
-	d.mapCustomerByChromossome()
-	d.orderChromossomes()
-	d.mapItineraryByVehicles()
-	d.mapChromossomeByVehicle()
+func (d *positionDecoder) decodeChromossomeList(chromossomeList []*brkga.Chromossome) []*decodedChromossome {
+	clonedCarList := cloneCars(d.masterCarList)
+	decodedChromossomeList := make([]*decodedChromossome, len(chromossomeList))
+	itineraryByCar := mapItineraryByCar(clonedCarList)
+
+	for i, chromossome := range chromossomeList {
+		car, drone := d.strategy.DefineVehicle(clonedCarList, chromossome)
+		decodedChromossome := &decodedChromossome{
+			customer:    d.gpsMap.Clients[i],
+			car:         car,
+			drone:       drone,
+			itn:         itineraryByCar[car],
+			chromossome: chromossome,
+		}
+		decodedChromossomeList[i] = decodedChromossome
+
+	}
+
+	return orderDecodedChromossomes(decodedChromossomeList)
 }
 
-func (d *positionDecoder) processChromossomes() {
-	for _, chromossome := range d.orderedChromossomes {
-		if d.isDroneChromossome(chromossome) {
-			d.decodeDroneChromossome(chromossome)
+func (d *positionDecoder) parseChromossomes(decodedChromossomeList []*decodedChromossome) {
+	for _, dc := range decodedChromossomeList {
+		if dc.isDroneChromossome() {
+			d.parseDecodedDroneChromossome(dc)
 		} else {
-			d.decodeCarChromossome(chromossome)
+			d.parseDecodedCarChromossome(dc)
 		}
 	}
 }
 
-func (d *positionDecoder) finalizeItineraries() {
-	for car, itinerary := range d.itineraryByCar {
-		constructor := itinerary.Constructor()
-		constructor.MoveCar(d.closestWarehouse(car))
-		constructor.LandAllDrones(constructor.ActualCarStop())
-	}
-}
-
-func (d *positionDecoder) collectItineraries() []itinerary.Itinerary {
-	var itineraryList []itinerary.Itinerary
-	for _, itn := range d.itineraryByCar {
-		itineraryList = append(itineraryList, itn)
-	}
-	return itineraryList
-}
-
-func (d *positionDecoder) cloneCars() {
-	d.carList = make([]vehicle.ICar, len(d.masterCarList))
-	for i, c := range d.masterCarList {
-		d.carList[i] = c.Clone()
-	}
-}
-
-func (d *positionDecoder) mapItineraryByVehicles() {
-	d.itineraryByCar = make(map[vehicle.ICar]itinerary.Itinerary)
-	d.itineraryByDrone = make(map[vehicle.IDrone]itinerary.Itinerary)
-	for _, car := range d.carList {
-		itn := itinerary.New(car)
-		d.itineraryByCar[car] = itn
-		for _, drone := range car.Drones() {
-			d.itineraryByDrone[drone] = itn
-		}
-	}
-}
-
-func (d *positionDecoder) mapCustomerByChromossome() {
-	d.customerByChromossome = make(map[*brkga.Chromossome]gps.Point, len(d.gpsMap.Clients))
-
-	for i, customer := range d.gpsMap.Clients {
-		chromossome := d.individual.Chromosomes[i]
-		d.customerByChromossome[chromossome] = customer
-	}
-}
-
-func (d *positionDecoder) orderChromossomes() {
-	chromossomeList := slices.Clone(d.individual.Chromosomes)
-	sort.Slice(chromossomeList, func(i, j int) bool {
-		return *chromossomeList[i] < *chromossomeList[j]
-	})
-	d.orderedChromossomes = chromossomeList
-}
-
-func (d *positionDecoder) mapChromossomeByVehicle() {
-	d.carByChromossome = make(map[*brkga.Chromossome]vehicle.ICar)
-	d.droneByChromossome = make(map[*brkga.Chromossome]vehicle.IDrone)
-
-	for _, chromossome := range d.individual.Chromosomes {
-		car, drone := d.strategy.DefineVehicle(d.carList, chromossome)
-		if car != nil {
-			d.carByChromossome[chromossome] = car
-		}
-		if drone != nil {
-			d.droneByChromossome[chromossome] = drone
-		}
-	}
-}
-
-func (d *positionDecoder) closestWarehouse(car vehicle.ICar) gps.Point {
-	return gps.ClosestPoint(car.ActualPoint(), d.gpsMap.Warehouses)
-}
-
-func (d *positionDecoder) isDroneChromossome(chromossome *brkga.Chromossome) bool {
-	_, ok := d.droneByChromossome[chromossome]
-	return ok
-}
-
-func (d *positionDecoder) decodeDroneChromossome(chromossome *brkga.Chromossome) {
-	drone := d.droneByChromossome[chromossome]
-	constructor := d.itineraryByDrone[drone].Constructor()
+func (*positionDecoder) parseDecodedDroneChromossome(dc *decodedChromossome) {
+	drone := dc.drone
+	constructor := dc.itn.Constructor()
 	if !drone.IsFlying() {
 		constructor.StartDroneFlight(drone, constructor.ActualCarStop())
 	}
 
-	actualCustomerPoint := d.customerByChromossome[chromossome]
+	actualCustomerPoint := dc.customer
 	constructor.MoveDrone(drone, actualCustomerPoint)
 }
 
-func (d *positionDecoder) decodeCarChromossome(chromossome *brkga.Chromossome) {
-	car := d.carByChromossome[chromossome]
-	constructor := d.itineraryByCar[car].Constructor()
+func (*positionDecoder) parseDecodedCarChromossome(dc *decodedChromossome) {
+	constructor := dc.itn.Constructor()
 
-	actualCustomerPoint := d.customerByChromossome[chromossome]
+	actualCustomerPoint := dc.customer
 	constructor.MoveCar(actualCustomerPoint)
 	constructor.LandAllDrones(constructor.ActualCarStop())
 }
 
-func (d *positionDecoder) isValidSolution() bool {
-	for _, itn := range d.itineraryByCar {
-		if !itn.Validator().IsValid() {
-			return false
-		}
+func (*positionDecoder) collectItineraries(decodedChromossomeList []*decodedChromossome) []itinerary.Itinerary {
+	itineraryList := []itinerary.Itinerary{}
+	for _, dc := range decodedChromossomeList {
+		itineraryList = slc.AppendIfNotExists(itineraryList, dc.itn)
 	}
-
-	return true
+	return itineraryList
 }

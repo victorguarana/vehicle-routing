@@ -41,3 +41,12 @@ func RemoveElement[T comparable](slice []T, element T) []T {
 	}
 	return newSlice
 }
+
+func AppendIfNotExists[T comparable](slice []T, element T) []T {
+	for _, i := range slice {
+		if i == element {
+			return slice
+		}
+	}
+	return append(slice, element)
+}
