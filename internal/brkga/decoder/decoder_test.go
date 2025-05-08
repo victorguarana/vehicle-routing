@@ -16,6 +16,7 @@ var _ = Describe("decoder", func() {
 	var mockedCtrl *gomock.Controller
 	var mockedCar1 *mockvehicle.MockICar
 	var mockedCar2 *mockvehicle.MockICar
+	var mockedDrone1 *mockvehicle.MockIDrone
 	var mockedItinerary1 *mockitinerary.MockItinerary
 	var mockedItinerary2 *mockitinerary.MockItinerary
 	var mockedConstructor1 *mockitinerary.MockConstructor
@@ -25,10 +26,42 @@ var _ = Describe("decoder", func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
 		mockedCar1 = mockvehicle.NewMockICar(mockedCtrl)
 		mockedCar2 = mockvehicle.NewMockICar(mockedCtrl)
+		mockedDrone1 = mockvehicle.NewMockIDrone(mockedCtrl)
 		mockedItinerary1 = mockitinerary.NewMockItinerary(mockedCtrl)
 		mockedItinerary2 = mockitinerary.NewMockItinerary(mockedCtrl)
 		mockedConstructor1 = mockitinerary.NewMockConstructor(mockedCtrl)
 		mockedConstructor2 = mockitinerary.NewMockConstructor(mockedCtrl)
+	})
+
+	Describe("collectItineraries", func() {
+		var decodedChromossomeList []*decodedChromossome
+
+		BeforeEach(func() {
+			decodedChromossomeList = []*decodedChromossome{
+				{
+					car: mockedCar1,
+					itn: mockedItinerary1,
+				},
+				{
+					car: mockedCar1,
+					itn: mockedItinerary1,
+				},
+				{
+					car:   mockedCar1,
+					itn:   mockedItinerary1,
+					drone: mockedDrone1,
+				},
+				{
+					car: mockedCar2,
+					itn: mockedItinerary2,
+				},
+			}
+		})
+
+		It("should return unique itinerary list", func() {
+			receivedItineraryList := collectItineraries(decodedChromossomeList)
+			Expect(receivedItineraryList).To(HaveExactElements(mockedItinerary1, mockedItinerary2))
+		})
 	})
 
 	Describe("finalizeItineraries", func() {

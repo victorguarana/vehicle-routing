@@ -19,7 +19,6 @@ var _ = Describe("positionDecoder", func() {
 	var mockedCar2 *mockvehicle.MockICar
 	var mockedDrone1 *mockvehicle.MockIDrone
 	var mockedItinerary1 *mockitinerary.MockItinerary
-	var mockedItinerary2 *mockitinerary.MockItinerary
 	var mockedConstructor1 *mockitinerary.MockConstructor
 	var mockedStrategy *Mockstrategy
 
@@ -29,7 +28,6 @@ var _ = Describe("positionDecoder", func() {
 		mockedCar2 = mockvehicle.NewMockICar(mockedCtrl)
 		mockedDrone1 = mockvehicle.NewMockIDrone(mockedCtrl)
 		mockedItinerary1 = mockitinerary.NewMockItinerary(mockedCtrl)
-		mockedItinerary2 = mockitinerary.NewMockItinerary(mockedCtrl)
 		mockedConstructor1 = mockitinerary.NewMockConstructor(mockedCtrl)
 		mockedStrategy = NewMockstrategy(mockedCtrl)
 
@@ -56,9 +54,9 @@ var _ = Describe("positionDecoder", func() {
 		var drone2Chromossome *brkga.Chromossome
 
 		BeforeEach(func() {
-			c1 := brkga.Chromossome(0.8)
-			c2 := brkga.Chromossome(0.1)
-			d3 := brkga.Chromossome(0.6)
+			c1 := brkga.Chromossome(0.1)
+			c2 := brkga.Chromossome(0.2)
+			d3 := brkga.Chromossome(0.4)
 			d4 := brkga.Chromossome(0.4)
 			car1Chromossome = &c1
 			car2Chromossome = &c2
@@ -87,7 +85,7 @@ var _ = Describe("positionDecoder", func() {
 			}
 		})
 
-		It("should return ordered decoded chromossome list", func() {
+		It("should return decoded chromossome list", func() {
 			mockedCar1.EXPECT().Clone().Return(clonedCar1)
 			mockedCar2.EXPECT().Clone().Return(clonedCar2)
 			clonedCar1.EXPECT().ActualPoint().Return(initialPoint)
@@ -101,22 +99,22 @@ var _ = Describe("positionDecoder", func() {
 			receivedDecodedChromossomeList := sut.decodeChromossomeList(chromossomeList)
 
 			Expect(receivedDecodedChromossomeList).To(HaveLen(4))
-			Expect(receivedDecodedChromossomeList[0].chromossome).To(BeIdenticalTo(car2Chromossome))
-			Expect(receivedDecodedChromossomeList[0].car).To(BeIdenticalTo(clonedCar2))
-			Expect(receivedDecodedChromossomeList[0].customer).To(Equal(carCustomer2))
+			Expect(receivedDecodedChromossomeList[0].chromossome).To(BeIdenticalTo(car1Chromossome))
+			Expect(receivedDecodedChromossomeList[0].car).To(BeIdenticalTo(clonedCar1))
+			Expect(receivedDecodedChromossomeList[0].customer).To(Equal(carCustomer1))
 			Expect(receivedDecodedChromossomeList[0].drone).To(BeNil())
-			Expect(receivedDecodedChromossomeList[1].chromossome).To(BeIdenticalTo(drone2Chromossome))
+			Expect(receivedDecodedChromossomeList[1].chromossome).To(BeIdenticalTo(car2Chromossome))
 			Expect(receivedDecodedChromossomeList[1].car).To(BeIdenticalTo(clonedCar2))
-			Expect(receivedDecodedChromossomeList[1].customer).To(Equal(droneCustomer2))
-			Expect(receivedDecodedChromossomeList[1].drone).To(BeIdenticalTo(clonedDrone2))
+			Expect(receivedDecodedChromossomeList[1].customer).To(Equal(carCustomer2))
+			Expect(receivedDecodedChromossomeList[1].drone).To(BeNil())
 			Expect(receivedDecodedChromossomeList[2].chromossome).To(BeIdenticalTo(drone1Chromossome))
 			Expect(receivedDecodedChromossomeList[2].car).To(BeIdenticalTo(clonedCar1))
 			Expect(receivedDecodedChromossomeList[2].customer).To(Equal(droneCustomer1))
 			Expect(receivedDecodedChromossomeList[2].drone).To(BeIdenticalTo(clonedDrone1))
-			Expect(receivedDecodedChromossomeList[3].chromossome).To(BeIdenticalTo(car1Chromossome))
-			Expect(receivedDecodedChromossomeList[3].car).To(BeIdenticalTo(clonedCar1))
-			Expect(receivedDecodedChromossomeList[3].customer).To(Equal(carCustomer1))
-			Expect(receivedDecodedChromossomeList[3].drone).To(BeNil())
+			Expect(receivedDecodedChromossomeList[3].chromossome).To(BeIdenticalTo(drone2Chromossome))
+			Expect(receivedDecodedChromossomeList[3].car).To(BeIdenticalTo(clonedCar2))
+			Expect(receivedDecodedChromossomeList[3].customer).To(Equal(droneCustomer2))
+			Expect(receivedDecodedChromossomeList[3].drone).To(BeIdenticalTo(clonedDrone2))
 
 		})
 	})
@@ -244,34 +242,44 @@ var _ = Describe("positionDecoder", func() {
 		})
 	})
 
-	Describe("collectItineraries", func() {
-		var decodedChromossomeList []*decodedChromossome
+	Describe("orderDecodedChromossomes", func() {
+		var decodedChromossome1 *decodedChromossome
+		var decodedChromossome2 *decodedChromossome
+		var decodedChromossome3 *decodedChromossome
+		var decodedChromossome4 *decodedChromossome
 
 		BeforeEach(func() {
-			decodedChromossomeList = []*decodedChromossome{
-				{
-					car: mockedCar1,
-					itn: mockedItinerary1,
-				},
-				{
-					car: mockedCar1,
-					itn: mockedItinerary1,
-				},
-				{
-					car:   mockedCar1,
-					itn:   mockedItinerary1,
-					drone: mockedDrone1,
-				},
-				{
-					car: mockedCar2,
-					itn: mockedItinerary2,
-				},
+			c1 := brkga.Chromossome(0.1)
+			c2 := brkga.Chromossome(0.2)
+			c3 := brkga.Chromossome(0.3)
+			c4 := brkga.Chromossome(0.4)
+
+			decodedChromossome1 = &decodedChromossome{
+				chromossome: &c1,
+			}
+			decodedChromossome2 = &decodedChromossome{
+				chromossome: &c2,
+			}
+			decodedChromossome3 = &decodedChromossome{
+				chromossome: &c3,
+			}
+			decodedChromossome4 = &decodedChromossome{
+				chromossome: &c4,
 			}
 		})
 
-		It("should return unique itinerary list", func() {
-			receivedItineraryList := sut.collectItineraries(decodedChromossomeList)
-			Expect(receivedItineraryList).To(HaveExactElements(mockedItinerary1, mockedItinerary2))
+		It("should return ordered decoded chromossome list", func() {
+			decodedChromossomeList := []*decodedChromossome{
+				decodedChromossome2, decodedChromossome4, decodedChromossome3, decodedChromossome1,
+			}
+
+			expectedDecodedChromossomeList := []*decodedChromossome{
+				decodedChromossome1, decodedChromossome2, decodedChromossome3, decodedChromossome4,
+			}
+
+			receivedDecodedChromossomeList := sut.orderDecodedChromossomes(decodedChromossomeList)
+
+			Expect(receivedDecodedChromossomeList).To(HaveExactElements(expectedDecodedChromossomeList))
 		})
 	})
 })

@@ -2,11 +2,12 @@ package decoder
 
 import (
 	"errors"
+	"slices"
+	"sort"
 
 	"github.com/victorguarana/vehicle-routing/internal/brkga"
 	"github.com/victorguarana/vehicle-routing/internal/gps"
 	"github.com/victorguarana/vehicle-routing/internal/itinerary"
-	"github.com/victorguarana/vehicle-routing/internal/slc"
 	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
@@ -20,8 +21,10 @@ type positionDecoder struct {
 
 func (d *positionDecoder) Decode(individual *brkga.Individual) (itinerary.ItineraryList, error) {
 	decodedChromossomeList := d.decodeChromossomeList(individual.Chromosomes)
-	d.parseChromossomes(decodedChromossomeList)
-	itineraryList := d.collectItineraries(decodedChromossomeList)
+	orderedDecodedChromossomeList := d.orderDecodedChromossomes(decodedChromossomeList)
+	d.parseChromossomes(orderedDecodedChromossomeList)
+
+	itineraryList := collectItineraries(orderedDecodedChromossomeList)
 
 	finalizeItineraries(itineraryList, d.gpsMap)
 
@@ -50,7 +53,7 @@ func (d *positionDecoder) decodeChromossomeList(chromossomeList []*brkga.Chromos
 
 	}
 
-	return orderDecodedChromossomes(decodedChromossomeList)
+	return decodedChromossomeList
 }
 
 func (d *positionDecoder) parseChromossomes(decodedChromossomeList []*decodedChromossome) {
@@ -82,10 +85,10 @@ func (*positionDecoder) parseDecodedCarChromossome(dc *decodedChromossome) {
 	constructor.LandAllDrones(constructor.ActualCarStop())
 }
 
-func (*positionDecoder) collectItineraries(decodedChromossomeList []*decodedChromossome) []itinerary.Itinerary {
-	itineraryList := []itinerary.Itinerary{}
-	for _, dc := range decodedChromossomeList {
-		itineraryList = slc.AppendIfNotExists(itineraryList, dc.itn)
-	}
-	return itineraryList
+func (*positionDecoder) orderDecodedChromossomes(decodedChromossomeList []*decodedChromossome) []*decodedChromossome {
+	orderedDecodedchromossomeList := slices.Clone(decodedChromossomeList)
+	sort.Slice(orderedDecodedchromossomeList, func(i, j int) bool {
+		return *orderedDecodedchromossomeList[i].chromossome < *orderedDecodedchromossomeList[j].chromossome
+	})
+	return orderedDecodedchromossomeList
 }

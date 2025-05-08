@@ -4,6 +4,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/internal/brkga"
 	"github.com/victorguarana/vehicle-routing/internal/gps"
 	"github.com/victorguarana/vehicle-routing/internal/itinerary"
+	"github.com/victorguarana/vehicle-routing/internal/slc"
 	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
@@ -27,6 +28,14 @@ func mapItineraryByCar(carList []vehicle.ICar) map[vehicle.ICar]itinerary.Itiner
 		itineraryByCar[car] = itn
 	}
 	return itineraryByCar
+}
+
+func collectItineraries(decodedChromossomeList []*decodedChromossome) []itinerary.Itinerary {
+	itineraryList := []itinerary.Itinerary{}
+	for _, dc := range decodedChromossomeList {
+		itineraryList = slc.AppendIfNotExists(itineraryList, dc.itn)
+	}
+	return itineraryList
 }
 
 func finalizeItineraries(itineraryList []itinerary.Itinerary, gpsMap gps.Map) {
