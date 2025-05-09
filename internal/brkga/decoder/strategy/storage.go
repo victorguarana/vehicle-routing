@@ -42,6 +42,12 @@ func (c *vehicleChooserByStorage) DefineVehicle(carList []vehicle.ICar, chromoss
 
 	return nil, nil
 }
+
+func (c *vehicleChooserByStorage) DefineWindowTime(carList []vehicle.ICar, chromossome *brkga.Chromossome) int {
+	amplifiedGene := chromossome.Gene() * c.calcGeneAmplifier(carList)
+	return int(amplifiedGene / c.calcGeneModule(carList))
+}
+
 func (c *vehicleChooserByStorage) calcModuledGene(carList []vehicle.ICar, chromossome *brkga.Chromossome) float64 {
 	amplifiedGene := chromossome.Gene() * c.calcGeneAmplifier(carList)
 	return math.Mod(amplifiedGene, c.calcGeneModule(carList))

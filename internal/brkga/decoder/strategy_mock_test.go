@@ -54,3 +54,17 @@ func (mr *MockstrategyMockRecorder) DefineVehicle(carList, chromossome any) *gom
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DefineVehicle", reflect.TypeOf((*Mockstrategy)(nil).DefineVehicle), carList, chromossome)
 }
+
+// DefineWindowTime mocks base method.
+func (m *Mockstrategy) DefineWindowTime(carList []vehicle.ICar, chromossome *brkga.Chromossome) int {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DefineWindowTime", carList, chromossome)
+	ret0, _ := ret[0].(int)
+	return ret0
+}
+
+// DefineWindowTime indicates an expected call of DefineWindowTime.
+func (mr *MockstrategyMockRecorder) DefineWindowTime(carList, chromossome any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DefineWindowTime", reflect.TypeOf((*Mockstrategy)(nil).DefineWindowTime), carList, chromossome)
+}

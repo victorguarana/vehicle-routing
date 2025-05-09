@@ -34,6 +34,11 @@ func (c *vehicleChooserByPercentage) DefineVehicle(carList []vehicle.ICar, chrom
 	return c.defineDrone(carList, moduledGene)
 }
 
+func (c *vehicleChooserByPercentage) DefineWindowTime(_ []vehicle.ICar, chromossome *brkga.Chromossome) int {
+	amplifiedGene := chromossome.Gene() * c.calcGeneAmplifier()
+	return int(amplifiedGene)
+}
+
 func (c *vehicleChooserByPercentage) calcModuledGene(chromossome *brkga.Chromossome) float64 {
 	amplifiedGene := chromossome.Gene() * c.calcGeneAmplifier()
 	return math.Mod(amplifiedGene, c.calcGeneModule())

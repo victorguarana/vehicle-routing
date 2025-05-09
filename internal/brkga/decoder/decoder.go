@@ -11,6 +11,7 @@ import (
 //go:generate mockgen -source=decoder.go -destination=strategy_mock_test.go -package=decoder
 type strategy interface {
 	DefineVehicle(carList []vehicle.ICar, chromossome *brkga.Chromossome) (vehicle.ICar, vehicle.IDrone)
+	DefineWindowTime(carList []vehicle.ICar, chromossome *brkga.Chromossome) int
 }
 
 func cloneCars(carList []vehicle.ICar) []vehicle.ICar {

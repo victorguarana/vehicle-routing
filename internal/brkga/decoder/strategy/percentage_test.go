@@ -88,6 +88,50 @@ var _ = Describe("vehicleChooserByPercentage", func() {
 		})
 	})
 
+	Describe("DefineWindowTime", func() {
+		Context("when chromossome is min value", func() {
+			It("should calc window time", func() {
+				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				c := brkga.Chromossome(0)
+				chromossome1 := &c
+
+				receivedTimeWindowIndex := sut.DefineWindowTime(nil, chromossome1)
+				Expect(receivedTimeWindowIndex).To(Equal(0))
+			})
+		})
+
+		Context("when chromossome is max value", func() {
+			It("should calc window time", func() {
+				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				c := brkga.Chromossome(1)
+				chromossome1 := &c
+
+				receivedTimeWindowIndex := sut.DefineWindowTime(nil, chromossome1)
+				Expect(receivedTimeWindowIndex).To(Equal(2))
+			})
+		})
+
+		Context("when chromossome is any between min and max value", func() {
+			It("should calc window time", func() {
+				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				c := brkga.Chromossome(0.3)
+				chromossome1 := &c
+
+				receivedTimeWindowIndex := sut.DefineWindowTime(nil, chromossome1)
+				Expect(receivedTimeWindowIndex).To(Equal(0))
+			})
+
+			It("should calc window time", func() {
+				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				c := brkga.Chromossome(0.7)
+				chromossome1 := &c
+
+				receivedTimeWindowIndex := sut.DefineWindowTime(nil, chromossome1)
+				Expect(receivedTimeWindowIndex).To(Equal(1))
+			})
+		})
+	})
+
 	Describe("calcModuledGene", func() {
 		It("should calculate the moduled gene", func() {
 			sut.gpsMap.Clients = []gps.Point{{}, {}, {}, {}}

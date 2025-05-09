@@ -89,6 +89,82 @@ var _ = Describe("vehicleChooserByStorage", func() {
 		})
 	})
 
+	Describe("DefineWindowTime", func() {
+		Context("when chromossome is min value", func() {
+			It("should calc window time", func() {
+				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				carList := []vehicle.ICar{mockedCar1, mockedCar2}
+				c := brkga.Chromossome(0)
+				chromossome1 := &c
+
+				mockedCar1.EXPECT().Storage().Return(2.0).AnyTimes()
+				mockedCar2.EXPECT().Storage().Return(2.0).AnyTimes()
+				mockedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1}).AnyTimes()
+				mockedCar2.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone2}).AnyTimes()
+				mockedDrone1.EXPECT().Storage().Return(1.0).AnyTimes()
+				mockedDrone2.EXPECT().Storage().Return(1.0).AnyTimes()
+
+				receivedTimeWindowIndex := sut.DefineWindowTime(carList, chromossome1)
+				Expect(receivedTimeWindowIndex).To(Equal(0))
+			})
+		})
+
+		Context("when chromossome is max value", func() {
+			It("should calc window time", func() {
+				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				carList := []vehicle.ICar{mockedCar1, mockedCar2}
+				c := brkga.Chromossome(1)
+				chromossome1 := &c
+
+				mockedCar1.EXPECT().Storage().Return(2.0).AnyTimes()
+				mockedCar2.EXPECT().Storage().Return(2.0).AnyTimes()
+				mockedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1}).AnyTimes()
+				mockedCar2.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone2}).AnyTimes()
+				mockedDrone1.EXPECT().Storage().Return(1.0).AnyTimes()
+				mockedDrone2.EXPECT().Storage().Return(1.0).AnyTimes()
+
+				receivedTimeWindowIndex := sut.DefineWindowTime(carList, chromossome1)
+				Expect(receivedTimeWindowIndex).To(Equal(2))
+			})
+		})
+
+		Context("when chromossome is any between min and max value", func() {
+			It("should calc window time", func() {
+				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				carList := []vehicle.ICar{mockedCar1, mockedCar2}
+				c := brkga.Chromossome(0.3)
+				chromossome1 := &c
+
+				mockedCar1.EXPECT().Storage().Return(2.0).AnyTimes()
+				mockedCar2.EXPECT().Storage().Return(2.0).AnyTimes()
+				mockedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1}).AnyTimes()
+				mockedCar2.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone2}).AnyTimes()
+				mockedDrone1.EXPECT().Storage().Return(1.0).AnyTimes()
+				mockedDrone2.EXPECT().Storage().Return(1.0).AnyTimes()
+
+				receivedTimeWindowIndex := sut.DefineWindowTime(carList, chromossome1)
+				Expect(receivedTimeWindowIndex).To(Equal(0))
+			})
+
+			It("should calc window time", func() {
+				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				carList := []vehicle.ICar{mockedCar1, mockedCar2}
+				c := brkga.Chromossome(0.7)
+				chromossome1 := &c
+
+				mockedCar1.EXPECT().Storage().Return(2.0).AnyTimes()
+				mockedCar2.EXPECT().Storage().Return(2.0).AnyTimes()
+				mockedCar1.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1}).AnyTimes()
+				mockedCar2.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone2}).AnyTimes()
+				mockedDrone1.EXPECT().Storage().Return(1.0).AnyTimes()
+				mockedDrone2.EXPECT().Storage().Return(1.0).AnyTimes()
+
+				receivedTimeWindowIndex := sut.DefineWindowTime(carList, chromossome1)
+				Expect(receivedTimeWindowIndex).To(Equal(1))
+			})
+		})
+	})
+
 	Describe("calcModuledGene", func() {
 		Context("when there is only cars and customers", func() {
 			It("should calc car gene", func() {
