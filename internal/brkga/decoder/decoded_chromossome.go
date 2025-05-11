@@ -11,11 +11,12 @@ import (
 )
 
 type decodedChromossome struct {
-	customer    gps.Point
-	car         vehicle.ICar
-	drone       vehicle.IDrone
-	itn         itinerary.Itinerary
-	chromossome *brkga.Chromossome
+	customer        gps.Point
+	car             vehicle.ICar
+	drone           vehicle.IDrone
+	itn             itinerary.Itinerary
+	chromossome     *brkga.Chromossome
+	timeWindowIndex int
 }
 
 func (d *decodedChromossome) isDroneChromossome() bool {
@@ -32,4 +33,24 @@ func orderDecodedChromossomesByChromossome(decodedChromossomeList []*decodedChro
 		return *orderedDecodedchromossomeList[i].chromossome < *orderedDecodedchromossomeList[j].chromossome
 	})
 	return orderedDecodedchromossomeList
+}
+
+func collectDroneChromossomes(decodedChromossomeList []*decodedChromossome) []*decodedChromossome {
+	droneChromossomeList := []*decodedChromossome{}
+	for _, dc := range decodedChromossomeList {
+		if dc.isDroneChromossome() {
+			droneChromossomeList = append(droneChromossomeList, dc)
+		}
+	}
+	return droneChromossomeList
+}
+
+func collectCarChromossomes(decodedChromossomeList []*decodedChromossome) []*decodedChromossome {
+	carChromossomeList := []*decodedChromossome{}
+	for _, dc := range decodedChromossomeList {
+		if dc.isCarChromossome() {
+			carChromossomeList = append(carChromossomeList, dc)
+		}
+	}
+	return carChromossomeList
 }
