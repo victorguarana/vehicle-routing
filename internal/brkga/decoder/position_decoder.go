@@ -2,8 +2,6 @@ package decoder
 
 import (
 	"errors"
-	"slices"
-	"sort"
 
 	"github.com/victorguarana/vehicle-routing/internal/brkga"
 	"github.com/victorguarana/vehicle-routing/internal/gps"
@@ -21,7 +19,7 @@ type positionDecoder struct {
 
 func (d *positionDecoder) Decode(individual *brkga.Individual) (itinerary.ItineraryList, error) {
 	decodedChromossomeList := d.decodeChromossomeList(individual.Chromosomes)
-	orderedDecodedChromossomeList := d.orderDecodedChromossomes(decodedChromossomeList)
+	orderedDecodedChromossomeList := orderDecodedChromossomesByChromossome(decodedChromossomeList)
 	d.parseChromossomes(orderedDecodedChromossomeList)
 
 	itineraryList := collectItineraries(orderedDecodedChromossomeList)
@@ -83,12 +81,4 @@ func (*positionDecoder) parseDecodedCarChromossome(dc *decodedChromossome) {
 	actualCustomerPoint := dc.customer
 	constructor.MoveCar(actualCustomerPoint)
 	constructor.LandAllDrones(constructor.ActualCarStop())
-}
-
-func (*positionDecoder) orderDecodedChromossomes(decodedChromossomeList []*decodedChromossome) []*decodedChromossome {
-	orderedDecodedchromossomeList := slices.Clone(decodedChromossomeList)
-	sort.Slice(orderedDecodedchromossomeList, func(i, j int) bool {
-		return *orderedDecodedchromossomeList[i].chromossome < *orderedDecodedchromossomeList[j].chromossome
-	})
-	return orderedDecodedchromossomeList
 }
