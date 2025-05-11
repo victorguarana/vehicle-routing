@@ -147,3 +147,42 @@ var _ = Describe("RemoveElement", func() {
 		})
 	})
 })
+
+var _ = Describe("AppendIfNotExists", func() {
+	Context("when element does not exist in the slice", func() {
+		var elements = []int{1, 2, 3}
+
+		It("append the element to the slice", func() {
+			expectedElements := []int{1, 2, 3, 4}
+			receivedElements := AppendIfNotExists(elements, 4)
+			Expect(receivedElements).To(Equal(expectedElements))
+		})
+	})
+
+	Context("when element exists in the slice", func() {
+		var elements = []int{1, 2, 3}
+
+		It("return the original slice", func() {
+			receivedElements := AppendIfNotExists(elements, 2)
+			Expect(receivedElements).To(Equal(elements))
+		})
+	})
+})
+
+var _ = Describe("Keys", func() {
+	Context("when map is empty", func() {
+		It("return an empty slice", func() {
+			m := map[int]string{}
+			receivedKeys := Keys(m)
+			Expect(receivedKeys).To(BeEmpty())
+		})
+	})
+
+	Context("when map is not empty", func() {
+		It("return the keys of the map", func() {
+			m := map[int]string{1: "a", 2: "b", 3: "c"}
+			receivedKeys := Keys(m)
+			Expect(receivedKeys).To(ConsistOf(1, 2, 3))
+		})
+	})
+})
