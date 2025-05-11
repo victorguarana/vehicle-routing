@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestPositiondecoder(t *testing.T) {
+func TestDecoder(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Positiondecoder Suite")
+	RunSpecs(t, "Position Suite")
 }
