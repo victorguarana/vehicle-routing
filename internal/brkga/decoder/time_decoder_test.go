@@ -18,8 +18,11 @@ var _ = Describe("timeWindowDecoder", func() {
 	var mockedCar1 *mockvehicle.MockICar
 	var mockedCar2 *mockvehicle.MockICar
 	var mockedDrone1 *mockvehicle.MockIDrone
+	var mockedDrone2 *mockvehicle.MockIDrone
 	var mockedItinerary1 *mockitinerary.MockItinerary
+	var mockedItinerary2 *mockitinerary.MockItinerary
 	var mockedConstructor1 *mockitinerary.MockConstructor
+	var mockedConstructor2 *mockitinerary.MockConstructor
 	var mockedStrategy *Mockstrategy
 
 	BeforeEach(func() {
@@ -27,8 +30,11 @@ var _ = Describe("timeWindowDecoder", func() {
 		mockedCar1 = mockvehicle.NewMockICar(mockedCtrl)
 		mockedCar2 = mockvehicle.NewMockICar(mockedCtrl)
 		mockedDrone1 = mockvehicle.NewMockIDrone(mockedCtrl)
+		mockedDrone2 = mockvehicle.NewMockIDrone(mockedCtrl)
 		mockedItinerary1 = mockitinerary.NewMockItinerary(mockedCtrl)
+		mockedItinerary2 = mockitinerary.NewMockItinerary(mockedCtrl)
 		mockedConstructor1 = mockitinerary.NewMockConstructor(mockedCtrl)
+		mockedConstructor2 = mockitinerary.NewMockConstructor(mockedCtrl)
 		mockedStrategy = NewMockstrategy(mockedCtrl)
 
 		sut = timeWindowDecoder{}
@@ -208,6 +214,60 @@ var _ = Describe("timeWindowDecoder", func() {
 				mockedConstructor1.EXPECT().MoveCar(carCustomer2)
 
 				// Land drones at the end of the time window
+				mockedItinerary1.EXPECT().Constructor().Return(mockedConstructor1)
+				mockedConstructor1.EXPECT().ActualCarStop().Return(mockedCarStop)
+				mockedConstructor1.EXPECT().LandAllDrones(mockedCarStop)
+
+				sut.parseChromossomes(decodedChromossomeList)
+			})
+		})
+
+		Context("when just one car has moved", func() {
+			It("should land drone of moved car", func() {
+				decodedChromossomeList := []*decodedChromossome{
+					{
+						car:             mockedCar1,
+						customer:        droneCustomer1,
+						itn:             mockedItinerary1,
+						drone:           mockedDrone1,
+						chromossome:     chromossome3,
+						timeWindowIndex: 1,
+					},
+					{
+						car:             mockedCar1,
+						customer:        carCustomer1,
+						itn:             mockedItinerary1,
+						chromossome:     chromossome1,
+						timeWindowIndex: 1,
+					},
+					{
+						car:             mockedCar2,
+						customer:        droneCustomer2,
+						itn:             mockedItinerary2,
+						drone:           mockedDrone2,
+						chromossome:     chromossome2,
+						timeWindowIndex: 1,
+					},
+				}
+
+				// Moving drone when its not flying
+				mockedDrone1.EXPECT().IsFlying().Return(false)
+				mockedItinerary1.EXPECT().Constructor().Return(mockedConstructor1)
+				mockedConstructor1.EXPECT().ActualCarStop().Return(mockedCarStop)
+				mockedConstructor1.EXPECT().StartDroneFlight(mockedDrone1, mockedCarStop)
+				mockedConstructor1.EXPECT().MoveDrone(mockedDrone1, droneCustomer1)
+
+				mockedDrone2.EXPECT().IsFlying().Return(false)
+				mockedItinerary2.EXPECT().Constructor().Return(mockedConstructor2)
+				mockedConstructor2.EXPECT().ActualCarStop().Return(mockedCarStop)
+				mockedConstructor2.EXPECT().StartDroneFlight(mockedDrone2, mockedCarStop)
+				mockedConstructor2.EXPECT().MoveDrone(mockedDrone2, droneCustomer2)
+
+				// Moving car
+				mockedItinerary1.EXPECT().Constructor().Return(mockedConstructor1)
+				mockedConstructor1.EXPECT().MoveCar(carCustomer1)
+
+				// Land drones where its car has moved since the last time
 				mockedItinerary1.EXPECT().Constructor().Return(mockedConstructor1)
 				mockedConstructor1.EXPECT().ActualCarStop().Return(mockedCarStop)
 				mockedConstructor1.EXPECT().LandAllDrones(mockedCarStop)

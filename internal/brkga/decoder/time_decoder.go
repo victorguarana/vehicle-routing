@@ -75,7 +75,7 @@ func (d *timeWindowDecoder) parseChromossomes(decodedChromossomeList []*decodedC
 			d.parseDecodedCarChromossome(dc)
 		}
 
-		itnList := collectItineraries(decodedchromossomesByTimeWindow[timeWindowIndex])
+		itnList := collectItineraries(decodedCarChromossomeList)
 		for _, itn := range itnList {
 			itineraryConstuctor := itn.Constructor()
 			itineraryConstuctor.LandAllDrones(itineraryConstuctor.ActualCarStop())
