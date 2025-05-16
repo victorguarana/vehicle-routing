@@ -8,18 +8,17 @@ import (
 func SpentFuel(itineraryInfo itinerary.Info) float64 {
 	iterator := itineraryInfo.RouteIterator()
 	var totalFuelSpent float64
-	carEfficiency := itineraryInfo.CarEfficiency()
-	droneEfficiency := itineraryInfo.DroneEfficiency()
+	carEfficiency := itineraryInfo.Car().Efficiency()
 	for iterator.HasNext() {
 		actual := iterator.Actual()
 		next := iterator.Next()
 		totalFuelSpent += gps.ManhattanDistanceBetweenPoints(actual.Point(), next.Point()) / carEfficiency
-		if subRoutes := actual.StartingSubRoutes(); len(subRoutes) > 0 {
-			for _, subRoute := range subRoutes {
-				totalFuelSpent += calcSubRouteDistance(subRoute) / droneEfficiency
-			}
-		}
 		iterator.GoToNext()
+	}
+
+	for _, subItn := range itineraryInfo.SubItineraryList() {
+		droneEfficiency := subItn.Drone.Efficiency()
+		totalFuelSpent += calcSubRouteDistance(subItn.Flight) / droneEfficiency
 	}
 	return totalFuelSpent
 }

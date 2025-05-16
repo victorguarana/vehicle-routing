@@ -7,13 +7,11 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("newDrone", func() {
-	var car = &car{name: "car1"}
+var _ = Describe("NewDefaultDrone", func() {
 	var droneName = "drone1"
 
 	It("should create drone with correct params", func() {
 		expectedDrone := drone{
-			car:             car,
 			efficiency:      DroneEfficiency,
 			name:            droneName,
 			speed:           DroneSpeed,
@@ -22,7 +20,7 @@ var _ = Describe("newDrone", func() {
 			totalRange:      DroneRange,
 			totalStorage:    DroneStorage,
 		}
-		receivedDrone := newDrone(droneName, car)
+		receivedDrone := newDefaultDrone(droneName)
 		Expect(receivedDrone).To(Equal(&expectedDrone))
 	})
 })

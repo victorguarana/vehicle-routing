@@ -56,7 +56,7 @@ func findBestPosition(initialPoint gps.Point, client gps.Point, orderedClients [
 func fillRoute(constructor itinerary.Constructor, orderedClients []gps.Point, warehouses []gps.Point) {
 	for _, client := range orderedClients {
 		closestWarehouse := gps.ClosestPoint(client, warehouses)
-		if !constructor.CarSupport(client, closestWarehouse) {
+		if !constructor.Car().Support(client, closestWarehouse) {
 			constructor.MoveCar(closestWarehouse)
 		}
 		constructor.MoveCar(client)
