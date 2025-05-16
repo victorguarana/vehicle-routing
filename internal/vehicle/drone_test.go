@@ -188,4 +188,27 @@ var _ = Describe("drone{}", func() {
 		})
 	})
 
+	Describe("clone", func() {
+		var sut = &drone{
+			actualPoint:     gps.Point{Latitude: 1, Longitude: 2, PackageSize: 3, Name: "initialPoint"},
+			efficiency:      1,
+			speed:           2,
+			remaningRange:   3,
+			remaningStorage: 4,
+			totalRange:      5,
+			totalStorage:    6,
+			name:            "testDrone",
+			isFlying:        false,
+		}
+
+		It("should clone drone", func() {
+			receivedDrone := sut.clone()
+			Expect(receivedDrone).To(Equal(sut))
+			Expect(receivedDrone).NotTo(BeIdenticalTo(sut))
+
+			sut.actualPoint.Latitude = 10
+			Expect(receivedDrone).NotTo(Equal(sut))
+		})
+	})
+
 })

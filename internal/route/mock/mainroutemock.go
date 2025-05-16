@@ -120,6 +120,20 @@ func (mr *MockIMainRouteMockRecorder) Length() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Length", reflect.TypeOf((*MockIMainRoute)(nil).Length))
 }
 
+// MainStopList mocks base method.
+func (m *MockIMainRoute) MainStopList() []route.IMainStop {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MainStopList")
+	ret0, _ := ret[0].([]route.IMainStop)
+	return ret0
+}
+
+// MainStopList indicates an expected call of MainStopList.
+func (mr *MockIMainRouteMockRecorder) MainStopList() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MainStopList", reflect.TypeOf((*MockIMainRoute)(nil).MainStopList))
+}
+
 // RemoveMainStop mocks base method.
 func (m *MockIMainRoute) RemoveMainStop(index int) {
 	m.ctrl.T.Helper()

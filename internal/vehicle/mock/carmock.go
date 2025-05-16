@@ -54,6 +54,20 @@ func (mr *MockICarMockRecorder) ActualPoint() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActualPoint", reflect.TypeOf((*MockICar)(nil).ActualPoint))
 }
 
+// Clone mocks base method.
+func (m *MockICar) Clone() vehicle.ICar {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Clone")
+	ret0, _ := ret[0].(vehicle.ICar)
+	return ret0
+}
+
+// Clone indicates an expected call of Clone.
+func (mr *MockICarMockRecorder) Clone() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Clone", reflect.TypeOf((*MockICar)(nil).Clone))
+}
+
 // Drones mocks base method.
 func (m *MockICar) Drones() []vehicle.IDrone {
 	m.ctrl.T.Helper()
@@ -130,6 +144,20 @@ func (m *MockICar) NewDroneWithParams(params vehicle.DroneParams) {
 func (mr *MockICarMockRecorder) NewDroneWithParams(params any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewDroneWithParams", reflect.TypeOf((*MockICar)(nil).NewDroneWithParams), params)
+}
+
+// Range mocks base method.
+func (m *MockICar) Range() float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Range")
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Range indicates an expected call of Range.
+func (mr *MockICarMockRecorder) Range() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Range", reflect.TypeOf((*MockICar)(nil).Range))
 }
 
 // Speed mocks base method.

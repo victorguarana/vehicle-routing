@@ -5,6 +5,8 @@ import (
 	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
+type ItineraryList []Itinerary
+
 var flightFactory = route.NewSubRoute
 
 //go:generate mockgen -source=itinerary.go -destination=mock/itinerarymock.go
@@ -13,6 +15,7 @@ type Itinerary interface {
 	Constructor() Constructor
 	Finder() Finder
 	Modifier() Modifier
+	Validator() Validator
 }
 
 type SubItinerary struct {
@@ -50,4 +53,8 @@ func (i *itinerary) Finder() Finder {
 
 func (i *itinerary) Modifier() Modifier {
 	return modifier{info: &info{i}}
+}
+
+func (i *itinerary) Validator() Validator {
+	return &validator{info: &info{i}}
 }

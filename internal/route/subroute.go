@@ -17,6 +17,7 @@ type ISubRoute interface {
 	Return(IMainStop)
 	ReturningStop() IMainStop
 	StartingStop() IMainStop
+	SubStopList() []ISubStop
 	RemoveSubStop(index int)
 }
 
@@ -79,6 +80,14 @@ func (sr *subRoute) ReturningStop() IMainStop {
 
 func (sr *subRoute) StartingStop() IMainStop {
 	return sr.startingStop
+}
+
+func (sr *subRoute) SubStopList() []ISubStop {
+	iSubStops := make([]ISubStop, len(sr.stops))
+	for i, stop := range sr.stops {
+		iSubStops[i] = stop
+	}
+	return iSubStops
 }
 
 func (sr *subRoute) RemoveSubStop(index int) {
