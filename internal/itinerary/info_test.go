@@ -87,12 +87,7 @@ var _ = Describe("info{}", func() {
 			mockedDrone1 = mockvehicle.NewMockIDrone(mockedCtrl)
 			mockedDrone2 = mockvehicle.NewMockIDrone(mockedCtrl)
 
-			sut = info{&itinerary{
-				droneNumbersMap: map[DroneNumber]vehicle.IDrone{
-					1: mockedDrone1,
-					2: mockedDrone2,
-				},
-			}}
+			sut = info{&itinerary{}}
 		})
 
 		AfterEach(func() {
@@ -101,27 +96,36 @@ var _ = Describe("info{}", func() {
 
 		It("should return true if the drone can reach the route", func() {
 			mockedDrone1.EXPECT().CanReach(nextPoints).Return(true)
-			Expect(sut.DroneCanReach(1, nextPoints...)).To(BeTrue())
+			Expect(sut.DroneCanReach(mockedDrone1, nextPoints...)).To(BeTrue())
 		})
 
 		It("should return false if the drone can not reach the route", func() {
 			mockedDrone2.EXPECT().CanReach(nextPoints).Return(false)
-			Expect(sut.DroneCanReach(2, nextPoints...)).To(BeFalse())
+			Expect(sut.DroneCanReach(mockedDrone2, nextPoints...)).To(BeFalse())
 		})
 	})
 
-	Describe("DroneNumbers", func() {
-		var sut = info{&itinerary{
-			droneNumbersMap: map[DroneNumber]vehicle.IDrone{
-				1: nil,
-				2: nil,
-			},
-		}}
+	Describe("Drones", func() {
+		var mockedCtrl *gomock.Controller
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
+		var mockedCar *mockvehicle.MockICar
+
+		var sut info
+
+		BeforeEach(func() {
+			mockedCtrl = gomock.NewController(GinkgoT())
+			mockedCar = mockvehicle.NewMockICar(mockedCtrl)
+			sut = info{&itinerary{
+				car: mockedCar,
+			}}
+		})
 
 		It("should return all drone numbers", func() {
-			receivedDroneNumbers := sut.DroneNumbers()
+			mockedCar.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1, mockedDrone2})
+			receivedDroneNumbers := sut.Drones()
 			Expect(receivedDroneNumbers).To(HaveLen(2))
-			Expect(receivedDroneNumbers).To(ContainElements(DroneNumber(1), DroneNumber(2)))
+			Expect(receivedDroneNumbers).To(ContainElements(mockedDrone1, mockedDrone2))
 		})
 	})
 
@@ -136,12 +140,7 @@ var _ = Describe("info{}", func() {
 			mockedDrone1 = mockvehicle.NewMockIDrone(mockedCtrl)
 			mockedDrone2 = mockvehicle.NewMockIDrone(mockedCtrl)
 
-			sut = info{&itinerary{
-				droneNumbersMap: map[DroneNumber]vehicle.IDrone{
-					1: mockedDrone1,
-					2: mockedDrone2,
-				},
-			}}
+			sut = info{&itinerary{}}
 		})
 
 		AfterEach(func() {
@@ -150,12 +149,12 @@ var _ = Describe("info{}", func() {
 
 		It("should return true if the drone is flying", func() {
 			mockedDrone1.EXPECT().IsFlying().Return(true)
-			Expect(sut.DroneIsFlying(1)).To(BeTrue())
+			Expect(sut.DroneIsFlying(mockedDrone1)).To(BeTrue())
 		})
 
 		It("should return false if the drone is not flying", func() {
 			mockedDrone2.EXPECT().IsFlying().Return(false)
-			Expect(sut.DroneIsFlying(2)).To(BeFalse())
+			Expect(sut.DroneIsFlying(mockedDrone2)).To(BeFalse())
 		})
 	})
 
@@ -170,11 +169,7 @@ var _ = Describe("info{}", func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedDrone = mockvehicle.NewMockIDrone(mockedCtrl)
 
-			sut = info{&itinerary{
-				droneNumbersMap: map[DroneNumber]vehicle.IDrone{
-					1: mockedDrone,
-				},
-			}}
+			sut = info{&itinerary{}}
 		})
 
 		AfterEach(func() {
@@ -185,7 +180,7 @@ var _ = Describe("info{}", func() {
 			It("should return true", func() {
 				mockedDrone.EXPECT().Support(deliveryPoint).Return(true)
 				mockedDrone.EXPECT().CanReach(deliveryPoint, landingPoint).Return(true)
-				Expect(sut.DroneSupport(1, deliveryPoint, landingPoint)).To(BeTrue())
+				Expect(sut.DroneSupport(mockedDrone, deliveryPoint, landingPoint)).To(BeTrue())
 			})
 		})
 
@@ -193,14 +188,14 @@ var _ = Describe("info{}", func() {
 			It("should return false", func() {
 				mockedDrone.EXPECT().Support(deliveryPoint).Return(true)
 				mockedDrone.EXPECT().CanReach(deliveryPoint, landingPoint).Return(false)
-				Expect(sut.DroneSupport(1, deliveryPoint, landingPoint)).To(BeFalse())
+				Expect(sut.DroneSupport(mockedDrone, deliveryPoint, landingPoint)).To(BeFalse())
 			})
 		})
 
 		Context("when can not delivery point", func() {
 			It("should return false", func() {
 				mockedDrone.EXPECT().Support(deliveryPoint).Return(false)
-				Expect(sut.DroneSupport(1, deliveryPoint, landingPoint)).To(BeFalse())
+				Expect(sut.DroneSupport(mockedDrone, deliveryPoint, landingPoint)).To(BeFalse())
 			})
 		})
 	})

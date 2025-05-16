@@ -2,11 +2,12 @@ package greedy
 
 import (
 	"github.com/victorguarana/vehicle-routing/internal/gps"
-	"github.com/victorguarana/vehicle-routing/internal/itinerary"
 	mockitinerary "github.com/victorguarana/vehicle-routing/internal/itinerary/mock"
 	"github.com/victorguarana/vehicle-routing/internal/route"
 	mockroute "github.com/victorguarana/vehicle-routing/internal/route/mock"
 	"github.com/victorguarana/vehicle-routing/internal/slc"
+	"github.com/victorguarana/vehicle-routing/internal/vehicle"
+	mockvehicle "github.com/victorguarana/vehicle-routing/internal/vehicle/mock"
 
 	"go.uber.org/mock/gomock"
 
@@ -17,12 +18,14 @@ import (
 var _ = Describe("initDroneStrikes", func() {
 	var mockedCtrl *gomock.Controller
 	var mockedConstructor *mockitinerary.MockConstructor
-	var mockedDrone1 = itinerary.DroneNumber(1)
-	var mockedDrone2 = itinerary.DroneNumber(2)
+	var mockedDrone1 *mockvehicle.MockIDrone
+	var mockedDrone2 *mockvehicle.MockIDrone
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
 		mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
+		mockedDrone1 = mockvehicle.NewMockIDrone(mockedCtrl)
+		mockedDrone2 = mockvehicle.NewMockIDrone(mockedCtrl)
 	})
 
 	AfterEach(func() {
@@ -31,10 +34,10 @@ var _ = Describe("initDroneStrikes", func() {
 
 	It("should initialize drone strikes", func() {
 		expectedDronesStrikes := []droneStrikes{
-			{droneNumber: mockedDrone1},
-			{droneNumber: mockedDrone2},
+			{drone: mockedDrone1},
+			{drone: mockedDrone2},
 		}
-		mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+		mockedConstructor.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1, mockedDrone2})
 		receivedDroneStrikes := initDroneStrikes(mockedConstructor)
 		Expect(receivedDroneStrikes).To(Equal(expectedDronesStrikes))
 	})
@@ -43,15 +46,15 @@ var _ = Describe("initDroneStrikes", func() {
 var _ = Describe("anyDroneWasStriked", func() {
 	Context("when any drone was striked", func() {
 		var mockedCtrl *gomock.Controller
-		var mockedDrone1 = itinerary.DroneNumber(1)
-		var mockedDrone2 = itinerary.DroneNumber(2)
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 		var mockedDroneStrikes []droneStrikes
 
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedDroneStrikes = []droneStrikes{
-				{droneNumber: mockedDrone1, strikes: 0},
-				{droneNumber: mockedDrone2, strikes: maxStrikes},
+				{drone: mockedDrone1, strikes: 0},
+				{drone: mockedDrone2, strikes: maxStrikes},
 			}
 		})
 
@@ -65,11 +68,11 @@ var _ = Describe("anyDroneWasStriked", func() {
 	})
 
 	Context("when no drone was striked", func() {
-		var mockedDrone1 = itinerary.DroneNumber(1)
-		var mockedDrone2 = itinerary.DroneNumber(2)
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 		var mockedDroneStrikes = []droneStrikes{
-			{droneNumber: mockedDrone1, strikes: 0},
-			{droneNumber: mockedDrone2, strikes: 0},
+			{drone: mockedDrone1, strikes: 0},
+			{drone: mockedDrone2, strikes: 0},
 		}
 
 		It("should return false if no drone was striked", func() {
@@ -83,13 +86,13 @@ var _ = Describe("anyDroneNeedToLand", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
 		var mockedConstructorStop = mockroute.NewMockIMainStop(mockedCtrl)
-		var mockedDrone1 = itinerary.DroneNumber(1)
-		var mockedDrone2 = itinerary.DroneNumber(2)
-		var mockedDrone3 = itinerary.DroneNumber(3)
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
+		var mockedDrone3 *mockvehicle.MockIDrone
 		var mockedDroneStrikes = []droneStrikes{
-			{droneNumber: mockedDrone1},
-			{droneNumber: mockedDrone2},
-			{droneNumber: mockedDrone3},
+			{drone: mockedDrone1},
+			{drone: mockedDrone2},
+			{drone: mockedDrone3},
 		}
 		var mockedConstructorStopPoint = gps.Point{}
 
@@ -118,11 +121,11 @@ var _ = Describe("anyDroneNeedToLand", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
 		var mockedConstructorStop = mockroute.NewMockIMainStop(mockedCtrl)
-		var mockedDrone1 = itinerary.DroneNumber(1)
-		var mockedDrone2 = itinerary.DroneNumber(2)
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 		var mockedDroneStrikes = []droneStrikes{
-			{droneNumber: mockedDrone1},
-			{droneNumber: mockedDrone2},
+			{drone: mockedDrone1},
+			{drone: mockedDrone2},
 		}
 		var mockedConstructorStopPoint = gps.Point{}
 
@@ -151,13 +154,13 @@ var _ = Describe("updateDroneStrikes", func() {
 	var mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
 	var mockedDeliveryStop = mockroute.NewMockIMainStop(mockedCtrl)
 	var mockedLandingStop = mockroute.NewMockIMainStop(mockedCtrl)
-	var mockedDrone1 = itinerary.DroneNumber(1)
-	var mockedDrone2 = itinerary.DroneNumber(2)
-	var mockedDrone3 = itinerary.DroneNumber(3)
+	var mockedDrone1 *mockvehicle.MockIDrone
+	var mockedDrone2 *mockvehicle.MockIDrone
+	var mockedDrone3 *mockvehicle.MockIDrone
 	var mockedDroneStrikes = []droneStrikes{
-		{droneNumber: mockedDrone1, strikes: 0},
-		{droneNumber: mockedDrone2, strikes: 0},
-		{droneNumber: mockedDrone3, strikes: 0},
+		{drone: mockedDrone1, strikes: 0},
+		{drone: mockedDrone2, strikes: 0},
+		{drone: mockedDrone3, strikes: 0},
 	}
 	var deliveryPoint = gps.Point{Name: "Delivery Point"}
 	var landingPoint = gps.Point{Name: "Landing Point"}
@@ -193,15 +196,15 @@ var _ = Describe("flyingDroneThatCanSupport", func() {
 	var mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
 	var mockedActualCarStop = mockroute.NewMockIMainStop(mockedCtrl)
 	var mockedNextCarStop = mockroute.NewMockIMainStop(mockedCtrl)
-	var mockedDrone1 = itinerary.DroneNumber(1)
-	var mockedDrone2 = itinerary.DroneNumber(2)
-	var mockedDrone3 = itinerary.DroneNumber(3)
-	var mockedDrone4 = itinerary.DroneNumber(4)
+	var mockedDrone1 *mockvehicle.MockIDrone
+	var mockedDrone2 *mockvehicle.MockIDrone
+	var mockedDrone3 *mockvehicle.MockIDrone
+	var mockedDrone4 *mockvehicle.MockIDrone
 	var mockedDroneStrikes = []droneStrikes{
-		{droneNumber: mockedDrone1},
-		{droneNumber: mockedDrone2},
-		{droneNumber: mockedDrone3},
-		{droneNumber: mockedDrone4},
+		{drone: mockedDrone1},
+		{drone: mockedDrone2},
+		{drone: mockedDrone3},
+		{drone: mockedDrone4},
 	}
 	var mockedActualStopPoint = gps.Point{}
 	var mockedNextStopPoint = gps.Point{}
@@ -228,7 +231,7 @@ var _ = Describe("flyingDroneThatCanSupport", func() {
 			mockedConstructor.EXPECT().DroneSupport(mockedDrone3, mockedActualStopPoint, mockedNextStopPoint).Return(false)
 			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone4).Return(false)
 			receivedDroneNumber, receivedExists := flyingDroneThatCanSupport(mockedConstructor, mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)
-			Expect(receivedDroneNumber).To(Equal(itinerary.DroneNumber(0)))
+			Expect(receivedDroneNumber).To(BeNil())
 			Expect(receivedExists).To(BeFalse())
 		})
 	})
@@ -243,7 +246,7 @@ var _ = Describe("flyingDroneThatCanSupport", func() {
 			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone3).Return(true)
 			mockedConstructor.EXPECT().DroneSupport(mockedDrone3, mockedActualStopPoint, mockedNextStopPoint).Return(true)
 			receivedDroneNumber, receivedExists := flyingDroneThatCanSupport(mockedConstructor, mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)
-			Expect(receivedDroneNumber).To(Equal(itinerary.DroneNumber(3)))
+			Expect(receivedDroneNumber).To(Equal(mockedDrone3))
 			Expect(receivedExists).To(BeTrue())
 		})
 	})
@@ -254,15 +257,15 @@ var _ = Describe("dockedDroneThatCanSupport", func() {
 	var mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
 	var mockedActualCarStop = mockroute.NewMockIMainStop(mockedCtrl)
 	var mockedNextCarStop = mockroute.NewMockIMainStop(mockedCtrl)
-	var mockedDrone1 = itinerary.DroneNumber(1)
-	var mockedDrone2 = itinerary.DroneNumber(2)
-	var mockedDrone3 = itinerary.DroneNumber(3)
-	var mockedDrone4 = itinerary.DroneNumber(4)
+	var mockedDrone1 *mockvehicle.MockIDrone
+	var mockedDrone2 *mockvehicle.MockIDrone
+	var mockedDrone3 *mockvehicle.MockIDrone
+	var mockedDrone4 *mockvehicle.MockIDrone
 	var mockedDroneStrikes = []droneStrikes{
-		{droneNumber: mockedDrone1},
-		{droneNumber: mockedDrone2},
-		{droneNumber: mockedDrone3},
-		{droneNumber: mockedDrone4},
+		{drone: mockedDrone1},
+		{drone: mockedDrone2},
+		{drone: mockedDrone3},
+		{drone: mockedDrone4},
 	}
 	var mockedActualStopPoint = gps.Point{}
 	var mockedNextStopPoint = gps.Point{}
@@ -289,7 +292,7 @@ var _ = Describe("dockedDroneThatCanSupport", func() {
 			mockedConstructor.EXPECT().DroneSupport(mockedDrone3, mockedActualStopPoint, mockedNextStopPoint).Return(false)
 			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone4).Return(true)
 			receivedDroneNumber, receivedExists := dockedDroneThatCanSupport(mockedConstructor, mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)
-			Expect(receivedDroneNumber).To(Equal(itinerary.DroneNumber(0)))
+			Expect(receivedDroneNumber).To(BeNil())
 			Expect(receivedExists).To(BeFalse())
 		})
 	})
@@ -304,7 +307,7 @@ var _ = Describe("dockedDroneThatCanSupport", func() {
 			mockedConstructor.EXPECT().DroneIsFlying(mockedDrone3).Return(false)
 			mockedConstructor.EXPECT().DroneSupport(mockedDrone3, mockedActualStopPoint, mockedNextStopPoint).Return(true)
 			receivedDroneNumber, receivedExists := dockedDroneThatCanSupport(mockedConstructor, mockedDroneStrikes, mockedActualCarStop, mockedNextCarStop)
-			Expect(receivedDroneNumber).To(Equal(itinerary.DroneNumber(3)))
+			Expect(receivedDroneNumber).To(Equal(mockedDrone3))
 			Expect(receivedExists).To(BeTrue())
 		})
 	})
@@ -315,8 +318,8 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedConstructor *mockitinerary.MockConstructor
 		var mockedModifier *mockitinerary.MockModifier
-		var mockedDrone1 = itinerary.DroneNumber(1)
-		var mockedDrone2 = itinerary.DroneNumber(2)
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 		var mockedClientStop *mockroute.MockIMainStop
 		var mockedInitialWarehouseStop *mockroute.MockIMainStop
 		var mockedFinalWarehouseStop *mockroute.MockIMainStop
@@ -327,7 +330,7 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
-			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1, mockedDrone2})
 			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedFinalWarehouseStop = mockWarehouseStop(mockedCtrl, warehousePoint)
@@ -364,8 +367,8 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedConstructor *mockitinerary.MockConstructor
 		var mockedModifier *mockitinerary.MockModifier
-		var mockedDrone1 = itinerary.DroneNumber(1)
-		var mockedDrone2 = itinerary.DroneNumber(2)
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 		var mockedClientStop *mockroute.MockIMainStop
 		var mockedInitialWarehouseStop *mockroute.MockIMainStop
 		var mockedFinalWarehouseStop *mockroute.MockIMainStop
@@ -376,7 +379,7 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
-			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1, mockedDrone2})
 			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
@@ -418,8 +421,8 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedConstructor *mockitinerary.MockConstructor
 		var mockedModifier *mockitinerary.MockModifier
-		var mockedDrone1 = itinerary.DroneNumber(1)
-		var mockedDrone2 = itinerary.DroneNumber(2)
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 		var mockedClientStop *mockroute.MockIMainStop
 		var mockedInitialWarehouseStop *mockroute.MockIMainStop
 		var mockedFinalWarehouseStop *mockroute.MockIMainStop
@@ -430,7 +433,7 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
-			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1, mockedDrone2})
 			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
@@ -470,8 +473,8 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedConstructor *mockitinerary.MockConstructor
 		var mockedModifier *mockitinerary.MockModifier
-		var mockedDrone1 = itinerary.DroneNumber(1)
-		var mockedDrone2 = itinerary.DroneNumber(2)
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 		var mockedClientStop *mockroute.MockIMainStop
 		var mockedInitialWarehouseStop *mockroute.MockIMainStop
 		var mockedFinalWarehouseStop *mockroute.MockIMainStop
@@ -482,7 +485,7 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
-			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1, mockedDrone2})
 			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
@@ -511,8 +514,8 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedConstructor *mockitinerary.MockConstructor
 		var mockedModifier *mockitinerary.MockModifier
-		var mockedDrone1 = itinerary.DroneNumber(1)
-		var mockedDrone2 = itinerary.DroneNumber(2)
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 		var mockedClientStop *mockroute.MockIMainStop
 		var mockedInitialWarehouseStop *mockroute.MockIMainStop
 		var mockedFinalWarehouseStop *mockroute.MockIMainStop
@@ -523,7 +526,7 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
-			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1, mockedDrone2})
 			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
@@ -565,8 +568,8 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedConstructor *mockitinerary.MockConstructor
 		var mockedModifier *mockitinerary.MockModifier
-		var mockedDrone1 = itinerary.DroneNumber(1)
-		var mockedDrone2 = itinerary.DroneNumber(2)
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 		var mockedClientStop *mockroute.MockIMainStop
 		var mockedInitialWarehouseStop *mockroute.MockIMainStop
 		var mockedFinalWarehouseStop *mockroute.MockIMainStop
@@ -577,7 +580,7 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
-			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1, mockedDrone2})
 			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
@@ -622,8 +625,8 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedConstructor *mockitinerary.MockConstructor
 		var mockedModifier *mockitinerary.MockModifier
-		var mockedDrone1 = itinerary.DroneNumber(1)
-		var mockedDrone2 = itinerary.DroneNumber(2)
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 		var mockedClientStop *mockroute.MockIMainStop
 		var mockedInitialWarehouseStop *mockroute.MockIMainStop
 		var mockedFinalWarehouseStop *mockroute.MockIMainStop
@@ -634,7 +637,7 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
-			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1, mockedDrone2})
 			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
@@ -663,8 +666,8 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedConstructor *mockitinerary.MockConstructor
 		var mockedModifier *mockitinerary.MockModifier
-		var mockedDrone1 = itinerary.DroneNumber(1)
-		var mockedDrone2 = itinerary.DroneNumber(2)
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 		var mockedClientStop *mockroute.MockIMainStop
 		var mockedInitialWarehouseStop *mockroute.MockIMainStop
 		var mockedFinalWarehouseStop *mockroute.MockIMainStop
@@ -675,7 +678,7 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
-			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1, mockedDrone2})
 			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedClientStop = mockClientStop(mockedCtrl, clientPoint)
 			mockedInitialWarehouseStop = mockWarehouseStop(mockedCtrl, initialPoint)
@@ -715,8 +718,8 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		var mockedCtrl *gomock.Controller
 		var mockedConstructor *mockitinerary.MockConstructor
 		var mockedModifier *mockitinerary.MockModifier
-		var mockedDrone1 = itinerary.DroneNumber(1)
-		var mockedDrone2 = itinerary.DroneNumber(2)
+		var mockedDrone1 *mockvehicle.MockIDrone
+		var mockedDrone2 *mockvehicle.MockIDrone
 		var mockedInitialClientStop *mockroute.MockIMainStop
 		var mockedFinalClientStop *mockroute.MockIMainStop
 		var mockedWarehouseStop *mockroute.MockIMainStop
@@ -727,7 +730,7 @@ var _ = Describe("DroneStrikesInsertion", func() {
 		BeforeEach(func() {
 			mockedCtrl = gomock.NewController(GinkgoT())
 			mockedConstructor = mockitinerary.NewMockConstructor(mockedCtrl)
-			mockedConstructor.EXPECT().DroneNumbers().Return([]itinerary.DroneNumber{mockedDrone1, mockedDrone2})
+			mockedConstructor.EXPECT().Drones().Return([]vehicle.IDrone{mockedDrone1, mockedDrone2})
 			mockedModifier = mockitinerary.NewMockModifier(mockedCtrl)
 			mockedInitialClientStop = mockClientStop(mockedCtrl, initialPoint)
 			mockedFinalClientStop = mockClientStop(mockedCtrl, clientPoint)

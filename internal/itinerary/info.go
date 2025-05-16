@@ -14,12 +14,12 @@ type Info interface {
 	CarEfficiency() float64
 	CarSpeed() float64
 	CarSupport(nextPoints ...gps.Point) bool
-	DroneCanReach(droneNumber DroneNumber, nextPoints ...gps.Point) bool
+	Drones() []vehicle.IDrone
+	DroneCanReach(drone vehicle.IDrone, nextPoints ...gps.Point) bool
 	DroneEfficiency() float64
-	DroneIsFlying(droneNumber DroneNumber) bool
-	DroneNumbers() []DroneNumber
+	DroneIsFlying(drone vehicle.IDrone) bool
 	DroneSpeed() float64
-	DroneSupport(droneNumber DroneNumber, deliveryPoint gps.Point, landingPoint gps.Point) bool
+	DroneSupport(drone vehicle.IDrone, deliveryPoint gps.Point, landingPoint gps.Point) bool
 	RouteIterator() slc.Iterator[route.IMainStop]
 	SubItineraryList() []SubItinerary
 }
@@ -48,8 +48,7 @@ func (i *info) CarSupport(nextPoints ...gps.Point) bool {
 	return i.car.Support(nextPoints...)
 }
 
-func (i *info) DroneCanReach(droneNumber DroneNumber, nextPoints ...gps.Point) bool {
-	drone := i.droneByNumber(droneNumber)
+func (i *info) DroneCanReach(drone vehicle.IDrone, nextPoints ...gps.Point) bool {
 	return drone.CanReach(nextPoints...)
 }
 
@@ -57,25 +56,19 @@ func (i *info) DroneEfficiency() float64 {
 	return vehicle.DroneEfficiency
 }
 
-func (i *info) DroneIsFlying(droneNumber DroneNumber) bool {
-	drone := i.droneByNumber(droneNumber)
+func (i *info) DroneIsFlying(drone vehicle.IDrone) bool {
 	return drone.IsFlying()
 }
 
-func (i *info) DroneNumbers() []DroneNumber {
-	var droneNumbers []DroneNumber
-	for droneNumber := range i.droneNumbersMap {
-		droneNumbers = append(droneNumbers, droneNumber)
-	}
-	return droneNumbers
+func (i *info) Drones() []vehicle.IDrone {
+	return i.car.Drones()
 }
 
 func (i *info) DroneSpeed() float64 {
 	return vehicle.DroneSpeed
 }
 
-func (i *info) DroneSupport(droneNumber DroneNumber, deliveryPoint gps.Point, landingPoint gps.Point) bool {
-	drone := i.droneByNumber(droneNumber)
+func (i *info) DroneSupport(drone vehicle.IDrone, deliveryPoint gps.Point, landingPoint gps.Point) bool {
 	return drone.Support(deliveryPoint) && drone.CanReach(deliveryPoint, landingPoint)
 }
 
@@ -85,8 +78,4 @@ func (i *info) RouteIterator() slc.Iterator[route.IMainStop] {
 
 func (i *info) SubItineraryList() []SubItinerary {
 	return i.completedSubItineraryList
-}
-
-func (i *info) droneByNumber(droneNumber DroneNumber) vehicle.IDrone {
-	return i.droneNumbersMap[droneNumber]
 }

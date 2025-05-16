@@ -32,15 +32,11 @@ var _ = Describe("contructor{}", func() {
 
 			sut = constructor{
 				&info{&itinerary{
-					activeFlights: map[DroneNumber]route.ISubRoute{
-						1: mockedSubRoute,
-						2: nil,
+					activeFlights: map[vehicle.IDrone]route.ISubRoute{
+						mockedDrone1: mockedSubRoute,
+						mockedDrone2: nil,
 					},
 					completedSubItineraryList: []SubItinerary{},
-					droneNumbersMap: map[DroneNumber]vehicle.IDrone{
-						1: mockedDrone1,
-						2: mockedDrone2,
-					},
 				}}}
 		})
 
@@ -53,8 +49,8 @@ var _ = Describe("contructor{}", func() {
 				mockedSubRoute.EXPECT().Return(mockedMainStop)
 				mockedMainStop.EXPECT().Point().Return(landingPoint)
 				mockedDrone1.EXPECT().Land(landingPoint)
-				sut.LandDrone(1, mockedMainStop)
-				Expect(sut.activeFlights[1]).To(BeNil())
+				sut.LandDrone(mockedDrone1, mockedMainStop)
+				Expect(sut.activeFlights[mockedDrone1]).To(BeNil())
 				Expect(sut.completedSubItineraryList).To(Equal([]SubItinerary{{Drone: mockedDrone1, Flight: mockedSubRoute}}))
 			})
 		})
@@ -82,17 +78,12 @@ var _ = Describe("contructor{}", func() {
 
 			sut = constructor{
 				&info{&itinerary{
-					activeFlights: map[DroneNumber]route.ISubRoute{
-						1: mockedSubRoute1,
-						2: nil,
-						3: mockedSubRoute3,
+					activeFlights: map[vehicle.IDrone]route.ISubRoute{
+						mockedDrone1: mockedSubRoute1,
+						mockedDrone2: nil,
+						mockedDrone3: mockedSubRoute3,
 					},
 					completedSubItineraryList: []SubItinerary{},
-					droneNumbersMap: map[DroneNumber]vehicle.IDrone{
-						1: mockedDrone1,
-						2: mockedDrone2,
-						3: mockedDrone3,
-					},
 				}}}
 		})
 
@@ -111,9 +102,9 @@ var _ = Describe("contructor{}", func() {
 				{Drone: mockedDrone3, Flight: mockedSubRoute3},
 			}
 			sut.LandAllDrones(mockedMainStop)
-			Expect(sut.activeFlights[1]).To(BeNil())
-			Expect(sut.activeFlights[2]).To(BeNil())
-			Expect(sut.activeFlights[3]).To(BeNil())
+			Expect(sut.activeFlights[mockedDrone1]).To(BeNil())
+			Expect(sut.activeFlights[mockedDrone2]).To(BeNil())
+			Expect(sut.activeFlights[mockedDrone3]).To(BeNil())
 			Expect(sut.completedSubItineraryList).To(Equal(expectedCompletedSubItineraryList))
 		})
 	})
@@ -162,13 +153,8 @@ var _ = Describe("contructor{}", func() {
 
 			sut = constructor{
 				&info{&itinerary{
-					activeFlights: map[DroneNumber]route.ISubRoute{
-						1: mockedSubRoute,
-						2: nil,
-					},
-					droneNumbersMap: map[DroneNumber]vehicle.IDrone{
-						1: mockedDrone,
-						2: nil,
+					activeFlights: map[vehicle.IDrone]route.ISubRoute{
+						mockedDrone: mockedSubRoute,
 					},
 				}}}
 		})
@@ -181,7 +167,7 @@ var _ = Describe("contructor{}", func() {
 			It("should append destination to flight and move drone to destination", func() {
 				mockedSubRoute.EXPECT().Append(route.NewSubStop(destination))
 				mockedDrone.EXPECT().Move(destination)
-				sut.MoveDrone(1, destination)
+				sut.MoveDrone(mockedDrone, destination)
 			})
 		})
 	})
@@ -202,13 +188,8 @@ var _ = Describe("contructor{}", func() {
 
 			sut = constructor{
 				&info{&itinerary{
-					droneNumbersMap: map[DroneNumber]vehicle.IDrone{
-						1: nil,
-						2: mockedDrone,
-					},
-					activeFlights: map[DroneNumber]route.ISubRoute{
-						1: nil,
-						2: nil,
+					activeFlights: map[vehicle.IDrone]route.ISubRoute{
+						mockedDrone: nil,
 					},
 				}}}
 		})
@@ -220,8 +201,8 @@ var _ = Describe("contructor{}", func() {
 		Context("when drone does not have a flight", func() {
 			It("should create a new flight", func() {
 				mockedDrone.EXPECT().TakeOff()
-				sut.StartDroneFlight(2, mockedMainStop)
-				Expect(sut.activeFlights[2]).To(Equal(mockedSubRoute))
+				sut.StartDroneFlight(mockedDrone, mockedMainStop)
+				Expect(sut.activeFlights[mockedDrone]).To(Equal(mockedSubRoute))
 			})
 		})
 	})

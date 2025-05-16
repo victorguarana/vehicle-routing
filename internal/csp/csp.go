@@ -5,6 +5,7 @@ import (
 	"github.com/victorguarana/vehicle-routing/internal/itinerary"
 	"github.com/victorguarana/vehicle-routing/internal/route"
 	"github.com/victorguarana/vehicle-routing/internal/slc"
+	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
 func CoveringWithDrones(constructorList []itinerary.Constructor, m gps.Map, neighborhoodDistance float64) {
@@ -26,12 +27,12 @@ func deliverNeighborsWithDrones(constructor itinerary.Constructor, neighbors []g
 	if len(neighbors) <= 0 {
 		return
 	}
-	droneNumbers := constructor.DroneNumbers()
+	drones := constructor.Drones()
 	actualCarPoint := constructor.ActualCarPoint()
 	actualCarStop := constructor.ActualCarStop()
 	for neighborIndex, droneIndex := 0, 0; neighborIndex < len(neighbors); droneIndex++ {
 		actualNeighbor := neighbors[neighborIndex]
-		actualDroneNumber := slc.CircularSelection(droneNumbers, droneIndex)
+		actualDroneNumber := slc.CircularSelection(drones, droneIndex)
 		if shouldRetry := tryToDeliver(constructor, actualDroneNumber, actualCarStop, actualCarPoint, actualNeighbor); !shouldRetry {
 			neighborIndex++
 		}
@@ -39,17 +40,17 @@ func deliverNeighborsWithDrones(constructor itinerary.Constructor, neighbors []g
 	constructor.LandAllDrones(actualCarStop)
 }
 
-func tryToDeliver(constructor itinerary.Constructor, droneNumber itinerary.DroneNumber, returningStop route.IMainStop, returningPoint gps.Point, destination gps.Point) bool {
-	if constructor.DroneSupport(droneNumber, destination, returningPoint) {
-		if !constructor.DroneIsFlying(droneNumber) {
-			constructor.StartDroneFlight(droneNumber, returningStop)
+func tryToDeliver(constructor itinerary.Constructor, drone vehicle.IDrone, returningStop route.IMainStop, returningPoint gps.Point, destination gps.Point) bool {
+	if constructor.DroneSupport(drone, destination, returningPoint) {
+		if !constructor.DroneIsFlying(drone) {
+			constructor.StartDroneFlight(drone, returningStop)
 		}
-		constructor.MoveDrone(droneNumber, destination)
+		constructor.MoveDrone(drone, destination)
 		return false
 	}
 
-	if constructor.DroneIsFlying(droneNumber) {
-		constructor.LandDrone(droneNumber, returningStop)
+	if constructor.DroneIsFlying(drone) {
+		constructor.LandDrone(drone, returningStop)
 		return true
 	}
 	return false

@@ -3,13 +3,14 @@ package greedy
 import (
 	"github.com/victorguarana/vehicle-routing/internal/itinerary"
 	"github.com/victorguarana/vehicle-routing/internal/route"
+	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
 const maxStrikes = 3
 
 type droneStrikes struct {
-	droneNumber itinerary.DroneNumber
-	strikes     int
+	drone   vehicle.IDrone
+	strikes int
 }
 
 func DroneStrikesInsertion(constructor itinerary.Constructor, modifier itinerary.Modifier) {
@@ -56,10 +57,10 @@ func DroneStrikesInsertion(constructor itinerary.Constructor, modifier itinerary
 }
 
 func initDroneStrikes(constructor itinerary.Constructor) []droneStrikes {
-	droneNumbers := constructor.DroneNumbers()
-	dStrks := make([]droneStrikes, len(droneNumbers))
-	for i, droneNumber := range droneNumbers {
-		dStrks[i] = droneStrikes{droneNumber: droneNumber}
+	drones := constructor.Drones()
+	dStrks := make([]droneStrikes, len(drones))
+	for i, d := range drones {
+		dStrks[i] = droneStrikes{drone: d}
 	}
 	return dStrks
 }
@@ -83,7 +84,7 @@ func anyDroneWasStriked(dStrks []droneStrikes) bool {
 func anyDroneNeedToLand(constructor itinerary.Constructor, dStrks []droneStrikes, next route.IMainStop) bool {
 	nextPoint := next.Point()
 	for _, dStrk := range dStrks {
-		if constructor.DroneIsFlying(dStrk.droneNumber) && !constructor.DroneCanReach(dStrk.droneNumber, nextPoint) {
+		if constructor.DroneIsFlying(dStrk.drone) && !constructor.DroneCanReach(dStrk.drone, nextPoint) {
 			return true
 		}
 	}
@@ -94,8 +95,8 @@ func updateDroneStrikes(constructor itinerary.Constructor, dStrks []droneStrikes
 	actualPoint := actual.Point()
 	nextPoint := next.Point()
 	for i, dStrk := range dStrks {
-		if constructor.DroneIsFlying(dStrk.droneNumber) {
-			if constructor.DroneSupport(dStrk.droneNumber, actualPoint, nextPoint) {
+		if constructor.DroneIsFlying(dStrk.drone) {
+			if constructor.DroneSupport(dStrk.drone, actualPoint, nextPoint) {
 				dStrk.strikes = 0
 			} else {
 				dStrk.strikes++
@@ -105,26 +106,26 @@ func updateDroneStrikes(constructor itinerary.Constructor, dStrks []droneStrikes
 	}
 }
 
-func flyingDroneThatCanSupport(constructor itinerary.Constructor, dStrks []droneStrikes, actual route.IMainStop, next route.IMainStop) (itinerary.DroneNumber, bool) {
+func flyingDroneThatCanSupport(constructor itinerary.Constructor, dStrks []droneStrikes, actual route.IMainStop, next route.IMainStop) (vehicle.IDrone, bool) {
 	actualPoint := actual.Point()
 	nextPoint := next.Point()
 	nextPoint.PackageSize = 0
 	for _, dStrk := range dStrks {
-		if constructor.DroneIsFlying(dStrk.droneNumber) && constructor.DroneSupport(dStrk.droneNumber, actualPoint, nextPoint) {
-			return dStrk.droneNumber, true
+		if constructor.DroneIsFlying(dStrk.drone) && constructor.DroneSupport(dStrk.drone, actualPoint, nextPoint) {
+			return dStrk.drone, true
 		}
 	}
-	return 0, false
+	return nil, false
 }
 
-func dockedDroneThatCanSupport(constructor itinerary.Constructor, dStrks []droneStrikes, actual route.IMainStop, next route.IMainStop) (itinerary.DroneNumber, bool) {
+func dockedDroneThatCanSupport(constructor itinerary.Constructor, dStrks []droneStrikes, actual route.IMainStop, next route.IMainStop) (vehicle.IDrone, bool) {
 	actualPoint := actual.Point()
 	nextPoint := next.Point()
 	nextPoint.PackageSize = 0
 	for _, dStrk := range dStrks {
-		if !constructor.DroneIsFlying(dStrk.droneNumber) && constructor.DroneSupport(dStrk.droneNumber, actualPoint, nextPoint) {
-			return dStrk.droneNumber, true
+		if !constructor.DroneIsFlying(dStrk.drone) && constructor.DroneSupport(dStrk.drone, actualPoint, nextPoint) {
+			return dStrk.drone, true
 		}
 	}
-	return 0, false
+	return nil, false
 }
