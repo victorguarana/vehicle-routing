@@ -24,7 +24,7 @@ type Info struct {
 }
 
 type Stop interface {
-	IsClient() bool
+	IsCustomer() bool
 	IsWarehouse() bool
 	Latitude() float64
 	Longitude() float64

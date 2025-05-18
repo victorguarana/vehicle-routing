@@ -8,7 +8,7 @@ import (
 
 type Map struct {
 	Warehouses []Point
-	Clients    []Point
+	Customers  []Point
 }
 
 func LoadMap(filename string) Map {
@@ -54,7 +54,7 @@ func linesToMap(lines []string) Map {
 		if newPoint.PackageSize == 0 {
 			loadedMap.Warehouses = append(loadedMap.Warehouses, newPoint)
 		} else {
-			loadedMap.Clients = append(loadedMap.Clients, newPoint)
+			loadedMap.Customers = append(loadedMap.Customers, newPoint)
 		}
 	}
 	return loadedMap

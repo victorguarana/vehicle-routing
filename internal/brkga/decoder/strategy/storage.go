@@ -54,7 +54,7 @@ func (c *vehicleChooserByStorage) calcModuledGene(carList []vehicle.ICar, chromo
 }
 
 func (c *vehicleChooserByStorage) calcGeneAmplifier(carList []vehicle.ICar) float64 {
-	return float64(len(c.gpsMap.Clients)) * c.calcTotalStorage(carList)
+	return float64(len(c.gpsMap.Customers)) * c.calcTotalStorage(carList)
 }
 
 func (c *vehicleChooserByStorage) calcGeneModule(carList []vehicle.ICar) float64 {

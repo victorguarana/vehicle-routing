@@ -45,7 +45,7 @@ func (c *vehicleChooserByPercentage) calcModuledGene(chromossome *brkga.Chromoss
 }
 
 func (c *vehicleChooserByPercentage) calcGeneAmplifier() float64 {
-	return float64(len(c.gpsMap.Clients))
+	return float64(len(c.gpsMap.Customers))
 }
 
 func (c *vehicleChooserByPercentage) calcGeneModule() float64 {

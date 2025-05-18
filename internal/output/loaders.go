@@ -23,8 +23,8 @@ func loadDroneImage() image.Image {
 }
 
 func loadStopImage(stop Stop) image.Image {
-	if stop.IsClient() {
-		im, err := gg.LoadPNG("assets/client.png")
+	if stop.IsCustomer() {
+		im, err := gg.LoadPNG("assets/customer.png")
 		if err != nil {
 			panic(err)
 		}

@@ -6,7 +6,7 @@ import (
 
 //go:generate mockgen -source=substop.go -destination=mock/substopmock.go
 type ISubStop interface {
-	IsClient() bool
+	IsCustomer() bool
 	IsWarehouse() bool
 	Latitude() float64
 	Longitude() float64
@@ -22,7 +22,7 @@ func NewSubStop(p gps.Point) ISubStop {
 	return &subStop{point: p}
 }
 
-func (ss *subStop) IsClient() bool {
+func (ss *subStop) IsCustomer() bool {
 	return ss.point.PackageSize != 0
 }
 

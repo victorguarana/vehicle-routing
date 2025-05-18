@@ -41,7 +41,7 @@ func (d *positionDecoder) decodeChromossomeList(chromossomeList []*brkga.Chromos
 	for i, chromossome := range chromossomeList {
 		car, drone := d.strategy.DefineVehicle(clonedCarList, chromossome)
 		decodedChromossome := &decodedChromossome{
-			customer:    d.gpsMap.Clients[i],
+			customer:    d.gpsMap.Customers[i],
 			car:         car,
 			drone:       drone,
 			itn:         itineraryByCar[car],

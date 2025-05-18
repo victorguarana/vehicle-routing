@@ -31,10 +31,10 @@ var _ = Describe("vehicleChooserByStorage", func() {
 	Describe("NewVehicleChooserByStorage", func() {
 		It("should create vehicleChooserByStorage with correct params", func() {
 			gpsMap := gps.Map{
-				Clients: []gps.Point{
-					{Name: "client1"},
-					{Name: "client2"},
-					{Name: "client3"},
+				Customers: []gps.Point{
+					{Name: "customer1"},
+					{Name: "customer2"},
+					{Name: "customer3"},
 				},
 			}
 
@@ -50,7 +50,7 @@ var _ = Describe("vehicleChooserByStorage", func() {
 	Describe("DefineVehicle", func() {
 		Context("when there is a car chromossome", func() {
 			It("should return only car", func() {
-				sut.gpsMap.Clients = []gps.Point{{}, {}, {}}
+				sut.gpsMap.Customers = []gps.Point{{}, {}, {}}
 				carList := []vehicle.ICar{mockedCar1, mockedCar2}
 				c := brkga.Chromossome(0.1)
 				chromossome1 := &c
@@ -70,7 +70,7 @@ var _ = Describe("vehicleChooserByStorage", func() {
 
 		Context("when there is a drone chromossome", func() {
 			It("should return drone and car", func() {
-				sut.gpsMap.Clients = []gps.Point{{}, {}, {}}
+				sut.gpsMap.Customers = []gps.Point{{}, {}, {}}
 				carList := []vehicle.ICar{mockedCar1, mockedCar2}
 				c := brkga.Chromossome(0.25)
 				chromossome1 := &c
@@ -92,7 +92,7 @@ var _ = Describe("vehicleChooserByStorage", func() {
 	Describe("DefineWindowTime", func() {
 		Context("when chromossome is min value", func() {
 			It("should calc window time", func() {
-				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				sut.gpsMap.Customers = []gps.Point{{}, {}}
 				carList := []vehicle.ICar{mockedCar1, mockedCar2}
 				c := brkga.Chromossome(0)
 				chromossome1 := &c
@@ -111,7 +111,7 @@ var _ = Describe("vehicleChooserByStorage", func() {
 
 		Context("when chromossome is max value", func() {
 			It("should calc window time", func() {
-				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				sut.gpsMap.Customers = []gps.Point{{}, {}}
 				carList := []vehicle.ICar{mockedCar1, mockedCar2}
 				c := brkga.Chromossome(1)
 				chromossome1 := &c
@@ -130,7 +130,7 @@ var _ = Describe("vehicleChooserByStorage", func() {
 
 		Context("when chromossome is any between min and max value", func() {
 			It("should calc window time", func() {
-				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				sut.gpsMap.Customers = []gps.Point{{}, {}}
 				carList := []vehicle.ICar{mockedCar1, mockedCar2}
 				c := brkga.Chromossome(0.3)
 				chromossome1 := &c
@@ -147,7 +147,7 @@ var _ = Describe("vehicleChooserByStorage", func() {
 			})
 
 			It("should calc window time", func() {
-				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				sut.gpsMap.Customers = []gps.Point{{}, {}}
 				carList := []vehicle.ICar{mockedCar1, mockedCar2}
 				c := brkga.Chromossome(0.7)
 				chromossome1 := &c
@@ -168,7 +168,7 @@ var _ = Describe("vehicleChooserByStorage", func() {
 	Describe("calcModuledGene", func() {
 		Context("when there is only cars and customers", func() {
 			It("should calc car gene", func() {
-				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				sut.gpsMap.Customers = []gps.Point{{}, {}}
 				carList := []vehicle.ICar{mockedCar1, mockedCar2}
 				c := brkga.Chromossome(0.75)
 				chromossome1 := &c
@@ -184,7 +184,7 @@ var _ = Describe("vehicleChooserByStorage", func() {
 
 		Context("when there is cars, drones and customers", func() {
 			It("should calc car gene", func() {
-				sut.gpsMap.Clients = []gps.Point{{}}
+				sut.gpsMap.Customers = []gps.Point{{}}
 				carList := []vehicle.ICar{mockedCar1, mockedCar2}
 				c := brkga.Chromossome(0.5)
 				chromossome1 := &c
@@ -203,7 +203,7 @@ var _ = Describe("vehicleChooserByStorage", func() {
 
 	Describe("calcGeneAmplifier", func() {
 		BeforeEach(func() {
-			sut.gpsMap.Clients = []gps.Point{{}, {}, {}}
+			sut.gpsMap.Customers = []gps.Point{{}, {}, {}}
 		})
 
 		It("should calc gene amplifier", func() {

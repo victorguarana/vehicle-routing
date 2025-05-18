@@ -25,16 +25,16 @@ var _ = Describe("CoveringWithDrones", func() {
 	var mockedDrone2 *mockvehicle.MockIDrone
 	var mockedDrones []vehicle.IDrone
 	var initialPoint = gps.Point{Latitude: 0}
-	var client1 = gps.Point{Latitude: 10}
-	var client2 = gps.Point{Latitude: 20}
-	var client3 = gps.Point{Latitude: 30}
-	var client4 = gps.Point{Latitude: 40}
-	var client5 = gps.Point{Latitude: 50}
-	var client6 = gps.Point{Latitude: 60}
-	var client7 = gps.Point{Latitude: 70}
-	var clients = []gps.Point{client1, client2, client3, client4, client5, client6, client7}
+	var customer1 = gps.Point{Latitude: 10}
+	var customer2 = gps.Point{Latitude: 20}
+	var customer3 = gps.Point{Latitude: 30}
+	var customer4 = gps.Point{Latitude: 40}
+	var customer5 = gps.Point{Latitude: 50}
+	var customer6 = gps.Point{Latitude: 60}
+	var customer7 = gps.Point{Latitude: 70}
+	var customers = []gps.Point{customer1, customer2, customer3, customer4, customer5, customer6, customer7}
 	var warehouse = gps.Point{Latitude: 0}
-	var gpsMap = gps.Map{Clients: clients, Warehouses: []gps.Point{warehouse}}
+	var gpsMap = gps.Map{Customers: customers, Warehouses: []gps.Point{warehouse}}
 	var neighborhoodDistance = 10.0
 
 	BeforeEach(func() {
@@ -54,49 +54,49 @@ var _ = Describe("CoveringWithDrones", func() {
 		mockedCtrl.Finish()
 	})
 
-	It("should cover clients with drones", func() {
+	It("should cover customers with drones", func() {
 		// First iteration
 		mockedConstructor1.EXPECT().Car().Return(mockedCar1)
 		mockedConstructor1.EXPECT().ActualCarPoint().Return(initialPoint)
-		mockedConstructor1.EXPECT().MoveCar(client2)
+		mockedConstructor1.EXPECT().MoveCar(customer2)
 		mockedCar1.EXPECT().Drones().Return(mockedDrones)
-		mockedConstructor1.EXPECT().ActualCarPoint().Return(client2)
+		mockedConstructor1.EXPECT().ActualCarPoint().Return(customer2)
 		mockedConstructor1.EXPECT().ActualCarStop().Return(mockedCarStop)
-		mockedDrone1.EXPECT().Support(client1, client2).Return(true)
+		mockedDrone1.EXPECT().Support(customer1, customer2).Return(true)
 		mockedDrone1.EXPECT().IsFlying().Return(false)
 		mockedConstructor1.EXPECT().StartDroneFlight(mockedDrone1, mockedCarStop)
-		mockedConstructor1.EXPECT().MoveDrone(mockedDrone1, client1)
-		mockedDrone2.EXPECT().Support(client3, client2).Return(true)
+		mockedConstructor1.EXPECT().MoveDrone(mockedDrone1, customer1)
+		mockedDrone2.EXPECT().Support(customer3, customer2).Return(true)
 		mockedDrone2.EXPECT().IsFlying().Return(false)
 		mockedConstructor1.EXPECT().StartDroneFlight(mockedDrone2, mockedCarStop)
-		mockedConstructor1.EXPECT().MoveDrone(mockedDrone2, client3)
+		mockedConstructor1.EXPECT().MoveDrone(mockedDrone2, customer3)
 		mockedConstructor1.EXPECT().LandAllDrones(mockedCarStop)
 
 		// Second iteration
 		mockedConstructor2.EXPECT().Car().Return(mockedCar2)
 		mockedConstructor2.EXPECT().ActualCarPoint().Return(initialPoint)
-		mockedConstructor2.EXPECT().MoveCar(client5)
+		mockedConstructor2.EXPECT().MoveCar(customer5)
 		mockedCar2.EXPECT().Drones().Return(mockedDrones)
-		mockedConstructor2.EXPECT().ActualCarPoint().Return(client5)
+		mockedConstructor2.EXPECT().ActualCarPoint().Return(customer5)
 		mockedConstructor2.EXPECT().ActualCarStop().Return(mockedCarStop)
-		mockedDrone1.EXPECT().Support(client4, client5).Return(true)
+		mockedDrone1.EXPECT().Support(customer4, customer5).Return(true)
 		mockedDrone1.EXPECT().IsFlying().Return(false)
 		mockedConstructor2.EXPECT().StartDroneFlight(mockedDrone1, mockedCarStop)
-		mockedConstructor2.EXPECT().MoveDrone(mockedDrone1, client4)
-		mockedDrone2.EXPECT().Support(client6, client5).Return(true)
+		mockedConstructor2.EXPECT().MoveDrone(mockedDrone1, customer4)
+		mockedDrone2.EXPECT().Support(customer6, customer5).Return(true)
 		mockedDrone2.EXPECT().IsFlying().Return(false)
 		mockedConstructor2.EXPECT().StartDroneFlight(mockedDrone2, mockedCarStop)
-		mockedConstructor2.EXPECT().MoveDrone(mockedDrone2, client6)
+		mockedConstructor2.EXPECT().MoveDrone(mockedDrone2, customer6)
 		mockedConstructor2.EXPECT().LandAllDrones(mockedCarStop)
 
 		// Third iteration
-		mockedConstructor1.EXPECT().ActualCarPoint().Return(client6)
-		mockedConstructor1.EXPECT().MoveCar(client7)
+		mockedConstructor1.EXPECT().ActualCarPoint().Return(customer6)
+		mockedConstructor1.EXPECT().MoveCar(customer7)
 
 		// Finish routes on closest warehouses
-		mockedConstructor1.EXPECT().ActualCarPoint().Return(client7)
+		mockedConstructor1.EXPECT().ActualCarPoint().Return(customer7)
 		mockedConstructor1.EXPECT().MoveCar(warehouse)
-		mockedConstructor2.EXPECT().ActualCarPoint().Return(client6)
+		mockedConstructor2.EXPECT().ActualCarPoint().Return(customer6)
 		mockedConstructor2.EXPECT().MoveCar(warehouse)
 
 		CoveringWithDrones(constructorList, gpsMap, neighborhoodDistance)
@@ -112,11 +112,11 @@ var _ = Describe("deliverNeighborsWithDrones", func() {
 	var mockedDrone2 *mockvehicle.MockIDrone
 	var mockedDrones []vehicle.IDrone
 	var actualCarPoint = gps.Point{Latitude: 0}
-	var client1 = gps.Point{Latitude: 1}
-	var client2 = gps.Point{Latitude: 2}
-	var client3 = gps.Point{Latitude: 3}
-	var client4 = gps.Point{Latitude: 4}
-	var neighbors = []gps.Point{client1, client2, client3, client4}
+	var customer1 = gps.Point{Latitude: 1}
+	var customer2 = gps.Point{Latitude: 2}
+	var customer3 = gps.Point{Latitude: 3}
+	var customer4 = gps.Point{Latitude: 4}
+	var neighbors = []gps.Point{customer1, customer2, customer3, customer4}
 
 	BeforeEach(func() {
 		mockedCtrl = gomock.NewController(GinkgoT())
@@ -138,33 +138,33 @@ var _ = Describe("deliverNeighborsWithDrones", func() {
 		mockedConstructor.EXPECT().ActualCarPoint().Return(actualCarPoint)
 		mockedConstructor.EXPECT().ActualCarStop().Return(mockedCarStop)
 
-		// Drone1 supports client1: Start flight and move to client1
-		mockedDrone1.EXPECT().Support(client1, actualCarPoint).Return(true)
+		// Drone1 supports customer1: Start flight and move to customer1
+		mockedDrone1.EXPECT().Support(customer1, actualCarPoint).Return(true)
 		mockedDrone1.EXPECT().IsFlying().Return(false)
 		mockedConstructor.EXPECT().StartDroneFlight(mockedDrone1, mockedCarStop)
-		mockedConstructor.EXPECT().MoveDrone(mockedDrone1, client1)
+		mockedConstructor.EXPECT().MoveDrone(mockedDrone1, customer1)
 
-		// Drone2 supports client2: Start flight and move to client2
-		mockedDrone2.EXPECT().Support(client2, actualCarPoint).Return(true)
+		// Drone2 supports customer2: Start flight and move to customer2
+		mockedDrone2.EXPECT().Support(customer2, actualCarPoint).Return(true)
 		mockedDrone2.EXPECT().IsFlying().Return(false)
 		mockedConstructor.EXPECT().StartDroneFlight(mockedDrone2, mockedCarStop)
-		mockedConstructor.EXPECT().MoveDrone(mockedDrone2, client2)
+		mockedConstructor.EXPECT().MoveDrone(mockedDrone2, customer2)
 
-		// Drone1 does not support client3: Land drone1
-		mockedDrone1.EXPECT().Support(client3, actualCarPoint).Return(false)
+		// Drone1 does not support customer3: Land drone1
+		mockedDrone1.EXPECT().Support(customer3, actualCarPoint).Return(false)
 		mockedDrone1.EXPECT().IsFlying().Return(true)
 		mockedConstructor.EXPECT().LandDrone(mockedDrone1, mockedCarStop)
 
-		// Drone2 supports client3: Move to client3
-		mockedDrone2.EXPECT().Support(client3, actualCarPoint).Return(true)
+		// Drone2 supports customer3: Move to customer3
+		mockedDrone2.EXPECT().Support(customer3, actualCarPoint).Return(true)
 		mockedDrone2.EXPECT().IsFlying().Return(true)
-		mockedConstructor.EXPECT().MoveDrone(mockedDrone2, client3)
+		mockedConstructor.EXPECT().MoveDrone(mockedDrone2, customer3)
 
-		// Drone1 supports client4: Start flight and move to client4
-		mockedDrone1.EXPECT().Support(client4, actualCarPoint).Return(true)
+		// Drone1 supports customer4: Start flight and move to customer4
+		mockedDrone1.EXPECT().Support(customer4, actualCarPoint).Return(true)
 		mockedDrone1.EXPECT().IsFlying().Return(false)
 		mockedConstructor.EXPECT().StartDroneFlight(mockedDrone1, mockedCarStop)
-		mockedConstructor.EXPECT().MoveDrone(mockedDrone1, client4)
+		mockedConstructor.EXPECT().MoveDrone(mockedDrone1, customer4)
 
 		// Land all drones
 		mockedConstructor.EXPECT().LandAllDrones(mockedCarStop)
@@ -173,32 +173,32 @@ var _ = Describe("deliverNeighborsWithDrones", func() {
 	})
 })
 
-var _ = Describe("removeClientAndItsNeighborsFromMap", func() {
-	var client0 = gps.Point{Latitude: 0}
-	var client1 = gps.Point{Latitude: 10}
-	var client2 = gps.Point{Latitude: 20}
-	var client3 = gps.Point{Latitude: 30}
-	var client4 = gps.Point{Latitude: 40}
-	var client5 = gps.Point{Latitude: 50}
-	var client6 = gps.Point{Latitude: 60}
+var _ = Describe("removeCustomerAndItsNeighborsFromMap", func() {
+	var customer0 = gps.Point{Latitude: 0}
+	var customer1 = gps.Point{Latitude: 10}
+	var customer2 = gps.Point{Latitude: 20}
+	var customer3 = gps.Point{Latitude: 30}
+	var customer4 = gps.Point{Latitude: 40}
+	var customer5 = gps.Point{Latitude: 50}
+	var customer6 = gps.Point{Latitude: 60}
 	var neighborhood = gps.Neighborhood{
-		client0: {client1},
-		client1: {client0, client2},
-		client2: {client1, client3},
-		client3: {client2, client4},
-		client4: {client3, client5},
-		client5: {client4, client6},
-		client6: {client5},
+		customer0: {customer1},
+		customer1: {customer0, customer2},
+		customer2: {customer1, customer3},
+		customer3: {customer2, customer4},
+		customer4: {customer3, customer5},
+		customer5: {customer4, customer6},
+		customer6: {customer5},
 	}
 
-	It("should remove client and its neighbors from map", func() {
+	It("should remove customer and its neighbors from map", func() {
 		expectedNeighborhood := gps.Neighborhood{
-			client0: {client1},
-			client1: {client0},
-			client5: {client6},
-			client6: {client5},
+			customer0: {customer1},
+			customer1: {customer0},
+			customer5: {customer6},
+			customer6: {customer5},
 		}
-		removeClientAndItsNeighborsFromMap(client3, neighborhood)
+		removeCustomerAndItsNeighborsFromMap(customer3, neighborhood)
 		Expect(neighborhood).To(Equal(expectedNeighborhood))
 	})
 })

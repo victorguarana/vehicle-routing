@@ -39,18 +39,18 @@ func (m *MockISubStop) EXPECT() *MockISubStopMockRecorder {
 	return m.recorder
 }
 
-// IsClient mocks base method.
-func (m *MockISubStop) IsClient() bool {
+// IsCustomer mocks base method.
+func (m *MockISubStop) IsCustomer() bool {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IsClient")
+	ret := m.ctrl.Call(m, "IsCustomer")
 	ret0, _ := ret[0].(bool)
 	return ret0
 }
 
-// IsClient indicates an expected call of IsClient.
-func (mr *MockISubStopMockRecorder) IsClient() *gomock.Call {
+// IsCustomer indicates an expected call of IsCustomer.
+func (mr *MockISubStopMockRecorder) IsCustomer() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsClient", reflect.TypeOf((*MockISubStop)(nil).IsClient))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsCustomer", reflect.TypeOf((*MockISubStop)(nil).IsCustomer))
 }
 
 // IsWarehouse mocks base method.

@@ -7,7 +7,7 @@ import (
 
 //go:generate mockgen -source=mainstop.go -destination=mock/mainstopmock.go
 type IMainStop interface {
-	IsClient() bool
+	IsCustomer() bool
 	IsWarehouse() bool
 	Latitude() float64
 	Longitude() float64
@@ -33,7 +33,7 @@ func NewMainStop(point gps.Point) IMainStop {
 	}
 }
 
-func (ms *mainStop) IsClient() bool {
+func (ms *mainStop) IsCustomer() bool {
 	return ms.point.PackageSize != 0
 }
 
