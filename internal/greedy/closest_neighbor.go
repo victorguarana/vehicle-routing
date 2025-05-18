@@ -7,16 +7,16 @@ import (
 )
 
 func ClosestNeighbor(constructorList []itinerary.Constructor, m gps.Map) {
-	remaningClients := slc.Copy(m.Clients)
-	for i := 0; len(remaningClients) > 0; i++ {
+	remaningCustomers := slc.Copy(m.Customers)
+	for i := 0; len(remaningCustomers) > 0; i++ {
 		constructor := slc.CircularSelection(constructorList, i)
 		carActualPoint := constructor.ActualCarPoint()
-		closestClient := gps.ClosestPoint(carActualPoint, remaningClients)
-		closestWarehouseFromClosestClient := gps.ClosestPoint(closestClient, m.Warehouses)
+		closestCustomer := gps.ClosestPoint(carActualPoint, remaningCustomers)
+		closestWarehouseFromClosestCustomer := gps.ClosestPoint(closestCustomer, m.Warehouses)
 
-		if constructor.Car().Support(closestClient, closestWarehouseFromClosestClient) {
-			constructor.MoveCar(closestClient)
-			remaningClients = slc.RemoveElement(remaningClients, closestClient)
+		if constructor.Car().Support(closestCustomer, closestWarehouseFromClosestCustomer) {
+			constructor.MoveCar(closestCustomer)
+			remaningCustomers = slc.RemoveElement(remaningCustomers, closestCustomer)
 			continue
 		}
 

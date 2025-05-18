@@ -9,20 +9,20 @@ import (
 )
 
 func CoveringWithDrones(constructorList []itinerary.Constructor, m gps.Map, neighborhoodDistance float64) {
-	clientsNeighborhood := gps.MapNeighborhood(m.Clients, neighborhoodDistance)
-	for i := 0; len(clientsNeighborhood) > 0; i++ {
+	customersNeighborhood := gps.MapNeighborhood(m.Customers, neighborhoodDistance)
+	for i := 0; len(customersNeighborhood) > 0; i++ {
 		constructor := slc.CircularSelection(constructorList, i)
-		actualClient := gps.ClosestPointWithMostNeighbors(constructor.ActualCarPoint(), clientsNeighborhood)
-		constructor.MoveCar(actualClient)
-		deliverNeighborsWithDrones(constructor, clientsNeighborhood[actualClient])
-		removeClientAndItsNeighborsFromMap(actualClient, clientsNeighborhood)
+		actualCustomer := gps.ClosestPointWithMostNeighbors(constructor.ActualCarPoint(), customersNeighborhood)
+		constructor.MoveCar(actualCustomer)
+		deliverNeighborsWithDrones(constructor, customersNeighborhood[actualCustomer])
+		removeCustomerAndItsNeighborsFromMap(actualCustomer, customersNeighborhood)
 	}
 
 	finishOnClosestWarehouses(constructorList, m)
 }
 
 // TODO: Implement an function similar to this one
-// but finish when drone can not support next client
+// but finish when drone can not support next customer
 func deliverNeighborsWithDrones(constructor itinerary.Constructor, neighbors []gps.Point) {
 	if len(neighbors) <= 0 {
 		return
@@ -56,12 +56,12 @@ func tryToDeliver(constructor itinerary.Constructor, drone vehicle.IDrone, retur
 	return false
 }
 
-func removeClientAndItsNeighborsFromMap(client gps.Point, clientsNeighborhood gps.Neighborhood) {
-	neighbors := clientsNeighborhood[client]
+func removeCustomerAndItsNeighborsFromMap(customer gps.Point, customersNeighborhood gps.Neighborhood) {
+	neighbors := customersNeighborhood[customer]
 	for _, neighbor := range neighbors {
-		gps.RemovePointFromNearbyMap(neighbor, clientsNeighborhood)
+		gps.RemovePointFromNearbyMap(neighbor, customersNeighborhood)
 	}
-	gps.RemovePointFromNearbyMap(client, clientsNeighborhood)
+	gps.RemovePointFromNearbyMap(customer, customersNeighborhood)
 }
 
 func finishOnClosestWarehouses(constructorList []itinerary.Constructor, m gps.Map) {

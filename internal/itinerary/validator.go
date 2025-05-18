@@ -40,7 +40,7 @@ func (v *validator) carCanSupportRoute() bool {
 			requiredStorage = 0.0
 		}
 
-		if actualStop.IsClient() {
+		if actualStop.IsCustomer() {
 			requiredStorage += v.calcMainStopRequiredStorage(actualStop)
 			if requiredStorage > v.car.Storage() {
 				return false

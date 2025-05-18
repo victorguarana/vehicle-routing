@@ -43,7 +43,7 @@ func (d *timeWindowDecoder) decodeChromossomeList(chromossomeList []*brkga.Chrom
 		car, drone := d.strategy.DefineVehicle(clonedCarList, chromossome)
 		timeWindowIndex := d.strategy.DefineWindowTime(clonedCarList, chromossome)
 		decodedChromossome := &decodedChromossome{
-			customer:        d.gpsMap.Clients[i],
+			customer:        d.gpsMap.Customers[i],
 			car:             car,
 			drone:           drone,
 			itn:             itineraryByCar[car],

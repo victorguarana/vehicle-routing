@@ -57,21 +57,21 @@ var _ = Describe("validator", func() {
 				})
 				mockedCustomer1.EXPECT().Point().Return(stubCustomerPoint1).AnyTimes()
 				mockedCustomer1.EXPECT().IsWarehouse().Return(false)
-				mockedCustomer1.EXPECT().IsClient().Return(true)
+				mockedCustomer1.EXPECT().IsCustomer().Return(true)
 				mockedCustomer1.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{})
 
 				mockedCustomer2.EXPECT().Point().Return(stubCustomerPoint2).AnyTimes()
 				mockedCustomer2.EXPECT().IsWarehouse().Return(false)
-				mockedCustomer2.EXPECT().IsClient().Return(true)
+				mockedCustomer2.EXPECT().IsCustomer().Return(true)
 				mockedCustomer2.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{})
 
 				mockedWarehouse1.EXPECT().Point().Return(stubWarehousePoint1).AnyTimes()
 				mockedWarehouse1.EXPECT().IsWarehouse().Return(true)
-				mockedWarehouse1.EXPECT().IsClient().Return(false)
+				mockedWarehouse1.EXPECT().IsCustomer().Return(false)
 
 				mockedCustomer3.EXPECT().Point().Return(stubCustomerPoint3).AnyTimes()
 				mockedCustomer3.EXPECT().IsWarehouse().Return(false)
-				mockedCustomer3.EXPECT().IsClient().Return(true)
+				mockedCustomer3.EXPECT().IsCustomer().Return(true)
 				mockedCustomer3.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{})
 
 				mockedCar.EXPECT().Range().Return(100.0).AnyTimes()
@@ -88,11 +88,11 @@ var _ = Describe("validator", func() {
 				})
 				mockedCustomer1.EXPECT().IsWarehouse().Return(false)
 				mockedCustomer1.EXPECT().Point().Return(stubCustomerPoint1).AnyTimes()
-				mockedCustomer1.EXPECT().IsClient().Return(true)
+				mockedCustomer1.EXPECT().IsCustomer().Return(true)
 				mockedCustomer1.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{})
 
 				mockedCustomer2.EXPECT().IsWarehouse().Return(false)
-				mockedCustomer2.EXPECT().IsClient().Return(true)
+				mockedCustomer2.EXPECT().IsCustomer().Return(true)
 				mockedCustomer2.EXPECT().Point().Return(stubCustomerPoint2).AnyTimes()
 				mockedCustomer2.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{})
 
@@ -110,13 +110,13 @@ var _ = Describe("validator", func() {
 				mockedRoute.EXPECT().MainStopList().Return([]route.IMainStop{
 					mockedCustomer1, mockedCustomer2, mockedWarehouse1, mockedCustomer3,
 				})
-				mockedCustomer1.EXPECT().IsClient().Return(true)
+				mockedCustomer1.EXPECT().IsCustomer().Return(true)
 				mockedCustomer1.EXPECT().IsWarehouse().Return(false)
 				mockedCustomer1.EXPECT().Point().Return(stubCustomerPoint1).AnyTimes()
 				mockedCustomer1.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{})
 
 				mockedCustomer2.EXPECT().IsWarehouse().Return(false)
-				mockedCustomer2.EXPECT().IsClient().Return(true)
+				mockedCustomer2.EXPECT().IsCustomer().Return(true)
 				mockedCustomer2.EXPECT().Point().Return(stubCustomerPoint2).AnyTimes()
 				mockedCustomer2.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{})
 
@@ -134,17 +134,17 @@ var _ = Describe("validator", func() {
 				})
 				mockedCustomer1.EXPECT().Point().Return(stubCustomerPoint1).AnyTimes()
 				mockedCustomer1.EXPECT().IsWarehouse().Return(false)
-				mockedCustomer1.EXPECT().IsClient().Return(true)
+				mockedCustomer1.EXPECT().IsCustomer().Return(true)
 				mockedCustomer1.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{})
 
 				mockedCustomer2.EXPECT().Point().Return(stubCustomerPoint2).AnyTimes()
 				mockedCustomer2.EXPECT().IsWarehouse().Return(false)
-				mockedCustomer2.EXPECT().IsClient().Return(true)
+				mockedCustomer2.EXPECT().IsCustomer().Return(true)
 				mockedCustomer2.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{})
 
 				mockedWarehouse1.EXPECT().Point().Return(stubWarehousePoint1).AnyTimes()
 				mockedWarehouse1.EXPECT().IsWarehouse().Return(true)
-				mockedWarehouse1.EXPECT().IsClient().Return(false)
+				mockedWarehouse1.EXPECT().IsCustomer().Return(false)
 
 				mockedCustomer3.EXPECT().Point().Return(stubCustomerPoint3).AnyTimes()
 
@@ -162,21 +162,21 @@ var _ = Describe("validator", func() {
 				})
 				mockedCustomer1.EXPECT().Point().Return(stubCustomerPoint1).AnyTimes()
 				mockedCustomer1.EXPECT().IsWarehouse().Return(false)
-				mockedCustomer1.EXPECT().IsClient().Return(true)
+				mockedCustomer1.EXPECT().IsCustomer().Return(true)
 				mockedCustomer1.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{})
 
 				mockedCustomer2.EXPECT().Point().Return(stubCustomerPoint2).AnyTimes()
 				mockedCustomer2.EXPECT().IsWarehouse().Return(false)
-				mockedCustomer2.EXPECT().IsClient().Return(true)
+				mockedCustomer2.EXPECT().IsCustomer().Return(true)
 				mockedCustomer2.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{})
 
 				mockedWarehouse1.EXPECT().Point().Return(stubWarehousePoint1).AnyTimes()
 				mockedWarehouse1.EXPECT().IsWarehouse().Return(true)
-				mockedWarehouse1.EXPECT().IsClient().Return(false)
+				mockedWarehouse1.EXPECT().IsCustomer().Return(false)
 
 				mockedCustomer3.EXPECT().Point().Return(stubCustomerPoint3).AnyTimes()
 				mockedCustomer3.EXPECT().IsWarehouse().Return(false)
-				mockedCustomer3.EXPECT().IsClient().Return(true)
+				mockedCustomer3.EXPECT().IsCustomer().Return(true)
 				mockedCustomer3.EXPECT().StartingSubRoutes().Return([]route.ISubRoute{})
 
 				mockedCar.EXPECT().Range().Return(100.0).AnyTimes()

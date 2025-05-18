@@ -33,10 +33,10 @@ var _ = Describe("vehicleChooserByPercentage", func() {
 	Describe("NewVehicleChooserByPercentage", func() {
 		It("should create vehicleChooserByPercentage with correct params", func() {
 			gpsMap := gps.Map{
-				Clients: []gps.Point{
-					{Name: "client1"},
-					{Name: "client2"},
-					{Name: "client3"},
+				Customers: []gps.Point{
+					{Name: "customer1"},
+					{Name: "customer2"},
+					{Name: "customer3"},
 				},
 			}
 
@@ -54,7 +54,7 @@ var _ = Describe("vehicleChooserByPercentage", func() {
 	Describe("DefineVehicle", func() {
 		Context("when the gene corresponds to a car", func() {
 			It("should return only car", func() {
-				sut.gpsMap.Clients = []gps.Point{{}, {}, {}}
+				sut.gpsMap.Customers = []gps.Point{{}, {}, {}}
 				sut.carPercentage = 0.7
 				carList := []vehicle.ICar{mockedCar1, mockedCar2}
 				c := brkga.Chromossome(0.1)
@@ -71,7 +71,7 @@ var _ = Describe("vehicleChooserByPercentage", func() {
 
 		Context("when the gene corresponds to a drone", func() {
 			It("should return drone and car", func() {
-				sut.gpsMap.Clients = []gps.Point{{}, {}, {}}
+				sut.gpsMap.Customers = []gps.Point{{}, {}, {}}
 				sut.carPercentage = 0.4
 				sut.dronePercentage = 0.6
 				carList := []vehicle.ICar{mockedCar1, mockedCar2}
@@ -91,7 +91,7 @@ var _ = Describe("vehicleChooserByPercentage", func() {
 	Describe("DefineWindowTime", func() {
 		Context("when chromossome is min value", func() {
 			It("should calc window time", func() {
-				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				sut.gpsMap.Customers = []gps.Point{{}, {}}
 				c := brkga.Chromossome(0)
 				chromossome1 := &c
 
@@ -102,7 +102,7 @@ var _ = Describe("vehicleChooserByPercentage", func() {
 
 		Context("when chromossome is max value", func() {
 			It("should calc window time", func() {
-				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				sut.gpsMap.Customers = []gps.Point{{}, {}}
 				c := brkga.Chromossome(1)
 				chromossome1 := &c
 
@@ -113,7 +113,7 @@ var _ = Describe("vehicleChooserByPercentage", func() {
 
 		Context("when chromossome is any between min and max value", func() {
 			It("should calc window time", func() {
-				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				sut.gpsMap.Customers = []gps.Point{{}, {}}
 				c := brkga.Chromossome(0.3)
 				chromossome1 := &c
 
@@ -122,7 +122,7 @@ var _ = Describe("vehicleChooserByPercentage", func() {
 			})
 
 			It("should calc window time", func() {
-				sut.gpsMap.Clients = []gps.Point{{}, {}}
+				sut.gpsMap.Customers = []gps.Point{{}, {}}
 				c := brkga.Chromossome(0.7)
 				chromossome1 := &c
 
@@ -134,7 +134,7 @@ var _ = Describe("vehicleChooserByPercentage", func() {
 
 	Describe("calcModuledGene", func() {
 		It("should calculate the moduled gene", func() {
-			sut.gpsMap.Clients = []gps.Point{{}, {}, {}, {}}
+			sut.gpsMap.Customers = []gps.Point{{}, {}, {}, {}}
 			c := brkga.Chromossome(0.8)
 			chromossome1 := &c
 
@@ -146,7 +146,7 @@ var _ = Describe("vehicleChooserByPercentage", func() {
 
 	Describe("calcGeneAmplifier", func() {
 		It("should calculate the gene amplifier", func() {
-			sut.gpsMap.Clients = []gps.Point{{}, {}, {}}
+			sut.gpsMap.Customers = []gps.Point{{}, {}, {}}
 			Expect(sut.calcGeneAmplifier()).To(Equal(3.0))
 		})
 	})

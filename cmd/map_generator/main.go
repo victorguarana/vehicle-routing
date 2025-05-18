@@ -8,8 +8,8 @@ import (
 )
 
 const filename = "map_105"
-const depositQnt = 3
-const clientQnt = 100
+const warehouseQnt = 3
+const customerQnt = 100
 
 func main() {
 	file, err := os.Create(filename)
@@ -23,13 +23,13 @@ func main() {
 
 	writeRandomWarehouses(writer)
 	writeNewLine(writer)
-	writeRandomClients(writer)
+	writeRandomCustomers(writer)
 }
 
 func writeRandomWarehouses(writer *bufio.Writer) {
-	for i := 1; i <= depositQnt; i++ {
-		line := fmt.Sprintf("Deposito%d;%d;%d;%d", i, randomPosition(), randomPosition(), 0)
-		if i < depositQnt {
+	for i := 1; i <= warehouseQnt; i++ {
+		line := fmt.Sprintf("Warehouse%d;%d;%d;%d", i, randomPosition(), randomPosition(), 0)
+		if i < warehouseQnt {
 			line += "\n"
 		}
 		if _, err := writer.WriteString(line); err != nil {
@@ -38,10 +38,10 @@ func writeRandomWarehouses(writer *bufio.Writer) {
 	}
 }
 
-func writeRandomClients(writer *bufio.Writer) {
-	for i := 1; i <= clientQnt; i++ {
-		line := fmt.Sprintf("Cliente%d;%d;%d;%d", i, randomPosition(), randomPosition(), randomPackage())
-		if i < clientQnt {
+func writeRandomCustomers(writer *bufio.Writer) {
+	for i := 1; i <= customerQnt; i++ {
+		line := fmt.Sprintf("Customer%d;%d;%d;%d", i, randomPosition(), randomPosition(), randomPackage())
+		if i < customerQnt {
 			line += "\n"
 		}
 		if _, err := writer.WriteString(line); err != nil {

@@ -27,7 +27,7 @@ func DroneStrikesInsertion(constructor itinerary.Constructor, modifier itinerary
 			continue
 		}
 
-		if actualStop.IsClient() {
+		if actualStop.IsCustomer() {
 			if anyDroneWasStriked(droneStrikes) || anyDroneNeedToLand(constructor, droneStrikes, nextStop) {
 				constructor.LandAllDrones(actualStop)
 				resetDroneStrikes(droneStrikes)

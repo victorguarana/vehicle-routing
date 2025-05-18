@@ -86,7 +86,7 @@ var _ = Describe("timeWindowDecoder", func() {
 			sut.strategy = mockedStrategy
 			sut.masterCarList = []vehicle.ICar{mockedCar1, mockedCar2}
 			sut.gpsMap = gps.Map{
-				Clients:    []gps.Point{carCustomer1, carCustomer2, droneCustomer1, droneCustomer2},
+				Customers:  []gps.Point{carCustomer1, carCustomer2, droneCustomer1, droneCustomer2},
 				Warehouses: []gps.Point{initialPoint},
 			}
 		})

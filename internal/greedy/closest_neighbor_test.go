@@ -20,16 +20,16 @@ var _ = Describe("ClosestNeighbor", func() {
 	var mockedCar2 *mockvehicle.MockICar
 
 	var initialPoint = gps.Point{Latitude: 0, Longitude: 0}
-	var client1 = gps.Point{Latitude: 1, Longitude: 1, PackageSize: 1}
-	var client2 = gps.Point{Latitude: 2, Longitude: 2, PackageSize: 1}
-	var client3 = gps.Point{Latitude: 3, Longitude: 3, PackageSize: 1}
-	var client4 = gps.Point{Latitude: 4, Longitude: 4, PackageSize: 1}
-	var client5 = gps.Point{Latitude: 5, Longitude: 5, PackageSize: 1}
-	var client6 = gps.Point{Latitude: 6, Longitude: 6, PackageSize: 1}
+	var customer1 = gps.Point{Latitude: 1, Longitude: 1, PackageSize: 1}
+	var customer2 = gps.Point{Latitude: 2, Longitude: 2, PackageSize: 1}
+	var customer3 = gps.Point{Latitude: 3, Longitude: 3, PackageSize: 1}
+	var customer4 = gps.Point{Latitude: 4, Longitude: 4, PackageSize: 1}
+	var customer5 = gps.Point{Latitude: 5, Longitude: 5, PackageSize: 1}
+	var customer6 = gps.Point{Latitude: 6, Longitude: 6, PackageSize: 1}
 	var warehouse1 = gps.Point{Latitude: 0, Longitude: 0}
 	var warehouse2 = gps.Point{Latitude: 7, Longitude: 7}
 	var m = gps.Map{
-		Clients:    []gps.Point{client4, client2, client5, client1, client3, client6},
+		Customers:  []gps.Point{customer4, customer2, customer5, customer1, customer3, customer6},
 		Warehouses: []gps.Point{warehouse1, warehouse2},
 	}
 
@@ -47,31 +47,31 @@ var _ = Describe("ClosestNeighbor", func() {
 	})
 
 	Context("when car supports entire route", func() {
-		It("return a route without warehouses between clients", func() {
+		It("return a route without warehouses between customers", func() {
 			mockedConstructor1.EXPECT().Car().Return(mockedCar1).AnyTimes()
 			mockedConstructor1.EXPECT().ActualCarPoint().Return(initialPoint)
-			mockedCar1.EXPECT().Support(client1, warehouse1).Return(true)
-			mockedConstructor1.EXPECT().MoveCar(client1)
-			mockedConstructor1.EXPECT().ActualCarPoint().Return(client1)
-			mockedCar1.EXPECT().Support(client3, warehouse1).Return(true)
-			mockedConstructor1.EXPECT().MoveCar(client3)
+			mockedCar1.EXPECT().Support(customer1, warehouse1).Return(true)
+			mockedConstructor1.EXPECT().MoveCar(customer1)
+			mockedConstructor1.EXPECT().ActualCarPoint().Return(customer1)
+			mockedCar1.EXPECT().Support(customer3, warehouse1).Return(true)
+			mockedConstructor1.EXPECT().MoveCar(customer3)
 			mockedConstructor1.EXPECT().ActualCarPoint().Return(initialPoint)
-			mockedCar1.EXPECT().Support(client5, warehouse2).Return(true)
-			mockedConstructor1.EXPECT().MoveCar(client5)
-			mockedConstructor1.EXPECT().ActualCarPoint().Return(client5)
+			mockedCar1.EXPECT().Support(customer5, warehouse2).Return(true)
+			mockedConstructor1.EXPECT().MoveCar(customer5)
+			mockedConstructor1.EXPECT().ActualCarPoint().Return(customer5)
 			mockedConstructor1.EXPECT().MoveCar(warehouse2)
 
 			mockedConstructor2.EXPECT().Car().Return(mockedCar2).AnyTimes()
 			mockedConstructor2.EXPECT().ActualCarPoint().Return(initialPoint)
-			mockedCar2.EXPECT().Support(client2, warehouse1).Return(true)
-			mockedConstructor2.EXPECT().MoveCar(client2)
+			mockedCar2.EXPECT().Support(customer2, warehouse1).Return(true)
+			mockedConstructor2.EXPECT().MoveCar(customer2)
 			mockedConstructor2.EXPECT().ActualCarPoint().Return(initialPoint)
-			mockedCar2.EXPECT().Support(client4, warehouse2).Return(true)
-			mockedConstructor2.EXPECT().MoveCar(client4)
+			mockedCar2.EXPECT().Support(customer4, warehouse2).Return(true)
+			mockedConstructor2.EXPECT().MoveCar(customer4)
 			mockedConstructor2.EXPECT().ActualCarPoint().Return(initialPoint)
-			mockedCar2.EXPECT().Support(client6, warehouse2).Return(true)
-			mockedConstructor2.EXPECT().MoveCar(client6)
-			mockedConstructor2.EXPECT().ActualCarPoint().Return(client6)
+			mockedCar2.EXPECT().Support(customer6, warehouse2).Return(true)
+			mockedConstructor2.EXPECT().MoveCar(customer6)
+			mockedConstructor2.EXPECT().ActualCarPoint().Return(customer6)
 			mockedConstructor2.EXPECT().MoveCar(warehouse2)
 
 			ClosestNeighbor(constructorsList, m)
