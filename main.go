@@ -245,7 +245,7 @@ func mountOutputInfo(itnInfo itinerary.Info) []output.Info {
 func loadEnvironment() (gps.Map, itinerary.Itinerary) {
 	gpsMap := gps.LoadMap(mapFilename)
 	initialPoint := gpsMap.Warehouses[0]
-	car := vehicle.NewDefaultCar("car1", initialPoint)
+	car := vehicle.NewCarUnlimited("car1", initialPoint)
 	car.NewDefaultDrone("drone1")
 	itn := itinerary.New(car)
 
