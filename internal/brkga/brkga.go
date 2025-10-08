@@ -20,6 +20,7 @@ var logger *slog.Logger = slog.New(slog.NewTextHandler(log.Writer(), nil))
 //go:generate mockgen -source=brkga.go -destination=brkgamock_test.go -package=brkga
 type IDecoder[T any] interface {
 	Decode(*Individual) (T, error)
+	Name() string
 }
 
 type IMeasurer[T any] interface {

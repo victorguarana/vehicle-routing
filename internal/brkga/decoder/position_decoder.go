@@ -15,6 +15,11 @@ type positionDecoder struct {
 	masterCarList []vehicle.ICar
 	gpsMap        gps.Map
 	strategy      strategy
+	name          string
+}
+
+func (d *positionDecoder) Name() string {
+	return d.name
 }
 
 func (d *positionDecoder) Decode(individual *brkga.Individual) (itinerary.ItineraryList, error) {

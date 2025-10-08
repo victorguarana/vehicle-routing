@@ -18,6 +18,11 @@ type timeWindowDecoder struct {
 	masterCarList []vehicle.ICar
 	gpsMap        gps.Map
 	strategy      strategy
+	name          string
+}
+
+func (d *timeWindowDecoder) Name() string {
+	return d.name
 }
 
 func (d *timeWindowDecoder) Decode(individual *brkga.Individual) (itinerary.ItineraryList, error) {
