@@ -41,84 +41,84 @@ func executeBRKGA() {
 
 	wg.Add(1)
 	go BRKGA(
-		measure.NewMeasurer(measure.TimeSpent),
+		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
 		decoder.NewPositionalDecoderWithVehicleByStorage(carList, gpsMap),
 		gpsMap,
 		"positional_by_storage_time_spent")
 
 	wg.Add(1)
 	go BRKGA(
-		measure.NewMeasurer(measure.TotalDistance),
+		measure.NewMeasurer(measure.TotalDistance, "TotalDistance"),
 		decoder.NewPositionalDecoderWithVehicleByStorage(carList, gpsMap),
 		gpsMap,
 		"positional_by_storage_total_distance")
 
 	wg.Add(1)
 	go BRKGA(
-		measure.NewMeasurer(measure.SpentFuel),
+		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
 		decoder.NewPositionalDecoderWithVehicleByStorage(carList, gpsMap),
 		gpsMap,
 		"positional_by_storage_fuel_spent")
 
 	wg.Add(1)
 	go BRKGA(
-		measure.NewMeasurer(measure.TimeSpent),
+		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
 		decoder.NewPositionalDecoderWithVehicleByPercentage(carList, gpsMap, 0.15),
 		gpsMap,
 		"positional_by_percentage_time_spent")
 
 	wg.Add(1)
 	go BRKGA(
-		measure.NewMeasurer(measure.TotalDistance),
+		measure.NewMeasurer(measure.TotalDistance, "TotalDistance"),
 		decoder.NewPositionalDecoderWithVehicleByPercentage(carList, gpsMap, 0.15),
 		gpsMap,
 		"positional_by_percentage_total_distance")
 
 	wg.Add(1)
 	go BRKGA(
-		measure.NewMeasurer(measure.SpentFuel),
+		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
 		decoder.NewPositionalDecoderWithVehicleByPercentage(carList, gpsMap, 0.15),
 		gpsMap,
 		"positional_by_percentage_fuel_spent")
 
 	wg.Add(1)
 	go BRKGA(
-		measure.NewMeasurer(measure.TimeSpent),
+		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
 		decoder.NewTimeDecoderWithVehicleByStorage(carList, gpsMap),
 		gpsMap,
 		"time_by_storage_time_spent")
 
 	wg.Add(1)
 	go BRKGA(
-		measure.NewMeasurer(measure.TotalDistance),
+		measure.NewMeasurer(measure.TotalDistance, "TotalDistance"),
 		decoder.NewTimeDecoderWithVehicleByStorage(carList, gpsMap),
 		gpsMap,
 		"time_by_storage_total_distance")
 
 	wg.Add(1)
 	go BRKGA(
-		measure.NewMeasurer(measure.SpentFuel),
+		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
 		decoder.NewTimeDecoderWithVehicleByStorage(carList, gpsMap),
 		gpsMap,
 		"time_by_storage_fuel_spent")
 
 	wg.Add(1)
 	go BRKGA(
-		measure.NewMeasurer(measure.TimeSpent),
+		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
 		decoder.NewTimeDecoderWithVehicleByPercentage(carList, gpsMap, 0.15),
 		gpsMap,
 		"time_by_percentage_time_spent")
 
 	wg.Add(1)
 	go BRKGA(
-		measure.NewMeasurer(measure.TotalDistance),
+		measure.NewMeasurer(measure.TotalDistance, "TotalDistance"),
 		decoder.NewTimeDecoderWithVehicleByPercentage(carList, gpsMap, 0.15),
 		gpsMap,
 		"time_by_percentage_total_distance")
 
 	wg.Add(1)
 	go BRKGA(
-		measure.NewMeasurer(measure.SpentFuel),
+		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
 		decoder.NewTimeDecoderWithVehicleByPercentage(carList, gpsMap, 0.15),
 		gpsMap,
 		"time_by_percentage_fuel_spent")
@@ -141,9 +141,12 @@ func BRKGA(m measure.Measurer, d brkga.IDecoder[itinerary.ItineraryList], gpsMap
 	}).Execute()
 
 	if itn == nil {
-		fmt.Println("No solution found")
+		fmt.Println("No solution found for", d.Name())
 		return
 	}
+
+	score := m.Measure(itn)
+	fmt.Printf("BRKGA %s: %.4f (%s) \n", d.Name(), score, m.Name())
 
 	itnInfo := itn[0].Info()
 	outputInfos := mountOutputInfo(itnInfo)

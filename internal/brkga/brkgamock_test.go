@@ -53,6 +53,20 @@ func (mr *MockIDecoderMockRecorder[T]) Decode(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Decode", reflect.TypeOf((*MockIDecoder[T])(nil).Decode), arg0)
 }
 
+// Name mocks base method.
+func (m *MockIDecoder[T]) Name() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Name")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// Name indicates an expected call of Name.
+func (mr *MockIDecoderMockRecorder[T]) Name() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockIDecoder[T])(nil).Name))
+}
+
 // MockIMeasurer is a mock of IMeasurer interface.
 type MockIMeasurer[T any] struct {
 	ctrl     *gomock.Controller

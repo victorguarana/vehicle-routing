@@ -13,6 +13,7 @@ func NewPositionalDecoderWithVehicleByStorage(carList []vehicle.ICar, gpsMap gps
 		masterCarList: carList,
 		gpsMap:        gpsMap,
 		strategy:      decoderstrategy.NewVehicleChooserByStorage(gpsMap),
+		name:          "PositionalDecoderWithVehicleByStorage",
 	}
 }
 
@@ -21,6 +22,7 @@ func NewPositionalDecoderWithVehicleByPercentage(carList []vehicle.ICar, gpsMap 
 		masterCarList: carList,
 		gpsMap:        gpsMap,
 		strategy:      decoderstrategy.NewVehicleChooserByPercentage(gpsMap, dronePercentage),
+		name:          "PositionalDecoderWithVehicleByPercentage",
 	}
 }
 
@@ -29,6 +31,7 @@ func NewTimeDecoderWithVehicleByStorage(carList []vehicle.ICar, gpsMap gps.Map) 
 		masterCarList: carList,
 		gpsMap:        gpsMap,
 		strategy:      decoderstrategy.NewVehicleChooserByStorage(gpsMap),
+		name:          "TimeDecoderWithVehicleByStorage",
 	}
 }
 
@@ -37,5 +40,6 @@ func NewTimeDecoderWithVehicleByPercentage(carList []vehicle.ICar, gpsMap gps.Ma
 		masterCarList: carList,
 		gpsMap:        gpsMap,
 		strategy:      decoderstrategy.NewVehicleChooserByPercentage(gpsMap, dronePercentage),
+		name:          "TimeDecoderWithVehicleByPercentage",
 	}
 }
