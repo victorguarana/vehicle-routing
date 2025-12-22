@@ -12,7 +12,7 @@ def process_file(input_path, output_path):
     # Extraindo informações do depósito
     depot_line = lines[7].strip().split()
     depot_x, depot_y = depot_line[0], depot_line[1]
-    depot = f"dep;{depot_x};{depot_y};0\n"
+    depot = f"dep;{depot_x};{depot_y};0"
     
     # Extraindo informações das locations
     locations = []
@@ -20,7 +20,7 @@ def process_file(input_path, output_path):
         parts = line.strip().split()
         if len(parts) == 3:
             x, y, name = parts
-            locations.append(f"{name};{x};{y};1\n")
+            locations.append(f"\n{name};{x};{y};1")
     
     # Escrevendo no novo arquivo
     with open(output_path, "w") as outfile:
@@ -35,7 +35,7 @@ def should_process_file(filename):
 for filename in os.listdir(input_folder):
     if should_process_file(filename):
         input_path = os.path.join(input_folder, filename)
-        output_filename = filename.replace(".txt", "-convertido.txt")
+        output_filename = filename.replace(".txt", "")
         output_path = os.path.join(output_folder, output_filename)
         process_file(input_path, output_path)
 
