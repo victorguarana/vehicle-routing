@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/victorguarana/vehicle-routing/cmd/execute/instances"
+	"github.com/victorguarana/vehicle-routing/cmd/execute/instances/eilon"
 	"github.com/victorguarana/vehicle-routing/internal/brkga"
 	"github.com/victorguarana/vehicle-routing/internal/brkga/decoder"
 	"github.com/victorguarana/vehicle-routing/internal/gps"
@@ -44,17 +44,17 @@ func main() {
 	log.Println("Drone Percentage", dronePercentage)
 
 	log.Println("Starting execution...")
-	executeBRKGA(instances.LoadEIL22())
-	executeBRKGA(instances.LoadEIL23())
-	executeBRKGA(instances.LoadEIL30())
-	executeBRKGA(instances.LoadEIL33())
-	executeBRKGA(instances.LoadEIL51())
-	executeBRKGA(instances.LoadEIL76A())
-	executeBRKGA(instances.LoadEIL76B())
-	executeBRKGA(instances.LoadEIL76C())
-	executeBRKGA(instances.LoadEIL76D())
-	executeBRKGA(instances.LoadEIL101A())
-	executeBRKGA(instances.LoadEIL101B())
+	executeBRKGA(eilon.LoadEIL22())
+	executeBRKGA(eilon.LoadEIL23())
+	executeBRKGA(eilon.LoadEIL30())
+	executeBRKGA(eilon.LoadEIL33())
+	executeBRKGA(eilon.LoadEIL51())
+	executeBRKGA(eilon.LoadEIL76A())
+	executeBRKGA(eilon.LoadEIL76B())
+	executeBRKGA(eilon.LoadEIL76C())
+	executeBRKGA(eilon.LoadEIL76D())
+	executeBRKGA(eilon.LoadEIL101A())
+	executeBRKGA(eilon.LoadEIL101B())
 	log.Println("Finishing execution...")
 }
 
