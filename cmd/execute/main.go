@@ -1,209 +1,181 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"sync"
+	"os"
 
+	"github.com/victorguarana/vehicle-routing/cmd/execute/instances"
 	"github.com/victorguarana/vehicle-routing/internal/brkga"
 	"github.com/victorguarana/vehicle-routing/internal/brkga/decoder"
 	"github.com/victorguarana/vehicle-routing/internal/gps"
 	"github.com/victorguarana/vehicle-routing/internal/itinerary"
 	"github.com/victorguarana/vehicle-routing/internal/measure"
-	"github.com/victorguarana/vehicle-routing/internal/output"
 	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
-const mapFilename = "map_r101_25"
-
-var allMeasures = map[string]func(itinerary.Info) float64{
-	"Total Distance": measure.TotalDistance,
-	"Total Time":     measure.TimeSpent,
-	"Total Fuel":     measure.SpentFuel,
-}
+var dronePercentage = 0.0
+var iterations = 10
 
 var brkgaBaseParams = brkga.BRKGAParams[itinerary.ItineraryList]{
+	BiasPercentage:      0.75,
+	CrossoverPercentage: 0.6,
+	TopPercentage:       0.1,
 	MaxPop:              100,
-	TopPercentage:       0.2,
-	CrossoverPercentage: 0.5,
-	BiasPercentage:      0.7,
-	GenerationLimit:     10000,
+	GenerationLimit:     2000,
 }
 
-var wg sync.WaitGroup
+var distanceMeasurer = measure.NewMeasurer(measure.TotalDistance, "TotalDistance")
+var fuelMeasurer = measure.NewMeasurer(measure.SpentFuel, "SpentFuel")
+var timeMeasurer = measure.NewMeasurer(measure.TimeSpent, "TimeSpent")
 
 func main() {
-	executeBRKGA()
+	f, err := os.OpenFile("resultados_tabela4_semdrone.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+	log.SetOutput(f)
+
+	log.Println("Bias Percentage", brkgaBaseParams.BiasPercentage)
+	log.Println("Crossover Percentage", brkgaBaseParams.CrossoverPercentage)
+	log.Println("Top Percentage", brkgaBaseParams.TopPercentage)
+	log.Println("Max Population", brkgaBaseParams.MaxPop)
+	log.Println("Generation Limit", brkgaBaseParams.GenerationLimit)
+	log.Println("Drone Percentage", dronePercentage)
+
+	log.Println("Starting execution...")
+	executeBRKGA(instances.LoadEIL22())
+	executeBRKGA(instances.LoadEIL23())
+	executeBRKGA(instances.LoadEIL30())
+	executeBRKGA(instances.LoadEIL33())
+	executeBRKGA(instances.LoadEIL51())
+	executeBRKGA(instances.LoadEIL76A())
+	executeBRKGA(instances.LoadEIL76B())
+	executeBRKGA(instances.LoadEIL76C())
+	executeBRKGA(instances.LoadEIL76D())
+	executeBRKGA(instances.LoadEIL101A())
+	executeBRKGA(instances.LoadEIL101B())
+	log.Println("Finishing execution...")
 }
 
-func executeBRKGA() {
-	gpsMap, carList := loadBRKGAEnvironment()
-
-	wg.Add(1)
-	go BRKGA(
-		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
-		decoder.NewPositionalDecoderWithVehicleByStorage(carList, gpsMap),
-		gpsMap,
-		"positional_by_storage_time_spent")
-
-	wg.Add(1)
-	go BRKGA(
+func executeBRKGA(mapFilename string, gpsMap gps.Map, carList []vehicle.ICar) {
+	BRKGA(
 		measure.NewMeasurer(measure.TotalDistance, "TotalDistance"),
-		decoder.NewPositionalDecoderWithVehicleByStorage(carList, gpsMap),
+		decoder.NewPositionalDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
 		gpsMap,
-		"positional_by_storage_total_distance")
-
-	wg.Add(1)
-	go BRKGA(
-		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
-		decoder.NewPositionalDecoderWithVehicleByStorage(carList, gpsMap),
-		gpsMap,
-		"positional_by_storage_fuel_spent")
-
-	wg.Add(1)
-	go BRKGA(
-		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
-		decoder.NewPositionalDecoderWithVehicleByPercentage(carList, gpsMap, 0.15),
-		gpsMap,
-		"positional_by_percentage_time_spent")
-
-	wg.Add(1)
-	go BRKGA(
-		measure.NewMeasurer(measure.TotalDistance, "TotalDistance"),
-		decoder.NewPositionalDecoderWithVehicleByPercentage(carList, gpsMap, 0.15),
-		gpsMap,
+		mapFilename,
 		"positional_by_percentage_total_distance")
 
-	wg.Add(1)
-	go BRKGA(
-		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
-		decoder.NewPositionalDecoderWithVehicleByPercentage(carList, gpsMap, 0.15),
-		gpsMap,
-		"positional_by_percentage_fuel_spent")
-
-	wg.Add(1)
-	go BRKGA(
-		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
-		decoder.NewTimeDecoderWithVehicleByStorage(carList, gpsMap),
-		gpsMap,
-		"time_by_storage_time_spent")
-
-	wg.Add(1)
-	go BRKGA(
+	BRKGA(
 		measure.NewMeasurer(measure.TotalDistance, "TotalDistance"),
-		decoder.NewTimeDecoderWithVehicleByStorage(carList, gpsMap),
+		decoder.NewPositionalDecoderWithVehicleByStorage(carList, gpsMap),
 		gpsMap,
-		"time_by_storage_total_distance")
+		mapFilename,
+		"positional_by_storage_total_distance")
 
-	wg.Add(1)
-	go BRKGA(
-		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
-		decoder.NewTimeDecoderWithVehicleByStorage(carList, gpsMap),
-		gpsMap,
-		"time_by_storage_fuel_spent")
-
-	wg.Add(1)
-	go BRKGA(
-		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
-		decoder.NewTimeDecoderWithVehicleByPercentage(carList, gpsMap, 0.15),
-		gpsMap,
-		"time_by_percentage_time_spent")
-
-	wg.Add(1)
-	go BRKGA(
+	BRKGA(
 		measure.NewMeasurer(measure.TotalDistance, "TotalDistance"),
-		decoder.NewTimeDecoderWithVehicleByPercentage(carList, gpsMap, 0.15),
+		decoder.NewTimeDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
 		gpsMap,
+		mapFilename,
 		"time_by_percentage_total_distance")
 
-	wg.Add(1)
-	go BRKGA(
-		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
-		decoder.NewTimeDecoderWithVehicleByPercentage(carList, gpsMap, 0.15),
+	BRKGA(
+		measure.NewMeasurer(measure.TotalDistance, "TotalDistance"),
+		decoder.NewTimeDecoderWithVehicleByStorage(carList, gpsMap),
 		gpsMap,
+		mapFilename,
+		"time_by_storage_total_distance")
+
+	BRKGA(
+		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
+		decoder.NewPositionalDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
+		gpsMap,
+		mapFilename,
+		"positional_by_percentage_fuel_spent")
+
+	BRKGA(
+		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
+		decoder.NewPositionalDecoderWithVehicleByStorage(carList, gpsMap),
+		gpsMap,
+		mapFilename,
+		"positional_by_storage_fuel_spent")
+
+	BRKGA(
+		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
+		decoder.NewTimeDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
+		gpsMap,
+		mapFilename,
 		"time_by_percentage_fuel_spent")
 
-	wg.Wait()
+	BRKGA(
+		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
+		decoder.NewTimeDecoderWithVehicleByStorage(carList, gpsMap),
+		gpsMap,
+		mapFilename,
+		"time_by_storage_fuel_spent")
+
+	BRKGA(
+		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
+		decoder.NewPositionalDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
+		gpsMap,
+		mapFilename,
+		"positional_by_percentage_time_spent")
+
+	BRKGA(
+		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
+		decoder.NewPositionalDecoderWithVehicleByStorage(carList, gpsMap),
+		gpsMap,
+		mapFilename,
+		"positional_by_storage_time_spent")
+
+	BRKGA(
+		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
+		decoder.NewTimeDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
+		gpsMap,
+		mapFilename,
+		"time_by_percentage_time_spent")
+
+	BRKGA(
+		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
+		decoder.NewTimeDecoderWithVehicleByStorage(carList, gpsMap),
+		gpsMap,
+		mapFilename,
+		"time_by_storage_time_spent")
+
+	// wg.Wait()
 }
 
-func BRKGA(m measure.Measurer, d brkga.IDecoder[itinerary.ItineraryList], gpsMap gps.Map, nameSuffix string) {
-	defer wg.Done()
-	itn := brkga.NewBRKGA(brkga.BRKGAParams[itinerary.ItineraryList]{
-		MaxPop:              brkgaBaseParams.MaxPop,
-		TopPercentage:       brkgaBaseParams.TopPercentage,
-		CrossoverPercentage: brkgaBaseParams.CrossoverPercentage,
-		BiasPercentage:      brkgaBaseParams.BiasPercentage,
-		GenerationLimit:     brkgaBaseParams.GenerationLimit,
-		ChromosomeLen:       len(gpsMap.Customers),
-		Decoder:             d,
-		Measurer:            m,
-		OptimizationGoal:    brkga.Minimize,
-	}).Execute()
+func BRKGA(m measure.Measurer, d brkga.IDecoder[itinerary.ItineraryList], gpsMap gps.Map, mapFilename string, nameSuffix string) {
+	// defer wg.Done()
+	for i := 0; i < iterations; i++ {
+		itn := brkga.NewBRKGA(brkga.BRKGAParams[itinerary.ItineraryList]{
+			MaxPop:              brkgaBaseParams.MaxPop,
+			TopPercentage:       brkgaBaseParams.TopPercentage,
+			CrossoverPercentage: brkgaBaseParams.CrossoverPercentage,
+			BiasPercentage:      brkgaBaseParams.BiasPercentage,
+			GenerationLimit:     brkgaBaseParams.GenerationLimit,
+			ChromosomeLen:       len(gpsMap.Customers),
+			Decoder:             d,
+			Measurer:            m,
+			OptimizationGoal:    brkga.Minimize,
+		}).Execute()
 
-	if itn == nil {
-		fmt.Println("No solution found for", d.Name())
-		return
+		if itn == nil {
+			log.Println("No solution found for", mapFilename, d.Name())
+			continue
+		}
+
+		score := m.Measure(itn)
+		log.Printf("%s %s (%s): %d\n", mapFilename, d.Name(), m.Name(), int(score))
+
+		score = distanceMeasurer.Measure(itn)
+		log.Printf("%s %s (%s - %s): %d\n", mapFilename, d.Name(), m.Name(), "Total Distance", int(score))
+
+		score = timeMeasurer.Measure(itn)
+		log.Printf("%s %s (%s - %s): %d\n", mapFilename, d.Name(), m.Name(), "Time Spent", int(score))
+
+		score = fuelMeasurer.Measure(itn)
+		log.Printf("%s %s (%s - %s): %d\n", mapFilename, d.Name(), m.Name(), "Fuel Spent", int(score))
 	}
-
-	score := m.Measure(itn)
-	fmt.Printf("BRKGA %s: %.4f (%s) \n", d.Name(), score, m.Name())
-
-	itnInfo := itn[0].Info()
-	outputInfos := mountOutputInfo(itnInfo)
-	filename := fmt.Sprintf("%s_brkga_%s.png", mapFilename, nameSuffix)
-	output.ToImage(filename, itnInfo, outputInfos)
-}
-
-func loadBRKGAEnvironment() (gps.Map, []vehicle.ICar) {
-	gpsMap := gps.LoadMap(mapFilename)
-	car1 := vehicle.NewCarLimited(vehicle.CarParams{
-		Efficiency:    1.0,
-		Speed:         5.0,
-		Storage:       200.0,
-		Range:         700.0,
-		Name:          "car1",
-		StartingPoint: gpsMap.Warehouses[0],
-	})
-	car1.NewDroneWithParams(
-		vehicle.DroneParams{
-			Efficiency:    5.0,
-			Speed:         5.0,
-			Storage:       100.0,
-			Range:         50.0,
-			Name:          "drone1",
-			StartingPoint: gpsMap.Warehouses[0],
-		},
-	)
-	car2 := vehicle.NewCarLimited(vehicle.CarParams{
-		Efficiency:    1.0,
-		Speed:         5.0,
-		Storage:       200.0,
-		Range:         700.0,
-		Name:          "car2",
-		StartingPoint: gpsMap.Warehouses[0],
-	})
-	car2.NewDroneWithParams(
-		vehicle.DroneParams{
-			Efficiency:    5.0,
-			Speed:         5.0,
-			Storage:       100.0,
-			Range:         50.0,
-			Name:          "drone2",
-			StartingPoint: gpsMap.Warehouses[0],
-		},
-	)
-	return gpsMap, []vehicle.ICar{car1, car2}
-}
-
-func mountOutputInfo(itnInfo itinerary.Info) []output.Info {
-	var infos []output.Info
-	for measureName, measureFunc := range allMeasures {
-		measureValue := measureFunc(itnInfo)
-		measureStr := fmt.Sprintf("%s: %.2f", measureName, measureValue)
-		infos = append(infos, output.Info{Str: measureStr})
-
-		log.Println(measureName, measureValue)
-	}
-
-	return infos
 }
