@@ -30,3 +30,6 @@ go.work
 
 # Report files from ginkgo
 *.report
+
+# Logs
+*.log
