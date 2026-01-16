@@ -59,7 +59,7 @@ func (c *CarLimited) Clone() ICar {
 }
 
 func (c *CarLimited) Move(destination gps.Point) {
-	c.remaningRange -= gps.ManhattanDistanceBetweenPoints(c.actualPoint, destination)
+	c.remaningRange -= gps.EuclideanDistanceBetweenPoints(c.actualPoint, destination)
 	c.remaningStorage -= destination.PackageSize
 	c.actualPoint = destination
 	c.moveDockedDrones(destination)
@@ -74,7 +74,7 @@ func (c *CarLimited) Storage() float64 {
 }
 
 func (c *CarLimited) Support(destinations ...gps.Point) bool {
-	distance := gps.ManhattanDistanceBetweenPoints(destinations...)
+	distance := gps.EuclideanDistanceBetweenPoints(destinations...)
 	packagesSize := 0.0
 	for _, destination := range destinations {
 		packagesSize += destination.PackageSize

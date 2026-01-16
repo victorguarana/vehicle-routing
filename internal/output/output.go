@@ -13,7 +13,7 @@ var backgroundColor = color.White
 var flightLineColor = color.RGBA{0, 0, 255, 255}
 var routeLineColor = color.RGBA{0, 255, 0, 255}
 
-const imageSize = 550
+const imageSize = 1200
 const paddingLeft = 250
 const paddingUp = 250
 const applyScaleValue = 5

@@ -31,7 +31,7 @@ func TimeSpent(itineraryInfo itinerary.Info) float64 {
 			break
 		}
 		next := iterator.Next()
-		travelTime := gps.ManhattanDistanceBetweenPoints(actual.Point(), next.Point()) / carSpeed
+		travelTime := gps.EuclideanDistanceBetweenPoints(actual.Point(), next.Point()) / carSpeed
 		updateMainRouteTravelTimes(mainRouteTravelTime, travelTime)
 		totalTime += travelTime
 		iterator.GoToNext()

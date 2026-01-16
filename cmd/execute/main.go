@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/victorguarana/vehicle-routing/cmd/execute/instances/eilon"
+	"github.com/victorguarana/vehicle-routing/cmd/execute/instances/agatz"
 	"github.com/victorguarana/vehicle-routing/internal/brkga"
 	"github.com/victorguarana/vehicle-routing/internal/brkga/decoder"
 	"github.com/victorguarana/vehicle-routing/internal/gps"
@@ -13,8 +13,9 @@ import (
 	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
-var dronePercentage = 0.0
+var dronePercentage = 0.8
 var iterations = 10
+var alpha agatz.Alpha = agatz.Alpha3
 
 var brkgaBaseParams = brkga.BRKGAParams[itinerary.ItineraryList]{
 	BiasPercentage:      0.75,
@@ -25,11 +26,11 @@ var brkgaBaseParams = brkga.BRKGAParams[itinerary.ItineraryList]{
 }
 
 var distanceMeasurer = measure.NewMeasurer(measure.TotalDistance, "TotalDistance")
-var fuelMeasurer = measure.NewMeasurer(measure.SpentFuel, "SpentFuel")
+
 var timeMeasurer = measure.NewMeasurer(measure.TimeSpent, "TimeSpent")
 
 func main() {
-	f, err := os.OpenFile("resultados_tabela4_semdrone.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	f, err := os.OpenFile("resultados_agatz_uniform_alpha3_08.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}
@@ -42,79 +43,37 @@ func main() {
 	log.Println("Max Population", brkgaBaseParams.MaxPop)
 	log.Println("Generation Limit", brkgaBaseParams.GenerationLimit)
 	log.Println("Drone Percentage", dronePercentage)
+	log.Println("Alpha", alpha)
 
 	log.Println("Starting execution...")
-	executeBRKGA(eilon.LoadEIL22())
-	executeBRKGA(eilon.LoadEIL23())
-	executeBRKGA(eilon.LoadEIL30())
-	executeBRKGA(eilon.LoadEIL33())
-	executeBRKGA(eilon.LoadEIL51())
-	executeBRKGA(eilon.LoadEIL76A())
-	executeBRKGA(eilon.LoadEIL76B())
-	executeBRKGA(eilon.LoadEIL76C())
-	executeBRKGA(eilon.LoadEIL76D())
-	executeBRKGA(eilon.LoadEIL101A())
-	executeBRKGA(eilon.LoadEIL101B())
+
+	// Agatz Uniform N10 Instances Alpha1
+	for name, mapFilename := range agatz.AgatzInstanceUniformN10 {
+		executeBRKGA(agatz.LoadAgatz(mapFilename, name, alpha))
+	}
+	for name, mapFilename := range agatz.AgatzInstanceUniformN20 {
+		executeBRKGA(agatz.LoadAgatz(mapFilename, name, alpha))
+	}
+	for name, mapFilename := range agatz.AgatzInstanceUniformN50 {
+		executeBRKGA(agatz.LoadAgatz(mapFilename, name, alpha))
+	}
+	for name, mapFilename := range agatz.AgatzInstanceUniformN75 {
+		executeBRKGA(agatz.LoadAgatz(mapFilename, name, alpha))
+	}
+	for name, mapFilename := range agatz.AgatzInstanceUniformN100 {
+		executeBRKGA(agatz.LoadAgatz(mapFilename, name, alpha))
+	}
+	for name, mapFilename := range agatz.AgatzInstanceUniformN175 {
+		executeBRKGA(agatz.LoadAgatz(mapFilename, name, alpha))
+	}
+	for name, mapFilename := range agatz.AgatzInstanceUniformN250 {
+		executeBRKGA(agatz.LoadAgatz(mapFilename, name, alpha))
+	}
+
 	log.Println("Finishing execution...")
 }
 
 func executeBRKGA(mapFilename string, gpsMap gps.Map, carList []vehicle.ICar) {
-	BRKGA(
-		measure.NewMeasurer(measure.TotalDistance, "TotalDistance"),
-		decoder.NewPositionalDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
-		gpsMap,
-		mapFilename,
-		"positional_by_percentage_total_distance")
-
-	BRKGA(
-		measure.NewMeasurer(measure.TotalDistance, "TotalDistance"),
-		decoder.NewPositionalDecoderWithVehicleByStorage(carList, gpsMap),
-		gpsMap,
-		mapFilename,
-		"positional_by_storage_total_distance")
-
-	BRKGA(
-		measure.NewMeasurer(measure.TotalDistance, "TotalDistance"),
-		decoder.NewTimeDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
-		gpsMap,
-		mapFilename,
-		"time_by_percentage_total_distance")
-
-	BRKGA(
-		measure.NewMeasurer(measure.TotalDistance, "TotalDistance"),
-		decoder.NewTimeDecoderWithVehicleByStorage(carList, gpsMap),
-		gpsMap,
-		mapFilename,
-		"time_by_storage_total_distance")
-
-	BRKGA(
-		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
-		decoder.NewPositionalDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
-		gpsMap,
-		mapFilename,
-		"positional_by_percentage_fuel_spent")
-
-	BRKGA(
-		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
-		decoder.NewPositionalDecoderWithVehicleByStorage(carList, gpsMap),
-		gpsMap,
-		mapFilename,
-		"positional_by_storage_fuel_spent")
-
-	BRKGA(
-		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
-		decoder.NewTimeDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
-		gpsMap,
-		mapFilename,
-		"time_by_percentage_fuel_spent")
-
-	BRKGA(
-		measure.NewMeasurer(measure.SpentFuel, "SpentFuel"),
-		decoder.NewTimeDecoderWithVehicleByStorage(carList, gpsMap),
-		gpsMap,
-		mapFilename,
-		"time_by_storage_fuel_spent")
-
 	BRKGA(
 		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
 		decoder.NewPositionalDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
@@ -124,30 +83,13 @@ func executeBRKGA(mapFilename string, gpsMap gps.Map, carList []vehicle.ICar) {
 
 	BRKGA(
 		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
-		decoder.NewPositionalDecoderWithVehicleByStorage(carList, gpsMap),
-		gpsMap,
-		mapFilename,
-		"positional_by_storage_time_spent")
-
-	BRKGA(
-		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
 		decoder.NewTimeDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
 		gpsMap,
 		mapFilename,
 		"time_by_percentage_time_spent")
-
-	BRKGA(
-		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
-		decoder.NewTimeDecoderWithVehicleByStorage(carList, gpsMap),
-		gpsMap,
-		mapFilename,
-		"time_by_storage_time_spent")
-
-	// wg.Wait()
 }
 
 func BRKGA(m measure.Measurer, d brkga.IDecoder[itinerary.ItineraryList], gpsMap gps.Map, mapFilename string, nameSuffix string) {
-	// defer wg.Done()
 	for i := 0; i < iterations; i++ {
 		itn := brkga.NewBRKGA(brkga.BRKGAParams[itinerary.ItineraryList]{
 			MaxPop:              brkgaBaseParams.MaxPop,
@@ -166,16 +108,10 @@ func BRKGA(m measure.Measurer, d brkga.IDecoder[itinerary.ItineraryList], gpsMap
 			continue
 		}
 
-		score := m.Measure(itn)
-		log.Printf("%s %s (%s): %d\n", mapFilename, d.Name(), m.Name(), int(score))
-
-		score = distanceMeasurer.Measure(itn)
-		log.Printf("%s %s (%s - %s): %d\n", mapFilename, d.Name(), m.Name(), "Total Distance", int(score))
+		score := distanceMeasurer.Measure(itn)
+		log.Printf("%s %s (%s - %s): %.2f\n", mapFilename, d.Name(), m.Name(), "Total Distance", score)
 
 		score = timeMeasurer.Measure(itn)
-		log.Printf("%s %s (%s - %s): %d\n", mapFilename, d.Name(), m.Name(), "Time Spent", int(score))
-
-		score = fuelMeasurer.Measure(itn)
-		log.Printf("%s %s (%s - %s): %d\n", mapFilename, d.Name(), m.Name(), "Fuel Spent", int(score))
+		log.Printf("%s %s (%s - %s): %.2f\n", mapFilename, d.Name(), m.Name(), "Time Spent", score)
 	}
 }

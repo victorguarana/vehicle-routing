@@ -30,7 +30,7 @@ func (v *validator) carCanSupportRoute() bool {
 	mainStopList := v.route.MainStopList()
 	prevStop := mainStopList[0]
 	for _, actualStop := range mainStopList {
-		requiredRange += gps.ManhattanDistanceBetweenPoints(prevStop.Point(), actualStop.Point())
+		requiredRange += gps.EuclideanDistanceBetweenPoints(prevStop.Point(), actualStop.Point())
 		if requiredRange > v.car.Range() {
 			return false
 		}
