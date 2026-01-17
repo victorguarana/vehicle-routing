@@ -191,12 +191,12 @@ func (b BRKGA[T]) orderGeneration(generation []*Individual) {
 func (b BRKGA[T]) defineBestScore(bestScore float64, currentScore float64, generationCounter int) float64 {
 	if b.optimizationGoal == Maximize {
 		if currentScore > bestScore {
-			logger.Info("Best individual", "generation", generationCounter, "score", currentScore)
+			// log.Println("Best individual", "generation", generationCounter, "score", currentScore)
 			return currentScore
 		}
 	} else {
 		if currentScore < bestScore {
-			logger.Info("Best individual", "generation", generationCounter, "score", currentScore)
+			// log.Println("Best individual", "generation", generationCounter, "score", currentScore)
 			return currentScore
 		}
 	}

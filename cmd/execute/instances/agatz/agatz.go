@@ -11,8 +11,8 @@ import (
 // Fleet Constants
 const agatzCarEfficiencyConst = 1.0 // Not important for this instance
 const agatzDroneSpeedAlpha1Const = 1.0
-const agatzDroneSpeedAlpha2Const = 0.5
-const agatzDroneSpeedAlpha3Const = 0.333
+const agatzDroneSpeedAlpha2Const = 2.0
+const agatzDroneSpeedAlpha3Const = 3.0
 const agatzDroneEfficiencyConst = 1.0 // Not important for this instance
 const agatzCarSpeedConst = 1.0
 const agatzRangeConst = 100000.0 // Range is not important for this instance
@@ -22,52 +22,52 @@ const agatzDroneStorage = 1      // Fixed to 1 since drones can only do one deli
 const agatzCarStorage = 100000.0 // Not important for this instance
 
 var AgatzInstanceUniformN10 = map[string]string{
-	"AGATZ - Uniform - N10 - 51": "cmd/execute/instances/agatz/uniform/uniform-51-n10",
-	"AGATZ - Uniform - N10 - 52": "cmd/execute/instances/agatz/uniform/uniform-52-n10",
-	"AGATZ - Uniform - N10 - 53": "cmd/execute/instances/agatz/uniform/uniform-53-n10",
-	"AGATZ - Uniform - N10 - 54": "cmd/execute/instances/agatz/uniform/uniform-54-n10",
-	"AGATZ - Uniform - N10 - 55": "cmd/execute/instances/agatz/uniform/uniform-55-n10",
-	"AGATZ - Uniform - N10 - 56": "cmd/execute/instances/agatz/uniform/uniform-56-n10",
-	"AGATZ - Uniform - N10 - 57": "cmd/execute/instances/agatz/uniform/uniform-57-n10",
-	"AGATZ - Uniform - N10 - 58": "cmd/execute/instances/agatz/uniform/uniform-58-n10",
-	"AGATZ - Uniform - N10 - 59": "cmd/execute/instances/agatz/uniform/uniform-59-n10",
-	"AGATZ - Uniform - N10 - 60": "cmd/execute/instances/agatz/uniform/uniform-60-n10",
+	"AGATZ - Uniform - N010 - 51": "cmd/execute/instances/agatz/uniform/uniform-51-n10",
+	"AGATZ - Uniform - N010 - 52": "cmd/execute/instances/agatz/uniform/uniform-52-n10",
+	"AGATZ - Uniform - N010 - 53": "cmd/execute/instances/agatz/uniform/uniform-53-n10",
+	"AGATZ - Uniform - N010 - 54": "cmd/execute/instances/agatz/uniform/uniform-54-n10",
+	"AGATZ - Uniform - N010 - 55": "cmd/execute/instances/agatz/uniform/uniform-55-n10",
+	"AGATZ - Uniform - N010 - 56": "cmd/execute/instances/agatz/uniform/uniform-56-n10",
+	"AGATZ - Uniform - N010 - 57": "cmd/execute/instances/agatz/uniform/uniform-57-n10",
+	"AGATZ - Uniform - N010 - 58": "cmd/execute/instances/agatz/uniform/uniform-58-n10",
+	"AGATZ - Uniform - N010 - 59": "cmd/execute/instances/agatz/uniform/uniform-59-n10",
+	"AGATZ - Uniform - N010 - 60": "cmd/execute/instances/agatz/uniform/uniform-60-n10",
 }
 var AgatzInstanceUniformN20 = map[string]string{
-	"AGATZ - Uniform - N20 - 61": "cmd/execute/instances/agatz/uniform/uniform-61-n20",
-	"AGATZ - Uniform - N20 - 62": "cmd/execute/instances/agatz/uniform/uniform-62-n20",
-	"AGATZ - Uniform - N20 - 63": "cmd/execute/instances/agatz/uniform/uniform-63-n20",
-	"AGATZ - Uniform - N20 - 64": "cmd/execute/instances/agatz/uniform/uniform-64-n20",
-	"AGATZ - Uniform - N20 - 65": "cmd/execute/instances/agatz/uniform/uniform-65-n20",
-	"AGATZ - Uniform - N20 - 66": "cmd/execute/instances/agatz/uniform/uniform-66-n20",
-	"AGATZ - Uniform - N20 - 67": "cmd/execute/instances/agatz/uniform/uniform-67-n20",
-	"AGATZ - Uniform - N20 - 68": "cmd/execute/instances/agatz/uniform/uniform-68-n20",
-	"AGATZ - Uniform - N20 - 69": "cmd/execute/instances/agatz/uniform/uniform-69-n20",
-	"AGATZ - Uniform - N20 - 70": "cmd/execute/instances/agatz/uniform/uniform-70-n20",
+	"AGATZ - Uniform - N020 - 61": "cmd/execute/instances/agatz/uniform/uniform-61-n20",
+	"AGATZ - Uniform - N020 - 62": "cmd/execute/instances/agatz/uniform/uniform-62-n20",
+	"AGATZ - Uniform - N020 - 63": "cmd/execute/instances/agatz/uniform/uniform-63-n20",
+	"AGATZ - Uniform - N020 - 64": "cmd/execute/instances/agatz/uniform/uniform-64-n20",
+	"AGATZ - Uniform - N020 - 65": "cmd/execute/instances/agatz/uniform/uniform-65-n20",
+	"AGATZ - Uniform - N020 - 66": "cmd/execute/instances/agatz/uniform/uniform-66-n20",
+	"AGATZ - Uniform - N020 - 67": "cmd/execute/instances/agatz/uniform/uniform-67-n20",
+	"AGATZ - Uniform - N020 - 68": "cmd/execute/instances/agatz/uniform/uniform-68-n20",
+	"AGATZ - Uniform - N020 - 69": "cmd/execute/instances/agatz/uniform/uniform-69-n20",
+	"AGATZ - Uniform - N020 - 70": "cmd/execute/instances/agatz/uniform/uniform-70-n20",
 }
 var AgatzInstanceUniformN50 = map[string]string{
-	"AGATZ - Uniform - N50 - 71": "cmd/execute/instances/agatz/uniform/uniform-71-n50",
-	"AGATZ - Uniform - N50 - 72": "cmd/execute/instances/agatz/uniform/uniform-72-n50",
-	"AGATZ - Uniform - N50 - 73": "cmd/execute/instances/agatz/uniform/uniform-73-n50",
-	"AGATZ - Uniform - N50 - 74": "cmd/execute/instances/agatz/uniform/uniform-74-n50",
-	"AGATZ - Uniform - N50 - 75": "cmd/execute/instances/agatz/uniform/uniform-75-n50",
-	"AGATZ - Uniform - N50 - 76": "cmd/execute/instances/agatz/uniform/uniform-76-n50",
-	"AGATZ - Uniform - N50 - 77": "cmd/execute/instances/agatz/uniform/uniform-77-n50",
-	"AGATZ - Uniform - N50 - 78": "cmd/execute/instances/agatz/uniform/uniform-78-n50",
-	"AGATZ - Uniform - N50 - 79": "cmd/execute/instances/agatz/uniform/uniform-79-n50",
-	"AGATZ - Uniform - N50 - 80": "cmd/execute/instances/agatz/uniform/uniform-80-n50",
+	"AGATZ - Uniform - N050 - 71": "cmd/execute/instances/agatz/uniform/uniform-71-n50",
+	"AGATZ - Uniform - N050 - 72": "cmd/execute/instances/agatz/uniform/uniform-72-n50",
+	"AGATZ - Uniform - N050 - 73": "cmd/execute/instances/agatz/uniform/uniform-73-n50",
+	"AGATZ - Uniform - N050 - 74": "cmd/execute/instances/agatz/uniform/uniform-74-n50",
+	"AGATZ - Uniform - N050 - 75": "cmd/execute/instances/agatz/uniform/uniform-75-n50",
+	"AGATZ - Uniform - N050 - 76": "cmd/execute/instances/agatz/uniform/uniform-76-n50",
+	"AGATZ - Uniform - N050 - 77": "cmd/execute/instances/agatz/uniform/uniform-77-n50",
+	"AGATZ - Uniform - N050 - 78": "cmd/execute/instances/agatz/uniform/uniform-78-n50",
+	"AGATZ - Uniform - N050 - 79": "cmd/execute/instances/agatz/uniform/uniform-79-n50",
+	"AGATZ - Uniform - N050 - 80": "cmd/execute/instances/agatz/uniform/uniform-80-n50",
 }
 var AgatzInstanceUniformN75 = map[string]string{
-	"AGATZ - Uniform - N75 - 81": "cmd/execute/instances/agatz/uniform/uniform-81-n75",
-	"AGATZ - Uniform - N75 - 82": "cmd/execute/instances/agatz/uniform/uniform-82-n75",
-	"AGATZ - Uniform - N75 - 83": "cmd/execute/instances/agatz/uniform/uniform-83-n75",
-	"AGATZ - Uniform - N75 - 84": "cmd/execute/instances/agatz/uniform/uniform-84-n75",
-	"AGATZ - Uniform - N75 - 85": "cmd/execute/instances/agatz/uniform/uniform-85-n75",
-	"AGATZ - Uniform - N75 - 86": "cmd/execute/instances/agatz/uniform/uniform-86-n75",
-	"AGATZ - Uniform - N75 - 87": "cmd/execute/instances/agatz/uniform/uniform-87-n75",
-	"AGATZ - Uniform - N75 - 88": "cmd/execute/instances/agatz/uniform/uniform-88-n75",
-	"AGATZ - Uniform - N75 - 89": "cmd/execute/instances/agatz/uniform/uniform-89-n75",
-	"AGATZ - Uniform - N75 - 90": "cmd/execute/instances/agatz/uniform/uniform-90-n75",
+	"AGATZ - Uniform - N075 - 81": "cmd/execute/instances/agatz/uniform/uniform-81-n75",
+	"AGATZ - Uniform - N075 - 82": "cmd/execute/instances/agatz/uniform/uniform-82-n75",
+	"AGATZ - Uniform - N075 - 83": "cmd/execute/instances/agatz/uniform/uniform-83-n75",
+	"AGATZ - Uniform - N075 - 84": "cmd/execute/instances/agatz/uniform/uniform-84-n75",
+	"AGATZ - Uniform - N075 - 85": "cmd/execute/instances/agatz/uniform/uniform-85-n75",
+	"AGATZ - Uniform - N075 - 86": "cmd/execute/instances/agatz/uniform/uniform-86-n75",
+	"AGATZ - Uniform - N075 - 87": "cmd/execute/instances/agatz/uniform/uniform-87-n75",
+	"AGATZ - Uniform - N075 - 88": "cmd/execute/instances/agatz/uniform/uniform-88-n75",
+	"AGATZ - Uniform - N075 - 89": "cmd/execute/instances/agatz/uniform/uniform-89-n75",
+	"AGATZ - Uniform - N075 - 90": "cmd/execute/instances/agatz/uniform/uniform-90-n75",
 }
 var AgatzInstanceUniformN100 = map[string]string{
 	"AGATZ - Uniform - N100 - 91":  "cmd/execute/instances/agatz/uniform/uniform-91-n100",
@@ -114,6 +114,101 @@ var AgatzInstanceUniformN250 = map[string]string{
 	"AGATZ - Uniform - N250 - 118": "cmd/execute/instances/agatz/uniform/uniform-118-n250",
 	"AGATZ - Uniform - N250 - 119": "cmd/execute/instances/agatz/uniform/uniform-119-n250",
 	"AGATZ - Uniform - N250 - 120": "cmd/execute/instances/agatz/uniform/uniform-120-n250",
+}
+
+var AgatzInstanceSingleCenterN10 = map[string]string{
+	"AGATZ - SingleCenter - N010 - 51": "cmd/execute/instances/agatz/singlecenter/singlecenter-51-n10",
+	"AGATZ - SingleCenter - N010 - 52": "cmd/execute/instances/agatz/singlecenter/singlecenter-52-n10",
+	"AGATZ - SingleCenter - N010 - 53": "cmd/execute/instances/agatz/singlecenter/singlecenter-53-n10",
+	"AGATZ - SingleCenter - N010 - 54": "cmd/execute/instances/agatz/singlecenter/singlecenter-54-n10",
+	"AGATZ - SingleCenter - N010 - 55": "cmd/execute/instances/agatz/singlecenter/singlecenter-55-n10",
+	"AGATZ - SingleCenter - N010 - 56": "cmd/execute/instances/agatz/singlecenter/singlecenter-56-n10",
+	"AGATZ - SingleCenter - N010 - 57": "cmd/execute/instances/agatz/singlecenter/singlecenter-57-n10",
+	"AGATZ - SingleCenter - N010 - 58": "cmd/execute/instances/agatz/singlecenter/singlecenter-58-n10",
+	"AGATZ - SingleCenter - N010 - 59": "cmd/execute/instances/agatz/singlecenter/singlecenter-59-n10",
+	"AGATZ - SingleCenter - N010 - 60": "cmd/execute/instances/agatz/singlecenter/singlecenter-60-n10",
+}
+var AgatzInstanceSingleCenterN20 = map[string]string{
+	"AGATZ - SingleCenter - N020 - 61": "cmd/execute/instances/agatz/singlecenter/singlecenter-61-n20",
+	"AGATZ - SingleCenter - N020 - 62": "cmd/execute/instances/agatz/singlecenter/singlecenter-62-n20",
+	"AGATZ - SingleCenter - N020 - 63": "cmd/execute/instances/agatz/singlecenter/singlecenter-63-n20",
+	"AGATZ - SingleCenter - N020 - 64": "cmd/execute/instances/agatz/singlecenter/singlecenter-64-n20",
+	"AGATZ - SingleCenter - N020 - 65": "cmd/execute/instances/agatz/singlecenter/singlecenter-65-n20",
+	"AGATZ - SingleCenter - N020 - 66": "cmd/execute/instances/agatz/singlecenter/singlecenter-66-n20",
+	"AGATZ - SingleCenter - N020 - 67": "cmd/execute/instances/agatz/singlecenter/singlecenter-67-n20",
+	"AGATZ - SingleCenter - N020 - 68": "cmd/execute/instances/agatz/singlecenter/singlecenter-68-n20",
+	"AGATZ - SingleCenter - N020 - 69": "cmd/execute/instances/agatz/singlecenter/singlecenter-69-n20",
+	"AGATZ - SingleCenter - N020 - 70": "cmd/execute/instances/agatz/singlecenter/singlecenter-70-n20",
+}
+var AgatzInstanceSingleCenterN50 = map[string]string{
+	"AGATZ - SingleCenter - N050 - 71": "cmd/execute/instances/agatz/singlecenter/singlecenter-71-n50",
+	"AGATZ - SingleCenter - N050 - 72": "cmd/execute/instances/agatz/singlecenter/singlecenter-72-n50",
+	"AGATZ - SingleCenter - N050 - 73": "cmd/execute/instances/agatz/singlecenter/singlecenter-73-n50",
+	"AGATZ - SingleCenter - N050 - 74": "cmd/execute/instances/agatz/singlecenter/singlecenter-74-n50",
+	"AGATZ - SingleCenter - N050 - 75": "cmd/execute/instances/agatz/singlecenter/singlecenter-75-n50",
+	"AGATZ - SingleCenter - N050 - 76": "cmd/execute/instances/agatz/singlecenter/singlecenter-76-n50",
+	"AGATZ - SingleCenter - N050 - 77": "cmd/execute/instances/agatz/singlecenter/singlecenter-77-n50",
+	"AGATZ - SingleCenter - N050 - 78": "cmd/execute/instances/agatz/singlecenter/singlecenter-78-n50",
+	"AGATZ - SingleCenter - N050 - 79": "cmd/execute/instances/agatz/singlecenter/singlecenter-79-n50",
+	"AGATZ - SingleCenter - N050 - 80": "cmd/execute/instances/agatz/singlecenter/singlecenter-80-n50",
+}
+var AgatzInstanceSingleCenterN75 = map[string]string{
+	"AGATZ - SingleCenter - N075 - 81": "cmd/execute/instances/agatz/singlecenter/singlecenter-81-n75",
+	"AGATZ - SingleCenter - N075 - 82": "cmd/execute/instances/agatz/singlecenter/singlecenter-82-n75",
+	"AGATZ - SingleCenter - N075 - 83": "cmd/execute/instances/agatz/singlecenter/singlecenter-83-n75",
+	"AGATZ - SingleCenter - N075 - 84": "cmd/execute/instances/agatz/singlecenter/singlecenter-84-n75",
+	"AGATZ - SingleCenter - N075 - 85": "cmd/execute/instances/agatz/singlecenter/singlecenter-85-n75",
+	"AGATZ - SingleCenter - N075 - 86": "cmd/execute/instances/agatz/singlecenter/singlecenter-86-n75",
+	"AGATZ - SingleCenter - N075 - 87": "cmd/execute/instances/agatz/singlecenter/singlecenter-87-n75",
+	"AGATZ - SingleCenter - N075 - 88": "cmd/execute/instances/agatz/singlecenter/singlecenter-88-n75",
+	"AGATZ - SingleCenter - N075 - 89": "cmd/execute/instances/agatz/singlecenter/singlecenter-89-n75",
+	"AGATZ - SingleCenter - N075 - 90": "cmd/execute/instances/agatz/singlecenter/singlecenter-90-n75",
+}
+var AgatzInstanceSingleCenterN100 = map[string]string{
+	"AGATZ - SingleCenter - N100 - 91":  "cmd/execute/instances/agatz/singlecenter/singlecenter-91-n100",
+	"AGATZ - SingleCenter - N100 - 92":  "cmd/execute/instances/agatz/singlecenter/singlecenter-92-n100",
+	"AGATZ - SingleCenter - N100 - 93":  "cmd/execute/instances/agatz/singlecenter/singlecenter-93-n100",
+	"AGATZ - SingleCenter - N100 - 94":  "cmd/execute/instances/agatz/singlecenter/singlecenter-94-n100",
+	"AGATZ - SingleCenter - N100 - 95":  "cmd/execute/instances/agatz/singlecenter/singlecenter-95-n100",
+	"AGATZ - SingleCenter - N100 - 96":  "cmd/execute/instances/agatz/singlecenter/singlecenter-96-n100",
+	"AGATZ - SingleCenter - N100 - 97":  "cmd/execute/instances/agatz/singlecenter/singlecenter-97-n100",
+	"AGATZ - SingleCenter - N100 - 98":  "cmd/execute/instances/agatz/singlecenter/singlecenter-98-n100",
+	"AGATZ - SingleCenter - N100 - 99":  "cmd/execute/instances/agatz/singlecenter/singlecenter-99-n100",
+	"AGATZ - SingleCenter - N100 - 100": "cmd/execute/instances/agatz/singlecenter/singlecenter-100-n100",
+}
+var AgatzInstanceSingleCenterN175 = map[string]string{
+	"AGATZ - SingleCenter - N175 - 101": "cmd/execute/instances/agatz/singlecenter/singlecenter-101-n175",
+	"AGATZ - SingleCenter - N175 - 102": "cmd/execute/instances/agatz/singlecenter/singlecenter-102-n175",
+	"AGATZ - SingleCenter - N175 - 103": "cmd/execute/instances/agatz/singlecenter/singlecenter-103-n175",
+	"AGATZ - SingleCenter - N175 - 104": "cmd/execute/instances/agatz/singlecenter/singlecenter-104-n175",
+	"AGATZ - SingleCenter - N175 - 105": "cmd/execute/instances/agatz/singlecenter/singlecenter-105-n175",
+	"AGATZ - SingleCenter - N175 - 106": "cmd/execute/instances/agatz/singlecenter/singlecenter-106-n175",
+	"AGATZ - SingleCenter - N175 - 107": "cmd/execute/instances/agatz/singlecenter/singlecenter-107-n175",
+	"AGATZ - SingleCenter - N175 - 108": "cmd/execute/instances/agatz/singlecenter/singlecenter-108-n175",
+	"AGATZ - SingleCenter - N175 - 109": "cmd/execute/instances/agatz/singlecenter/singlecenter-109-n175",
+	"AGATZ - SingleCenter - N175 - 110": "cmd/execute/instances/agatz/singlecenter/singlecenter-110-n175",
+}
+var AgatzInstanceSingleCenterN250 = map[string]string{
+	"AGATZ - SingleCenter - N250 - 1":   "cmd/execute/instances/agatz/singlecenter/singlecenter-1-n250",
+	"AGATZ - SingleCenter - N250 - 2":   "cmd/execute/instances/agatz/singlecenter/singlecenter-2-n250",
+	"AGATZ - SingleCenter - N250 - 3":   "cmd/execute/instances/agatz/singlecenter/singlecenter-3-n250",
+	"AGATZ - SingleCenter - N250 - 4":   "cmd/execute/instances/agatz/singlecenter/singlecenter-4-n250",
+	"AGATZ - SingleCenter - N250 - 5":   "cmd/execute/instances/agatz/singlecenter/singlecenter-5-n250",
+	"AGATZ - SingleCenter - N250 - 6":   "cmd/execute/instances/agatz/singlecenter/singlecenter-6-n250",
+	"AGATZ - SingleCenter - N250 - 7":   "cmd/execute/instances/agatz/singlecenter/singlecenter-7-n250",
+	"AGATZ - SingleCenter - N250 - 8":   "cmd/execute/instances/agatz/singlecenter/singlecenter-8-n250",
+	"AGATZ - SingleCenter - N250 - 9":   "cmd/execute/instances/agatz/singlecenter/singlecenter-9-n250",
+	"AGATZ - SingleCenter - N250 - 10":  "cmd/execute/instances/agatz/singlecenter/singlecenter-10-n250",
+	"AGATZ - SingleCenter - N250 - 111": "cmd/execute/instances/agatz/singlecenter/singlecenter-111-n250",
+	"AGATZ - SingleCenter - N250 - 112": "cmd/execute/instances/agatz/singlecenter/singlecenter-112-n250",
+	"AGATZ - SingleCenter - N250 - 113": "cmd/execute/instances/agatz/singlecenter/singlecenter-113-n250",
+	"AGATZ - SingleCenter - N250 - 114": "cmd/execute/instances/agatz/singlecenter/singlecenter-114-n250",
+	"AGATZ - SingleCenter - N250 - 115": "cmd/execute/instances/agatz/singlecenter/singlecenter-115-n250",
+	"AGATZ - SingleCenter - N250 - 116": "cmd/execute/instances/agatz/singlecenter/singlecenter-116-n250",
+	"AGATZ - SingleCenter - N250 - 117": "cmd/execute/instances/agatz/singlecenter/singlecenter-117-n250",
+	"AGATZ - SingleCenter - N250 - 118": "cmd/execute/instances/agatz/singlecenter/singlecenter-118-n250",
+	"AGATZ - SingleCenter - N250 - 119": "cmd/execute/instances/agatz/singlecenter/singlecenter-119-n250",
+	"AGATZ - SingleCenter - N250 - 120": "cmd/execute/instances/agatz/singlecenter/singlecenter-120-n250",
 }
 
 type Alpha int

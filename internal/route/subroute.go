@@ -72,6 +72,7 @@ func (sr *subRoute) Length() int {
 
 func (sr *subRoute) Return(iMainStop IMainStop) {
 	sr.returningStop = iMainStop.(*mainStop)
+	iMainStop.(*mainStop).returningSubRoutes = append(iMainStop.(*mainStop).returningSubRoutes, sr)
 }
 
 func (sr *subRoute) ReturningStop() IMainStop {
