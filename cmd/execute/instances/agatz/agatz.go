@@ -211,6 +211,101 @@ var AgatzInstanceSingleCenterN250 = map[string]string{
 	"AGATZ - SingleCenter - N250 - 120": "cmd/execute/instances/agatz/singlecenter/singlecenter-120-n250",
 }
 
+var AgatzInstanceDoubleCenterN10 = map[string]string{
+	"AGATZ - DoubleCenter - N010 - 51": "cmd/execute/instances/agatz/doublecenter/doublecenter-51-n10",
+	"AGATZ - DoubleCenter - N010 - 52": "cmd/execute/instances/agatz/doublecenter/doublecenter-52-n10",
+	"AGATZ - DoubleCenter - N010 - 53": "cmd/execute/instances/agatz/doublecenter/doublecenter-53-n10",
+	"AGATZ - DoubleCenter - N010 - 54": "cmd/execute/instances/agatz/doublecenter/doublecenter-54-n10",
+	"AGATZ - DoubleCenter - N010 - 55": "cmd/execute/instances/agatz/doublecenter/doublecenter-55-n10",
+	"AGATZ - DoubleCenter - N010 - 56": "cmd/execute/instances/agatz/doublecenter/doublecenter-56-n10",
+	"AGATZ - DoubleCenter - N010 - 57": "cmd/execute/instances/agatz/doublecenter/doublecenter-57-n10",
+	"AGATZ - DoubleCenter - N010 - 58": "cmd/execute/instances/agatz/doublecenter/doublecenter-58-n10",
+	"AGATZ - DoubleCenter - N010 - 59": "cmd/execute/instances/agatz/doublecenter/doublecenter-59-n10",
+	"AGATZ - DoubleCenter - N010 - 60": "cmd/execute/instances/agatz/doublecenter/doublecenter-60-n10",
+}
+var AgatzInstanceDoubleCenterN20 = map[string]string{
+	"AGATZ - DoubleCenter - N020 - 61": "cmd/execute/instances/agatz/doublecenter/doublecenter-61-n20",
+	"AGATZ - DoubleCenter - N020 - 62": "cmd/execute/instances/agatz/doublecenter/doublecenter-62-n20",
+	"AGATZ - DoubleCenter - N020 - 63": "cmd/execute/instances/agatz/doublecenter/doublecenter-63-n20",
+	"AGATZ - DoubleCenter - N020 - 64": "cmd/execute/instances/agatz/doublecenter/doublecenter-64-n20",
+	"AGATZ - DoubleCenter - N020 - 65": "cmd/execute/instances/agatz/doublecenter/doublecenter-65-n20",
+	"AGATZ - DoubleCenter - N020 - 66": "cmd/execute/instances/agatz/doublecenter/doublecenter-66-n20",
+	"AGATZ - DoubleCenter - N020 - 67": "cmd/execute/instances/agatz/doublecenter/doublecenter-67-n20",
+	"AGATZ - DoubleCenter - N020 - 68": "cmd/execute/instances/agatz/doublecenter/doublecenter-68-n20",
+	"AGATZ - DoubleCenter - N020 - 69": "cmd/execute/instances/agatz/doublecenter/doublecenter-69-n20",
+	"AGATZ - DoubleCenter - N020 - 70": "cmd/execute/instances/agatz/doublecenter/doublecenter-70-n20",
+}
+var AgatzInstanceDoubleCenterN50 = map[string]string{
+	"AGATZ - DoubleCenter - N050 - 71": "cmd/execute/instances/agatz/doublecenter/doublecenter-71-n50",
+	"AGATZ - DoubleCenter - N050 - 72": "cmd/execute/instances/agatz/doublecenter/doublecenter-72-n50",
+	"AGATZ - DoubleCenter - N050 - 73": "cmd/execute/instances/agatz/doublecenter/doublecenter-73-n50",
+	"AGATZ - DoubleCenter - N050 - 74": "cmd/execute/instances/agatz/doublecenter/doublecenter-74-n50",
+	"AGATZ - DoubleCenter - N050 - 75": "cmd/execute/instances/agatz/doublecenter/doublecenter-75-n50",
+	"AGATZ - DoubleCenter - N050 - 76": "cmd/execute/instances/agatz/doublecenter/doublecenter-76-n50",
+	"AGATZ - DoubleCenter - N050 - 77": "cmd/execute/instances/agatz/doublecenter/doublecenter-77-n50",
+	"AGATZ - DoubleCenter - N050 - 78": "cmd/execute/instances/agatz/doublecenter/doublecenter-78-n50",
+	"AGATZ - DoubleCenter - N050 - 79": "cmd/execute/instances/agatz/doublecenter/doublecenter-79-n50",
+	"AGATZ - DoubleCenter - N050 - 80": "cmd/execute/instances/agatz/doublecenter/doublecenter-80-n50",
+}
+var AgatzInstanceDoubleCenterN75 = map[string]string{
+	"AGATZ - DoubleCenter - N075 - 81": "cmd/execute/instances/agatz/doublecenter/doublecenter-81-n75",
+	"AGATZ - DoubleCenter - N075 - 82": "cmd/execute/instances/agatz/doublecenter/doublecenter-82-n75",
+	"AGATZ - DoubleCenter - N075 - 83": "cmd/execute/instances/agatz/doublecenter/doublecenter-83-n75",
+	"AGATZ - DoubleCenter - N075 - 84": "cmd/execute/instances/agatz/doublecenter/doublecenter-84-n75",
+	"AGATZ - DoubleCenter - N075 - 85": "cmd/execute/instances/agatz/doublecenter/doublecenter-85-n75",
+	"AGATZ - DoubleCenter - N075 - 86": "cmd/execute/instances/agatz/doublecenter/doublecenter-86-n75",
+	"AGATZ - DoubleCenter - N075 - 87": "cmd/execute/instances/agatz/doublecenter/doublecenter-87-n75",
+	"AGATZ - DoubleCenter - N075 - 88": "cmd/execute/instances/agatz/doublecenter/doublecenter-88-n75",
+	"AGATZ - DoubleCenter - N075 - 89": "cmd/execute/instances/agatz/doublecenter/doublecenter-89-n75",
+	"AGATZ - DoubleCenter - N075 - 90": "cmd/execute/instances/agatz/doublecenter/doublecenter-90-n75",
+}
+var AgatzInstanceDoubleCenterN100 = map[string]string{
+	"AGATZ - DoubleCenter - N100 - 91":  "cmd/execute/instances/agatz/doublecenter/doublecenter-91-n100",
+	"AGATZ - DoubleCenter - N100 - 92":  "cmd/execute/instances/agatz/doublecenter/doublecenter-92-n100",
+	"AGATZ - DoubleCenter - N100 - 93":  "cmd/execute/instances/agatz/doublecenter/doublecenter-93-n100",
+	"AGATZ - DoubleCenter - N100 - 94":  "cmd/execute/instances/agatz/doublecenter/doublecenter-94-n100",
+	"AGATZ - DoubleCenter - N100 - 95":  "cmd/execute/instances/agatz/doublecenter/doublecenter-95-n100",
+	"AGATZ - DoubleCenter - N100 - 96":  "cmd/execute/instances/agatz/doublecenter/doublecenter-96-n100",
+	"AGATZ - DoubleCenter - N100 - 97":  "cmd/execute/instances/agatz/doublecenter/doublecenter-97-n100",
+	"AGATZ - DoubleCenter - N100 - 98":  "cmd/execute/instances/agatz/doublecenter/doublecenter-98-n100",
+	"AGATZ - DoubleCenter - N100 - 99":  "cmd/execute/instances/agatz/doublecenter/doublecenter-99-n100",
+	"AGATZ - DoubleCenter - N100 - 100": "cmd/execute/instances/agatz/doublecenter/doublecenter-100-n100",
+}
+var AgatzInstanceDoubleCenterN175 = map[string]string{
+	"AGATZ - DoubleCenter - N175 - 101": "cmd/execute/instances/agatz/doublecenter/doublecenter-101-n175",
+	"AGATZ - DoubleCenter - N175 - 102": "cmd/execute/instances/agatz/doublecenter/doublecenter-102-n175",
+	"AGATZ - DoubleCenter - N175 - 103": "cmd/execute/instances/agatz/doublecenter/doublecenter-103-n175",
+	"AGATZ - DoubleCenter - N175 - 104": "cmd/execute/instances/agatz/doublecenter/doublecenter-104-n175",
+	"AGATZ - DoubleCenter - N175 - 105": "cmd/execute/instances/agatz/doublecenter/doublecenter-105-n175",
+	"AGATZ - DoubleCenter - N175 - 106": "cmd/execute/instances/agatz/doublecenter/doublecenter-106-n175",
+	"AGATZ - DoubleCenter - N175 - 107": "cmd/execute/instances/agatz/doublecenter/doublecenter-107-n175",
+	"AGATZ - DoubleCenter - N175 - 108": "cmd/execute/instances/agatz/doublecenter/doublecenter-108-n175",
+	"AGATZ - DoubleCenter - N175 - 109": "cmd/execute/instances/agatz/doublecenter/doublecenter-109-n175",
+	"AGATZ - DoubleCenter - N175 - 110": "cmd/execute/instances/agatz/doublecenter/doublecenter-110-n175",
+}
+var AgatzInstanceDoubleCenterN250 = map[string]string{
+	"AGATZ - DoubleCenter - N250 - 1":   "cmd/execute/instances/agatz/doublecenter/doublecenter-1-n250",
+	"AGATZ - DoubleCenter - N250 - 2":   "cmd/execute/instances/agatz/doublecenter/doublecenter-2-n250",
+	"AGATZ - DoubleCenter - N250 - 3":   "cmd/execute/instances/agatz/doublecenter/doublecenter-3-n250",
+	"AGATZ - DoubleCenter - N250 - 4":   "cmd/execute/instances/agatz/doublecenter/doublecenter-4-n250",
+	"AGATZ - DoubleCenter - N250 - 5":   "cmd/execute/instances/agatz/doublecenter/doublecenter-5-n250",
+	"AGATZ - DoubleCenter - N250 - 6":   "cmd/execute/instances/agatz/doublecenter/doublecenter-6-n250",
+	"AGATZ - DoubleCenter - N250 - 7":   "cmd/execute/instances/agatz/doublecenter/doublecenter-7-n250",
+	"AGATZ - DoubleCenter - N250 - 8":   "cmd/execute/instances/agatz/doublecenter/doublecenter-8-n250",
+	"AGATZ - DoubleCenter - N250 - 9":   "cmd/execute/instances/agatz/doublecenter/doublecenter-9-n250",
+	"AGATZ - DoubleCenter - N250 - 10":  "cmd/execute/instances/agatz/doublecenter/doublecenter-10-n250",
+	"AGATZ - DoubleCenter - N250 - 111": "cmd/execute/instances/agatz/doublecenter/doublecenter-111-n250",
+	"AGATZ - DoubleCenter - N250 - 112": "cmd/execute/instances/agatz/doublecenter/doublecenter-112-n250",
+	"AGATZ - DoubleCenter - N250 - 113": "cmd/execute/instances/agatz/doublecenter/doublecenter-113-n250",
+	"AGATZ - DoubleCenter - N250 - 114": "cmd/execute/instances/agatz/doublecenter/doublecenter-114-n250",
+	"AGATZ - DoubleCenter - N250 - 115": "cmd/execute/instances/agatz/doublecenter/doublecenter-115-n250",
+	"AGATZ - DoubleCenter - N250 - 116": "cmd/execute/instances/agatz/doublecenter/doublecenter-116-n250",
+	"AGATZ - DoubleCenter - N250 - 117": "cmd/execute/instances/agatz/doublecenter/doublecenter-117-n250",
+	"AGATZ - DoubleCenter - N250 - 118": "cmd/execute/instances/agatz/doublecenter/doublecenter-118-n250",
+	"AGATZ - DoubleCenter - N250 - 119": "cmd/execute/instances/agatz/doublecenter/doublecenter-119-n250",
+	"AGATZ - DoubleCenter - N250 - 120": "cmd/execute/instances/agatz/doublecenter/doublecenter-120-n250",
+}
+
 type Alpha int
 
 var Alpha1 Alpha = 1

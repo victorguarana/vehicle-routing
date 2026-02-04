@@ -13,9 +13,16 @@ import (
 	"github.com/victorguarana/vehicle-routing/internal/vehicle"
 )
 
-var dronePercentage = 0.8
+var dronePercentage = 0.5
 var iterations = 10
+
 var alpha agatz.Alpha = agatz.Alpha3
+
+// var allMeasures = map[string]func(itinerary.Info) float64{
+// 	// "Total Distance": measure.TotalDistance,
+// 	"Total Time": measure.TimeSpent,
+// 	// "Total Fuel":     measure.SpentFuel,
+// }
 
 var brkgaBaseParams = brkga.BRKGAParams[itinerary.ItineraryList]{
 	BiasPercentage:      0.75,
@@ -25,12 +32,16 @@ var brkgaBaseParams = brkga.BRKGAParams[itinerary.ItineraryList]{
 	GenerationLimit:     2000,
 }
 
-var distanceMeasurer = measure.NewMeasurer(measure.TotalDistance, "TotalDistance")
+// var distanceMeasurer = measure.NewMeasurer(measure.TotalDistance, "TotalDistance")
 
-var timeMeasurer = measure.NewMeasurer(measure.TimeSpent, "TimeSpent")
+// var timeMeasurer = measure.NewMeasurer(measure.TimeSpent, "TimeSpent")
+var timeAgatzMeasurer = measure.NewMeasurer(measure.TimeSpentAgatz, "TimeSpent")
 
 func main() {
-	f, err := os.OpenFile("resultados_agatz_uniform_alpha3_08.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	log.Println("Alpha", alpha)
+	log.Println("Drone Percentage", dronePercentage)
+
+	f, err := os.OpenFile("logs/agatz/ms/resultados_mothership_agatz_uniform_alpha3_05.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}
@@ -47,7 +58,7 @@ func main() {
 
 	log.Println("Starting execution...")
 
-	// Agatz Uniform N10 Instances Alpha1
+	// Agatz Instances
 	for name, mapFilename := range agatz.AgatzInstanceUniformN10 {
 		executeBRKGA(agatz.LoadAgatz(mapFilename, name, alpha))
 	}
@@ -75,18 +86,11 @@ func main() {
 
 func executeBRKGA(mapFilename string, gpsMap gps.Map, carList []vehicle.ICar) {
 	BRKGA(
-		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
-		decoder.NewPositionalDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
+		measure.NewMeasurer(measure.TimeSpentAgatz, "TimeSpent"),
+		decoder.NewPositionalDecoderWithVehicleByPercentageV2(carList, gpsMap, dronePercentage),
 		gpsMap,
 		mapFilename,
-		"positional_by_percentage_time_spent")
-
-	BRKGA(
-		measure.NewMeasurer(measure.TimeSpent, "TimeSpent"),
-		decoder.NewTimeDecoderWithVehicleByPercentage(carList, gpsMap, dronePercentage),
-		gpsMap,
-		mapFilename,
-		"time_by_percentage_time_spent")
+		"positional_agatz_by_percentage_time_spent")
 }
 
 func BRKGA(m measure.Measurer, d brkga.IDecoder[itinerary.ItineraryList], gpsMap gps.Map, mapFilename string, nameSuffix string) {
@@ -108,10 +112,31 @@ func BRKGA(m measure.Measurer, d brkga.IDecoder[itinerary.ItineraryList], gpsMap
 			continue
 		}
 
-		score := distanceMeasurer.Measure(itn)
-		log.Printf("%s %s (%s - %s): %.2f\n", mapFilename, d.Name(), m.Name(), "Total Distance", score)
+		// score := m.Measure(itn)
+		// log.Printf("%s %s (%s): %.2f\n", mapFilename, d.Name(), m.Name(), score)
 
-		score = timeMeasurer.Measure(itn)
+		// score := distanceMeasurer.Measure(itn)
+		// log.Printf("%s %s (%s - %s): %.2f\n", mapFilename, d.Name(), m.Name(), "Total Distance", score)
+
+		// outputInfos := mountOutputInfo(itn[0].Info())
+		// filename := fmt.Sprintf("%s_teste_%d_debug.png", mapFilename, i)
+		// output.ToImage(filename, itn[0].Info(), outputInfos)
+
+		score := timeAgatzMeasurer.Measure(itn)
 		log.Printf("%s %s (%s - %s): %.2f\n", mapFilename, d.Name(), m.Name(), "Time Spent", score)
+		// timeMeasurer.Measure(itn)
 	}
 }
+
+// func mountOutputInfo(itnInfo itinerary.Info) []output.Info {
+// 	var infos []output.Info
+// 	for measureName, measureFunc := range allMeasures {
+// 		measureValue := measureFunc(itnInfo)
+// 		measureStr := fmt.Sprintf("%s: %.2f", measureName, measureValue)
+// 		infos = append(infos, output.Info{Str: measureStr})
+
+// 		log.Println(measureName, measureValue)
+// 	}
+
+// 	return infos
+// }

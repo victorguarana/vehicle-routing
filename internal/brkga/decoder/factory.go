@@ -43,3 +43,12 @@ func NewTimeDecoderWithVehicleByPercentage(carList []vehicle.ICar, gpsMap gps.Ma
 		name:          "TimeDecoderWithVehicleByPercentage",
 	}
 }
+
+func NewPositionalDecoderWithVehicleByPercentageV2(carList []vehicle.ICar, gpsMap gps.Map, dronePercentage float64) brkga.IDecoder[itinerary.ItineraryList] {
+	return &positionDecoderAgatz{
+		masterCarList: carList,
+		gpsMap:        gpsMap,
+		strategy:      decoderstrategy.NewVehicleChooserByPercentage(gpsMap, dronePercentage),
+		name:          "PositionalAgatzDecoderWithVehicleByPercentage",
+	}
+}
