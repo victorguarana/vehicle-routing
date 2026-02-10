@@ -76,6 +76,7 @@ func (b BRKGA[T]) Execute() T {
 	b.evaluateGeneration(currentGeneration)
 	b.orderGeneration(currentGeneration)
 	generationCounter := 0
+	lastGenerationImprovement := 0
 	bestScore := currentGeneration[0].Score
 
 	for {
@@ -84,9 +85,14 @@ func (b BRKGA[T]) Execute() T {
 		currentGeneration = b.newGeneration(prevGeneration)
 		b.evaluateGeneration(currentGeneration)
 		b.orderGeneration(currentGeneration)
+		hasImproved := false
 
-		bestScore = b.defineBestScore(bestScore, currentGeneration[0].Score, generationCounter)
-		if generationCounter >= b.generationLimit {
+		if hasImproved, bestScore = b.defineScoreHasImproved(bestScore, currentGeneration[0].Score, generationCounter); hasImproved {
+			lastGenerationImprovement = generationCounter
+		}
+
+		if generationCounter >= b.generationLimit && generationCounter-lastGenerationImprovement > b.generationLimit/10 {
+			log.Println("Best individual", "generation", generationCounter, "score", bestScore)
 			solution, _ := b.decoder.Decode(currentGeneration[0])
 			return solution
 		}
@@ -191,17 +197,45 @@ func (b BRKGA[T]) orderGeneration(generation []*Individual) {
 func (b BRKGA[T]) defineBestScore(bestScore float64, currentScore float64, generationCounter int) float64 {
 	if b.optimizationGoal == Maximize {
 		if currentScore > bestScore {
-			// log.Println("Best individual", "generation", generationCounter, "score", currentScore)
+			log.Println("Best individual", "generation", generationCounter, "score", currentScore)
 			return currentScore
 		}
 	} else {
 		if currentScore < bestScore {
-			// log.Println("Best individual", "generation", generationCounter, "score", currentScore)
+			log.Println("Best individual", "generation", generationCounter, "score", currentScore)
 			return currentScore
 		}
 	}
 	return bestScore
 }
+
+func (b BRKGA[T]) defineScoreHasImproved(bestScore float64, currentScore float64, generationCounter int) (bool, float64) {
+	if b.optimizationGoal == Maximize {
+		if currentScore > bestScore {
+			log.Println("Best individual", "generation", generationCounter, "score", currentScore)
+			return true, currentScore
+		}
+	} else {
+		if currentScore < bestScore {
+			log.Println("Best individual", "generation", generationCounter, "score", currentScore)
+			return true, currentScore
+		}
+	}
+	return false, bestScore
+}
+
+// func (b BRKGA[T]) hasScoreImproved(bestScore float64, currentScore float64) bool {
+// 	if b.optimizationGoal == Maximize {
+// 		if currentScore > bestScore {
+// 			return true
+// 		}
+// 	} else {
+// 		if currentScore < bestScore {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }
 
 func calculateQuantity(totalQnt int, percentage float64) int {
 	return int(float64(totalQnt) * percentage)

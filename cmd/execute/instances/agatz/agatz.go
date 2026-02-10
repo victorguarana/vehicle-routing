@@ -18,7 +18,7 @@ const agatzCarSpeedConst = 1.0
 const agatzRangeConst = 100000.0 // Range is not important for this instance
 const agatzCarQuantityConst = 1
 const agatzDroneQuantityPerCarConst = 1
-const agatzDroneStorage = 1      // Fixed to 1 since drones can only do one delivery at a time
+const agatzDroneStorage = 5      // Fixed to 1 since drones can only do one delivery at a time
 const agatzCarStorage = 100000.0 // Not important for this instance
 
 var AgatzInstanceUniformN10 = map[string]string{
